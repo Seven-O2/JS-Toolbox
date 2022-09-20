@@ -5,8 +5,8 @@ Author und ©: Joël Allemann
 ![js_logo](resources/images/logo_js.png)
 
 ## Inhaltsverzeichnis
-- [Tests](#Tests)
-- [Funktionen](#Funktionen)
+- [Tests](#tests)
+- [Funktionen](#funktionen)
 - [Komische Dinge in JavaScript](#komische-dinge-in-javascript)
 
 # Tests
