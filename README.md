@@ -1,13 +1,82 @@
 # JS-Toolbox
-Author und ©: Joël Allemann  
+Author und ©: [Joël Allemann](https://github.com/Seven-O2), auf Basis des Unterrichts von Dierk König
+
 Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mit JavaScript, welche im Unterricht Web Programming (webpr) gelernt wurden. 
 
 ![js_logo](resources/images/logo_js.png)
 
 ## Inhaltsverzeichnis
+- [Variablen](#variablen)
+- [Scopes](#scopes)
 - [Testen](#testen)
 - [Funktionen](#funktionen)
+- [Lambda](#lambda)
 - [Komische Dinge in JavaScript](#komische-dinge-in-javascript)
+
+# Variablen
+JavaScript kennt zwar keine Typen, jedoch müssen Variablen trotzdem deklariert werden. Dafür kennt JavaScript zwei Keywords.
+## `Const`
+Variablen welche mit `const` instanziert werden können nicht verändert werden (sind "*immutable*"). Also eine 5 bleibt immer eine 5. Verwendet man Objekte, kann das Objekt nie geändert werden. (die Member der Funktion jedoch schon!) Dasselbe gilt für Arrays.
+```javascript
+<script>
+    const x = 5;
+    const obj = {x: 10, y: 20};
+    x = 10;                     // illegal
+    obj = {x: 20, y: 10};       // illegal
+    obj.x = 9;                  // allowed
+</script>
+```
+Jede Variable wird aus best-practice mit `const` angelegt. Muss eine Variable dennoch irgendwann verändert werden, wird sie dann auf `let` geändert.
+## `Let`
+Variablen welche mit `let` instanziert werden können wieder verändert werden.
+```javascript
+<script>
+    let x = 5;
+    let obj = {x: 10, y: 20};
+    x = 10;                     // allowed
+    obj = {x: 20, y: 10};       // allowed
+    obj.x = 9;                  // allowed
+</script>
+```
+
+# Scopes
+JavaScript bietet zwei Scopes an. Man mag meinen es gäbe mehrere, jedoch bildet JavaScript alles auf eines der zwei Scopes ab. (wobei es sich meistens um einen `function` Scope handelt)  
+## `global`
+Der `global` Scope ist das Fenster (im Browser), also quasi alles was sich auf dem Browserfenster befindet. 
+### Instanzierung
+Variablen im globalen Scope können wiefolgt angelegt werden.
+```javascript
+<script>
+    x = ...
+</script>
+```
+Das sollte normaleweise nicht gemacht werden.
+## `function`
+Der `function` Scope ist der Scope einer Funktion oder eines Lambdas. Diese sind dann nur Lokal in der Funktion gültig und werden nach Verlassen der Funktion zerstört.
+### Instanzierung
+Variablen im funktions Scope können wiefolgt angelegt werden.
+```javascript
+var x = ... // "hoisted" -> NEVER DO THIS
+let x = ... 
+const x = ...
+```
+"hoisted" bedeutet, dass die Variable irgendwo im Code definiert werden kann. Beim Ausführen wird sie dann an den Anfang des Codes gezogen.
+[let](#let) und [var](#var) werden wie nach Beschreibung im lokalen Scope angelegt.  
+### Variablen-Scoping
+In verschiedenen Scopes können auch Variablen mit demselben Namen verwendet werden.
+```javascript
+<script>
+    const x = 0;
+    // so called iife -> immediately invoked function expression
+    (() => {
+        const x = 1;
+        document.writeln(String(x));
+    })(); 
+    // ↑ executes the iife
+    document.writeln(String(x));
+</script>
+```
+> $ 1 0
 
 # Testen
 ## Dinge verstehen und lernen
@@ -100,6 +169,77 @@ JavaScript erlaubt das Zurückgeben von Funktionen in Funktionen (in Funktionen 
 ```
 Beim Aufrufen der Funktion doit, bzw. doit2 wird eine weitere Funktion zurückgegeben, welche dann wieder mit einem Argument aufgerufen werden kann. Das bedeutet, der Ausdruck `doit(fun1)` ist selbst auch vom Typ Funktion.
 
+# Lambda Calculus
+Mithilfe des Lambda Calculus kann alles berechenbare berechnet werden. JavaScript verwendet viele dieser Lambda Calculus Eigenschaften.
+`x => x` ist das gleiche wie $\lambda x . x$.
+
+## $\alpha$ - Alpha translation
+"Rename parameter"
+Der Name in einem Lambda ist nicht ausschlaggebend für eine Funktion. Er kann umbenannt werden wie man möchte, der Effekt der Funktion ändert sich nicht.
+```javascript
+const id1 = x => x
+const id2 = gurkensalat => gurkensalat
+```
+
+## $\beta$ - Beta reduction
+"Apply argument"
+Reduzieren der Argumente von mehreren Funktionen auf das endgültige Resultat. Also Quasi das ersetzen von Variablen durch den effektiven Wert.
+```javascript
+const id = x => x;
+( f => x => f (x)) (id) (1)  // f wird zu 1
+(      x => id (x)) (1)      // x wird zu 1
+(           id (1))          // id = "x => x"
+( x => x ) (1)               // x wird zu 1
+(1)
+```
+
+## $\eta$ - Eta reduction
+"Cancel parameter"
+Wenn das letzte Argument auf der rechten Seite dasselbe ist wie das letzte Argument auf der Linken seite, darf das gelöscht (gekürzt) werden. (Solange "plus" im Beispiel keine Nebenwirkungen hat)
+```javascript
+x => y => plus(x)(y)    // Implementierung der Funktion ...
+x =>      plus(x)       // ... mit eta Reduktion ...
+          plus          // ... gibt uns die Referenz auf die Funktion
+```
+
+## 
+Alles was sich im Lambda Calculus berechnen lässt, lässt sich auf 3 Grundfunktionen zurückführen:
+- `const id = y => y;`
+- `const konst = x => y => x;`
+- (selten verwendet)
+```javascript
+// const kite = x => y => y;        // Erweitern um id
+// const kite = x => y => id(y)     // Eta Reduktion
+// const kite = x => id;            // Erweitern um konst
+// const kite = x => konst(id)(x)   // Eta Reduktion
+const kite = konst(id)              // Fertig!
+document.writeln(kite(undefined)(0) === 0);
+```
+> $ true
+
 # JavaScript Goodies
 JavaScript hat viele Dinge, bei welchen man sich manchmal denkt "*wieso*". Dies ist eine Sammlung von verschiedener solcher Dinge.
+## Strings anlegen
+In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
+```javascript
+$   "askf\tëä3aa"           
+ -> "askf    ëä3aa"
+$   "askf\\asd"             
+ -> "askf\asd"
+$   'askfasd'               
+ -> "askfasd"
+$   'Er sagte "Hallo!"'     
+ -> "Er sagte \"Hallo!\""
+$   "Er sagte 'Hallo!'"     
+ -> "Er sagte 'Hallo!'"
+$   const a = 1;
+$   `x ist : ${a}`          
+ -> "x ist 1"
+$   /hallo\\s/              
+ -> "/hallo\\s/"
+$   String(/hallo\s/)       
+ -> "/hallo\\s/"
+```
+Strings können mit ", ' und `(backtick) definiert werden. Die " und ' werden als normale Strings verwendet, der Backtick wird für sogenannte Template-Strings verwendet. Es handelt sich dabei um literale Strings.  
+Mithilfe des String-Konstruktors können Escape-Characters umgangen werden, wie zum Beispiel beim generieren einer Regex.
 
