@@ -5,9 +5,15 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
 
 ![js_logo](resources/images/logo_js.png)
 
-## Inhaltsverzeichnis
+# Inhaltsverzeichnis
+
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
 - [JS-Toolbox](#js-toolbox)
-  - [Inhaltsverzeichnis](#inhaltsverzeichnis)
+- [Inhaltsverzeichnis](#inhaltsverzeichnis)
+- [General](#general)
 - [Variablen](#variablen)
   - [`Const`](#const)
   - [`Let`](#let)
@@ -27,6 +33,7 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [Rückgabewerte](#rückgabewerte)
   - [Sammlungen von Funktionen](#sammlungen-von-funktionen)
   - [Funktionenx](#funktionensupxsup)
+  - [Curried vs. multiple Arguments](#curried-vs-multiple-arguments)
 - [Lambda Calculus](#lambda-calculus)
   - [$\alpha$ - Alpha translation](#alpha-alpha-translation)
   - [$\beta$ - Beta reduction](#beta-beta-reduction)
@@ -38,10 +45,18 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [True / False](#true-false)
   - [AND](#and)
   - [OR](#or)
+- [Map](#map)
+- [Filter](#filter)
+- [Reduce](#reduce)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
 - [Spread-Operator `...`](#spread-operator)
+
+<!-- /code_chunk_output -->
+
+# General
+JavaScript hat keinen Compiler!
 
 # Variablen
 JavaScript kennt zwar keine Typen, jedoch müssen Variablen trotzdem deklariert werden. Dafür kennt JavaScript zwei Keywords.
@@ -177,6 +192,19 @@ doit2(fun1)(10)
 ```
 Beim Aufrufen der Funktion doit, bzw. doit2 wird eine weitere Funktion zurückgegeben, welche dann wieder mit einem Argument aufgerufen werden kann. Das bedeutet, der Ausdruck `doit(fun1)` ist selbst auch vom Typ Funktion.
 
+## Curried vs. multiple Arguments
+In JavaScript können Funktionen curried (zusammengehängt) oder mit mehreren Argumenten definiert werden. 
+```javascript
+const foo = (a, b) => a + b;
+const bar = a => b => a + b;
+document.write(foo("Hi"));
+document.write(bar("Hi"));
+```
+> $ "Hiundefined" b => a + b  
+
+Beim verwenden von mehreren Argumenten wird quasi einfach etwas gemacht. Mit `curried` Funktionen wird nicht einfach etwas gemacht, sondern es wird dargestellt, dass hier noch eine Funktion ist, die ein Argument möchte.
+Zusätzlich erlaubt es `curried`, Funktionen zu schreiben, welche nur Teilweise ausgeführt wurden.
+
 # Lambda Calculus
 Mithilfe des Lambda Calculus kann alles berechenbare berechnet werden. JavaScript verwendet viele dieser Lambda Calculus Eigenschaften.
 `x => x` ist das gleiche wie $\lambda x . x$.
@@ -258,6 +286,8 @@ Either( safeDiv(1)(0)  )
 ```
 > $ 1 schlecht!
 
+Wichtig zu bedenken ist, dass die Either-Methode nie ausgeführt wird, wenn nicht der Linke und der Rechte Wert bearbeitet wird. Der Vorteil ist, dass man im "guten" Teil **nie** ein undefined oder falscher Wert stehen wird.
+
 # Boolean Logik
 Mit Lambdas kann auch boolean Logik gebaut werden.
 
@@ -279,7 +309,7 @@ Damit lassen sich nun ganze Logikgatter nachbauen. Das funktioniert
 
 ## AND
 Die AND Funktion:
-|a|b||
+|a|b|z|
 |-|-|-|
 |0|0|0|
 |0|1|0|
@@ -300,7 +330,7 @@ document.writeln(and(T)(T) === T);
 
 ## OR
 Die OR Funktion
-|a|b||
+|a|b|z|
 |-|-|-|
 |0|0|0|
 |0|1|1|
@@ -316,6 +346,49 @@ document.writeln(or(F)(T) === T);
 document.writeln(or(T)(T) === T);
 ```
 > $ true true true true
+
+# Map
+Das mappen von Daten bedeutet, dass auf jedes Element in einer Menge eine Funktion angewendet wird. Beim Anwenden einer `map` wird immer dieselbe Menge und der selbe Datentyp der Menge zurück gegeben. **Es ändern sich nur die einzelnen Elemente.** (Und unter Umständen ihre Datentypen)
+
+> [1, 2, 3] -> x => x * 2 -> [2, 4, 6]
+
+```javascript
+const times = a => b => a * b;
+[1, 2, 3].map(x => times(2)(x))
+[1, 2, 3].map(times(2))     // lambda calculus allows for eta-reduction
+const twoTimes = times(2);  // name a specific function -> alpha-reduction
+[1, 2, 3].map(twoTimes)     
+```
+
+# Filter
+Das Filtern von Daten bedeutet, dass auf jedes Element in einer Menge auf eine Condition geprüft wird. Beim Anwenden eines `filters` werden alle Elemente aus der Liste entfernt (oder behalten), auf welchem eine Condition `true` (oder `false`) gibt. Dabei wird der Datentyp der Liste, sowie die einzelnen Elemente welche noch behalten werden, nicht geändert. **Es ändert sich nur die Menge an Elementen.**
+
+> [1, 2, 3] -> x => x % 2 === 1 -> [1, 3]
+
+```javascript
+const odd = x => x % 2 === 1;
+[1, 2, 3].filter(x => x % 2 === 1);
+[1, 2, 3].filter(x => odd(x))   // name a specific function -> alpha-reduction
+[1, 2, 3].filter(odd);          // lambda calculus allows for eta-reduction
+```
+
+# Reduce
+Das Reduzieren von Daten bedeuted, dass auf jedes Element zusammen in der Menge eine kombinierende Funktion angewendet wird. Dabei wird auf das 1. und 2. Element die Funktion angewendet, dann auf das Resultat davon mit dem 3. Element etc. Dabei spricht man vom ersten Element (im Beispiel unten `x`) vom Akkumulator, und vom zweiten Element (im Beispiel unten `y`) vom Current. **Es ändern sich alles bis auf den Datentyp, dieser bleibt auf dem Typ des Akkumulators.**
+
+> [1, 2, 3] -> x => y => x + y -> 6
+
+```javascript
+const plus = (accu, cur) => accu + cur;
+[1, 2, 3].reduce((accu, cur) => accu + cur);
+[1, 2, 3].reduce(plus);
+[1, 2, 3].reduce(plus, 0); // The 0 sets the start value and the datatype
+document.write([1, 2, 3].reduce(plus, 0));
+document.write([1, 2, 3].reduce(plus, ""));
+document.write([1, 2, 3].reduce((acc, cur) => [...acc, cur], [])) // Copies an array
+```
+> $ 6 "123" [1, 2, 3]
+
+Das Setzen des zweiten Arguments der `reduce` Funktion hat noch weitere Vorteile. Unter anderem ist der Wert sicher gesetzt, wenn einmal eine leere Menge verwendet wird.
 
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
