@@ -6,13 +6,42 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
 ![js_logo](resources/images/logo_js.png)
 
 ## Inhaltsverzeichnis
+- [JS-Toolbox](#js-toolbox)
+  - [Inhaltsverzeichnis](#inhaltsverzeichnis)
 - [Variablen](#variablen)
+  - [`Const`](#const)
+  - [`Let`](#let)
 - [Scopes](#scopes)
+  - [`global`](#global)
+    - [Instanzierung](#instanzierung)
+  - [`function`](#function)
+    - [Instanzierung](#instanzierung-1)
+    - [Variablen-Scoping](#variablen-scoping)
 - [Testen](#testen)
+  - [Dinge verstehen und lernen](#dinge-verstehen-und-lernen)
 - [Funktionen](#funktionen)
-- [Lambda](#lambda)
+  - [Deklaration](#deklaration)
+    - [`function` Keyword](#function-keyword)
+    - [`=>` Keyword (Lambda)](#keyword-lambda)
+  - [Überladen](#überladen)
+  - [Rückgabewerte](#rückgabewerte)
+  - [Sammlungen von Funktionen](#sammlungen-von-funktionen)
+  - [Funktionenx](#funktionensupxsup)
+- [Lambda Calculus](#lambda-calculus)
+  - [$\alpha$ - Alpha translation](#alpha-alpha-translation)
+  - [$\beta$ - Beta reduction](#beta-beta-reduction)
+  - [$\eta$ - Eta reduction](#eta-eta-reduction)
+  - [Grundfunktionen](#grundfunktionen)
+- [Pairs](#pairs)
+- [Either](#either)
+- [Boolean Logik](#boolean-logik)
+  - [True / False](#true-false)
+  - [AND](#and)
+  - [OR](#or)
 - [Strings](#strings)
 - [Loggen](#loggen)
+  - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
+- [Spread-Operator `...`](#spread-operator)
 
 # Variablen
 JavaScript kennt zwar keine Typen, jedoch müssen Variablen trotzdem deklariert werden. Dafür kennt JavaScript zwei Keywords.
@@ -196,7 +225,7 @@ document.writeln(kite(undefined)(0) === 0);
 ```
 > $ true
 
-## Pairs
+# Pairs
 Pairs sind Paare von Daten, wo zwei miteinander verwandte Daten abgespeichert werden können. Wie viele andere Dinge kann diese Datenstruktur auch mit Lambda-Calculus nachgebildet werden.
 ```javascript
 const Pair = fn => ln => selector => selector(fn)(ln);
@@ -209,7 +238,7 @@ document.writeln(joel(lastname)  === "Allemann");
 ```
 > $ true true
 
-## Either
+# Either
 Either bedeutet entweder das eine oder das andere. Man kann also einen Ausdruck aufrufen, und kriegt entweder den ersten Wert oder den zweiten Wert.
 ```javascript
 const Left   = x => f => g => f(x);
@@ -229,10 +258,10 @@ Either( safeDiv(1)(0)  )
 ```
 > $ 1 schlecht!
 
-## Boolean Logik
+# Boolean Logik
 Mit Lambdas kann auch boolean Logik gebaut werden.
 
-### True / False 
+## True / False 
 Um True / False darzustellen, wird ganz einfach ein T und ein F definiert. 
 - `T` gibt "1" zurück, wenn das erste Argument 1 ist. 
 - `F` gibt "1" zurück, wenn das zweite Argument 1 ist.
@@ -248,7 +277,7 @@ document.writeln(F(0)(1) === 1);
 
 Damit lassen sich nun ganze Logikgatter nachbauen. Das funktioniert 
 
-### AND
+## AND
 Die AND Funktion:
 |a|b||
 |-|-|-|
@@ -269,7 +298,7 @@ document.writeln(and(T)(T) === T);
 ```
 > $ true true true true
 
-### OR
+## OR
 Die OR Funktion
 |a|b||
 |-|-|-|
@@ -356,7 +385,23 @@ error( _=> longRunning("error"));
 //     ↑ ignore the variable
 
 ```
-Der wer logLevel kann dann von jedem über die JavaScript Konsole im Browser des Vertrauens gesetzt werden, und das Loglevel wird on-the-fly angepasst.
+Der Wert `logLevel` kann dann von jedem über die JavaScript Konsole im Browser des Vertrauens gesetzt werden, und das Loglevel wird on-the-fly angepasst.
 Dieser Code funktioniert ganz einfach, man gibt den Loggingfunktionen eine Funktion mit, welche ausgeführt wird nachdem `logLevel` überprüft wurde. Würde man das ganze mit einer Variable machen, würde diese (bei der Übergabe) zuerst evaluiert werden, auch wenn es sich dabei um eine lang laufende Funktion handelt!
 
-
+# Spread-Operator `...`
+Der Spread-Operator erlaubt es dem Benutzer beliebig viele Variablen in eine Funktion mitzugeben.
+```javascript
+$ const foo = (a, b, c) => a + b + c;
+$ foo(1, 2, 3)
+-> 6
+$ foo("1", 2, 3)
+-> "123"
+$ foo("1", 2)
+-> "12undefined"
+$ const bar = (...a) => a.length;
+$ bar(1, 2, 3)
+-> 3
+$ bar()
+-> 0
+```
+Im Hintergrund wird ein Objekt erstellt, welches die einzelnen Werte abspeichert. Er verwandelt eine Liste von Elementen in ein Array von Elementen. PS: Ein Array ist ein Objekt!
