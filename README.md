@@ -6,6 +6,7 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
 ![js_logo](resources/images/logo_js.png)
 
 # Inhaltsverzeichnis
+<!-- Auto generated TOC -->
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
@@ -13,7 +14,7 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
 
 - [JS-Toolbox](#js-toolbox)
 - [Inhaltsverzeichnis](#inhaltsverzeichnis)
-- [General](#general)
+- [Generell](#generell)
 - [Variablen](#variablen)
   - [`Const`](#const)
   - [`Let`](#let)
@@ -35,27 +36,32 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [Funktionenx](#funktionensupxsup)
   - [Curried vs. multiple Arguments](#curried-vs-multiple-arguments)
 - [Lambda Calculus](#lambda-calculus)
-  - [$\alpha$ - Alpha translation](#alpha-alpha-translation)
-  - [$\beta$ - Beta reduction](#beta-beta-reduction)
-  - [$\eta$ - Eta reduction](#eta-eta-reduction)
-  - [Grundfunktionen](#grundfunktionen)
-- [Pairs](#pairs)
-- [Either](#either)
-- [Boolean Logik](#boolean-logik)
-  - [True / False](#true-false)
-  - [AND](#and)
-  - [OR](#or)
-- [Map](#map)
-- [Filter](#filter)
-- [Reduce](#reduce)
+  - [Grundbausteine](#grundbausteine)
+    - [$\alpha$ - Alpha translation](#alpha-alpha-translation)
+    - [$\beta$ - Beta reduction](#beta-beta-reduction)
+    - [$\eta$ - Eta reduction](#eta-eta-reduction)
+    - [Grundfunktionen](#grundfunktionen)
+  - [Pairs](#pairs)
+  - [Either](#either)
+  - [Boolean Logik](#boolean-logik)
+    - [True / False](#true-false)
+    - [AND](#and)
+    - [OR](#or)
+  - [Map](#map)
+  - [Filter](#filter)
+  - [Reduce](#reduce)
+- [Scripting](#scripting)
+  - [Progressive Web-Applikation](#progressive-web-applikation)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
 - [Spread-Operator `...`](#spread-operator)
+- [Semicolons](#semicolons)
 
 <!-- /code_chunk_output -->
 
-# General
+
+# Generell
 JavaScript hat keinen Compiler!
 
 # Variablen
@@ -93,14 +99,14 @@ Das sollte normaleweise nicht gemacht werden.
 ## `function`
 Der `function` Scope ist der Scope einer Funktion oder eines Lambdas. Diese sind dann nur Lokal in der Funktion gültig und werden nach Verlassen der Funktion zerstört.
 ### Instanzierung
-Variablen im funktions Scope können wiefolgt angelegt werden.
+Variablen im Funktionsscope können wiefolgt angelegt werden.
 ```javascript
 var x = ... // "hoisted" -> NEVER DO THIS
 let x = ... 
 const x = ...
 ```
 "hoisted" bedeutet, dass die Variable irgendwo im Code definiert werden kann. Beim Ausführen wird sie dann an den Anfang des Codes gezogen.
-[let](#let) und [var](#var) werden wie nach Beschreibung im lokalen Scope angelegt.  
+[let](#let) und [const](#const) werden wie nach Beschreibung im lokalen Scope angelegt.  
 ### Variablen-Scoping
 In verschiedenen Scopes können auch Variablen mit demselben Namen verwendet werden.
 ```javascript
@@ -209,7 +215,8 @@ Zusätzlich erlaubt es `curried`, Funktionen zu schreiben, welche nur Teilweise 
 Mithilfe des Lambda Calculus kann alles berechenbare berechnet werden. JavaScript verwendet viele dieser Lambda Calculus Eigenschaften.
 `x => x` ist das gleiche wie $\lambda x . x$.
 
-## $\alpha$ - Alpha translation
+## Grundbausteine
+### $\alpha$ - Alpha translation
 "Rename parameter"
 Der Name in einem Lambda ist nicht ausschlaggebend für eine Funktion. Er kann umbenannt werden wie man möchte, der Effekt der Funktion ändert sich nicht.
 ```javascript
@@ -217,7 +224,7 @@ const id1 = x => x
 const id2 = gurkensalat => gurkensalat
 ```
 
-## $\beta$ - Beta reduction
+### $\beta$ - Beta reduction
 "Apply argument"
 Reduzieren der Argumente von mehreren Funktionen auf das endgültige Resultat. Also Quasi das ersetzen von Variablen durch den effektiven Wert.
 ```javascript
@@ -229,7 +236,7 @@ const id = x => x;
 (1)
 ```
 
-## $\eta$ - Eta reduction
+### $\eta$ - Eta reduction
 "Cancel parameter"
 Wenn das letzte Argument auf der rechten Seite dasselbe ist wie das letzte Argument auf der Linken seite, darf das gelöscht (gekürzt) werden. (Solange "plus" im Beispiel keine Nebenwirkungen hat)
 ```javascript
@@ -238,7 +245,7 @@ x =>      plus(x)       // ... with eta reduction ...
           plus          // ... gives us the reference to the function
 ```
 
-## Grundfunktionen
+### Grundfunktionen
 Alles was sich im Lambda Calculus berechnen lässt, lässt sich auf 3 Grundfunktionen zurückführen:
 - `const id = y => y;`
 - `const konst = x => y => x;`
@@ -253,7 +260,7 @@ document.writeln(kite(undefined)(0) === 0);
 ```
 > $ true
 
-# Pairs
+## Pairs
 Pairs sind Paare von Daten, wo zwei miteinander verwandte Daten abgespeichert werden können. Wie viele andere Dinge kann diese Datenstruktur auch mit Lambda-Calculus nachgebildet werden.
 ```javascript
 const Pair = fn => ln => selector => selector(fn)(ln);
@@ -266,7 +273,7 @@ document.writeln(joel(lastname)  === "Allemann");
 ```
 > $ true true
 
-# Either
+## Either
 Either bedeutet entweder das eine oder das andere. Man kann also einen Ausdruck aufrufen, und kriegt entweder den ersten Wert oder den zweiten Wert.
 ```javascript
 const Left   = x => f => g => f(x);
@@ -288,10 +295,10 @@ Either( safeDiv(1)(0)  )
 
 Wichtig zu bedenken ist, dass die Either-Methode nie ausgeführt wird, wenn nicht der Linke und der Rechte Wert bearbeitet wird. Der Vorteil ist, dass man im "guten" Teil **nie** ein undefined oder falscher Wert stehen wird.
 
-# Boolean Logik
+## Boolean Logik
 Mit Lambdas kann auch boolean Logik gebaut werden.
 
-## True / False 
+### True / False 
 Um True / False darzustellen, wird ganz einfach ein T und ein F definiert. 
 - `T` gibt "1" zurück, wenn das erste Argument 1 ist. 
 - `F` gibt "1" zurück, wenn das zweite Argument 1 ist.
@@ -307,7 +314,7 @@ document.writeln(F(0)(1) === 1);
 
 Damit lassen sich nun ganze Logikgatter nachbauen. Das funktioniert 
 
-## AND
+### AND
 Die AND Funktion:
 |a|b|z|
 |-|-|-|
@@ -328,7 +335,7 @@ document.writeln(and(T)(T) === T);
 ```
 > $ true true true true
 
-## OR
+### OR
 Die OR Funktion
 |a|b|z|
 |-|-|-|
@@ -347,7 +354,7 @@ document.writeln(or(T)(T) === T);
 ```
 > $ true true true true
 
-# Map
+## Map
 Das mappen von Daten bedeutet, dass auf jedes Element in einer Menge eine Funktion angewendet wird. Beim Anwenden einer `map` wird immer dieselbe Menge und der selbe Datentyp der Menge zurück gegeben. **Es ändern sich nur die einzelnen Elemente.** (Und unter Umständen ihre Datentypen)
 
 > [1, 2, 3] -> x => x * 2 -> [2, 4, 6]
@@ -360,7 +367,7 @@ const twoTimes = times(2);  // name a specific function -> alpha-reduction
 [1, 2, 3].map(twoTimes)     
 ```
 
-# Filter
+## Filter
 Das Filtern von Daten bedeutet, dass auf jedes Element in einer Menge auf eine Condition geprüft wird. Beim Anwenden eines `filters` werden alle Elemente aus der Liste entfernt (oder behalten), auf welchem eine Condition `true` (oder `false`) gibt. Dabei wird der Datentyp der Liste, sowie die einzelnen Elemente welche noch behalten werden, nicht geändert. **Es ändert sich nur die Menge an Elementen.**
 
 > [1, 2, 3] -> x => x % 2 === 1 -> [1, 3]
@@ -372,7 +379,7 @@ const odd = x => x % 2 === 1;
 [1, 2, 3].filter(odd);          // lambda calculus allows for eta-reduction
 ```
 
-# Reduce
+## Reduce
 Das Reduzieren von Daten bedeuted, dass auf jedes Element zusammen in der Menge eine kombinierende Funktion angewendet wird. Dabei wird auf das 1. und 2. Element die Funktion angewendet, dann auf das Resultat davon mit dem 3. Element etc. Dabei spricht man vom ersten Element (im Beispiel unten `x`) vom Akkumulator, und vom zweiten Element (im Beispiel unten `y`) vom Current. **Es ändern sich alles bis auf den Datentyp, dieser bleibt auf dem Typ des Akkumulators.**
 
 > [1, 2, 3] -> x => y => x + y -> 6
@@ -389,6 +396,37 @@ document.write([1, 2, 3].reduce((acc, cur) => [...acc, cur], [])) // Copies an a
 > $ 6 "123" [1, 2, 3]
 
 Das Setzen des zweiten Arguments der `reduce` Funktion hat noch weitere Vorteile. Unter anderem ist der Wert sicher gesetzt, wenn einmal eine leere Menge verwendet wird.
+
+# Scripting
+Scripting ist ein komplett eigenes Paradigma in der Welt von JavaScript. Vieles kann mit Scripting sehr einfach programmiert werden, wie zum Beispiel Automation, Build Systeme, Command Line, self-modifying-code etc. Scripting bedeutet, dass der Code als Text während der Laufzeit "gelesen" wird und dann evaluiert wird, das ist auch als *interpretiert* bekannt.
+## Progressive Web-Applikation
+Eine Web-Applikation bei welcher der (komplette) Code noch nicht bekannt ist. Dieser lädt sich dann progressiv, je nach verlangen, nach.
+```javascript
+// Bisherige Lösung, alles einzeln starten
+<script src="function/function.js"></script>
+<script src="function/functionTest.js"></script>
+
+<script src="lambda/lambda.js"></script>
+<script src="lambda/lambdaTest.js"></script>
+
+<script src="snake/snake.js"></script>
+<script src="snake/snakeTest.js"></script>
+
+// Schönere Lösung, mit beliebig vielen Dateien
+const testSuite = [
+    "function",
+    "lambda",
+    "snake",  
+];
+
+// execute for each element in testSuite
+testSuite.forEach(name => {
+    // obfuscation, because else JavaScript would see this        (↓) as end of script 
+    document.writeln("<script src=\"" + name + "/" + name + ".js\"></" + "script>");
+    document.writeln("<script src=\"" + name + "/" + name + "Test.js\"></" + "script>");
+})  
+```
+Progressiv ist hier, dass die Programme sowie deren Test-Programme erst im nachhinein geladen werden, während das Hauptprogramm schon gestartet ist. Dies erlaubt unter anderem hier diese schöne TestSuite aufzubauen, welche (anstatt jede Datei aufzuschreiben) nur den Namen benötigt.
 
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
@@ -478,3 +516,16 @@ $ bar()
 -> 0
 ```
 Im Hintergrund wird ein Objekt erstellt, welches die einzelnen Werte abspeichert. Er verwandelt eine Liste von Elementen in ein Array von Elementen. PS: Ein Array ist ein Objekt!
+
+# Semicolons
+```javascript
+$ console.log("hi");
+  [1, 2, 3].map(it => it * 2);
+-> "hi"
+-> [2, 4, 6]
+
+$ console.log("hi") // <- Missing Semicolon
+  [1, 2, 3].map(it => it * 2);
+-> TypeError: undefined is not an object (evaluation 'console.log("hi")[1, 2, 3]')
+```
+JavaScript sieht hier das `console.log` sowie das `[1, 2, 3]` als Ausdrücke. Somit wird beim vergessenen `;` ein Ausdruck generiert, welcher auf das `console.log` ausgeführt wird, welches nach dem Ausführen undefined ist.
