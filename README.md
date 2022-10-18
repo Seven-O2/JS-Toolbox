@@ -20,9 +20,9 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [`Let`](#let)
 - [Scopes](#scopes)
   - [`global`](#global)
-    - [Instanzierung](#instanziierung)
+    - [Instanziierung](#instanziierung)
   - [`function`](#function)
-    - [Instanzierung](#instanziierung)
+    - [Instanziierung](#instanziierung-1)
     - [Variablen-Scoping](#variablen-scoping)
 - [Testen](#testen)
   - [Dinge verstehen und lernen](#dinge-verstehen-und-lernen)
@@ -52,6 +52,10 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [Reduce](#reduce)
 - [Scripting](#scripting)
   - [Progressive Web-Applikation](#progressive-web-applikation)
+  - [Expression Evaluation](#expression-evaluation)
+    - [`eval()`](#eval)
+    - [Optimierung mit `Function`](#optimierung-mit-function)
+  - [Referencing](#referencing)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
@@ -426,7 +430,176 @@ testSuite.forEach(name => {
     document.writeln("<script src=\"" + name + "/" + name + "Test.js\"></" + "script>");
 })  
 ```
+> true true true ...
+
 Progressiv ist hier, dass die Programme sowie deren Test-Programme erst im Nachhinein geladen werden, während das Hauptprogramm schon gestartet ist. Dies erlaubt unter anderem hier diese schöne TestSuite aufzubauen, welche (anstatt jede Datei aufzuschreiben) nur den Namen benötigt.
+Wichtig ist, progressives Laden darf normalerweise nur aus der selben Quelle geladen werden. Mit diesem Trick kann das ganz einfach umgangen werden.
+
+## Expression Evaluation
+JavaScript bietet die Möglichkeit, externe Expressions zur Laufzeit zu evaluieren und auszuführen. Dafür gibt es eine Applikation Function Plotter, welcher eine eine beliebige Funktion auf einem Canvas zeichnet. [Run me!](resources/javascript/Plotter.html)
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Plotter</title>
+</head>
+
+<body onload="start()">
+  <canvas id="canvas" width="800" height="600"></canvas>
+  <input type="text" id="user_function" value="Math.sin(x)">
+  <script>
+    const minX =  0;
+    const maxX =  6;
+    const minY = -1;
+    const maxY =  1;
+
+    function start() {
+      const userFunction = document.getElementById('user_function');
+      const canvas       = document.getElementById('canvas');
+        
+      // run display with canvas and user evaluated function
+      const f = 
+      const displayIt = () => display(canvas, x => eval(userFunction.value));    
+      displayIt();
+      userFunction.onchange = () => displayIt();
+    }
+
+    function display(canvas, f) {
+      // clear
+      const context     = canvas.getContext("2d");
+      context.fillStyle = "papayawhip";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      // draw the function plot
+      const normx = normalizeX(canvas.width);
+      const normy = normalizeY(canvas.height);
+
+      context.fillStyle = "black";
+      context.beginPath();
+      context.moveTo(normx(minX), normy(f(minX)));
+
+      const stride = (maxX - minX) / 100; // 100 Stützstellen
+      for (let x = minX; x <= maxX; x += stride) {
+        context.lineTo(normx(x), normy(f(x)));
+        context.stroke();
+      }
+    }
+
+    const normalizeY = height => y => {
+      const scaleFactor = height / (maxY - minY);
+      return height - (y - minY) * scaleFactor;
+    };
+
+    const normalizeX = width => x => {
+      const scaleFactor = width / (maxX - minX);
+      return ( x - minX) * scaleFactor;
+    };
+  </script>
+</body>
+</html>
+```
+![plotter_snippet](resources/images/plotter/plotter_snippet.png)
+
+Der Plotter verwendet die Funktion `eval()` um vom Benutzer eingegebene Funktionen zu evaluieren. Wird zum Beispiel die Funktion `Math.sin(x)` verwendet, evaluiert sie zum gleichgeschriebenen Code, und mithilfe von `x => ...` wird sie zu einer richtig ausführbaren Funktion. 
+### `eval()`
+Die Funktion `eval()` führt einen beliebigen String Code aus, welcher als Parameter mitgegeben wird. Eval kann auf den gesamten Scope, aus dem die Funktion aufgerufen wird, ausgeführt werden.
+```javascript
+eval("console.log(\"Hello!\")")
+```
+> Hello!
+
+### Optimierung mit `Function`
+Das Problem an `eval()` ist, dass bei jedem Aufruf alles erneut geparsed wird. `Function` kann dasselbe wie `eval()`, macht jedoch direkt eine Referenz auf eine ausführbahre Funktion. Zusätzlich hat diese Funktion (wie alle Funktionen), nur Zugriff auf den [globalen Scope](#global) sowie auf seinen eigenen [Funktionsscope](#function).
+```javascript
+const displayIt = () => display(canvas, Function('x', 'return ' + userFunction.value));
+```
+Wichtig, da es sich hier um eine "konventionelle" Funktion handelt, muss der Wert am Schluss unbedingt mit `return` zurückgegeben werden.
+
+## Referencing
+Zum Teil müssen von Programmen Werte aus Feldern / Forms lesen. Für das kann man in JavaScript auf deren Referenzen (wie in css mit #id) zugreifen und deren Werte auslesen. In der Excel Applikation wird genau das gemacht - es wird über die ID auf die jeweiligen Elemente zugegriffen und deren Werte evaluiert. [Run me!](resources/javascript/Excel.html)
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Excel (kind of)</title>
+</head>
+
+<body onload="startExcel()">
+  <table>
+    <thead></thead>
+    <tbody id="dataContainer">
+      <!-- "Excel" inserted here -->
+    </tbody>
+  </table>
+  <button onclick="refresh()">Calculate</button>
+  <script>
+    // Construct the initial table
+    const Formulae = {
+      A1: '1', B1: '1', C1: 'n(A1) + n(B1)',
+      A2: '2', B2: '2', C2: 'n(A2) + n(B2)',
+      A3: 'n(A1) + n(A2)', B3: 'n(B1) + n(B2)', C3: 'n(C1) + n(C2)',
+    };
+
+    const cols = ["A", "B", "C"];
+    const rows = ["1", "2", "3"];
+
+    function startExcel() {
+      const dataContainer = document.getElementById('dataContainer');
+      fillTable(dataContainer);
+    }
+
+    function fillTable(container) {
+      rows.forEach(row => {
+        const tr = document.createElement("TR");
+        cols.forEach(col => {
+          const td = document.createElement("TD");
+          const input = document.createElement("INPUT");
+          const cellid = "" + col + row;
+          input.setAttribute("VALUE", Formulae[cellid]);
+          input.setAttribute("ID", cellid);
+          // Register a listener, which updates the Formulae table on change
+          input.onchange = evt => {
+            Formulae[cellid] = input.value;
+            refresh();
+          };
+          // When clicked onto the field, load formulae
+          input.onclick = evt => input.value = Formulae[cellid];
+          td.appendChild(input);
+          tr.appendChild(td);
+        });
+        container.appendChild(tr);
+      });
+    }
+
+    // Refresh the table
+    function refresh() {
+      cols.forEach(col => {
+        rows.forEach(row => {
+          const cellid = "" + col + row;
+          const input = document.getElementById(cellid);
+          input.value = eval(Formulae[cellid]);
+        });
+      });
+    }
+
+    // get the numerical value of an input element's value attribute
+    function n(input) {
+      return Number(input.value);
+    }
+
+  </script>
+</body>
+</html>
+```
+**Beim aufstarten:**
+![excel_snippet_formula](resources/images/excel/excel_snippet_formula.png)
+**Nach clicken von "calculate":**
+![excel_snippet_calculated](resources/images/excel/excel_snippet_calculated.png)
+
+Wie beim Plotter werden die Werte in den Zellen eingelesen, und evaluiert. Die Werte in der Klammer werden dann als `input` Objekt weitergegeben und von der Funktion `n` in Zahlen umgewandelt, und zusätzlich werden die einzelnen Funktionen (also das +) ausgeführt.
 
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
