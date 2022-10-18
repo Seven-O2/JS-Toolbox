@@ -20,9 +20,9 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [`Let`](#let)
 - [Scopes](#scopes)
   - [`global`](#global)
-    - [Instanzierung](#instanzierung)
+    - [Instanzierung](#instanziierung)
   - [`function`](#function)
-    - [Instanzierung](#instanzierung-1)
+    - [Instanzierung](#instanziierung)
     - [Variablen-Scoping](#variablen-scoping)
 - [Testen](#testen)
   - [Dinge verstehen und lernen](#dinge-verstehen-und-lernen)
@@ -67,7 +67,7 @@ JavaScript hat keinen Compiler!
 # Variablen
 JavaScript kennt zwar keine Typen, jedoch müssen Variablen trotzdem deklariert werden. Dafür kennt JavaScript zwei Keywords.
 ## `Const`
-Variablen welche mit `const` instanziert werden können nicht verändert werden (sind "*immutable*"). Also eine 5 bleibt immer eine 5. Verwendet man Objekte, kann das Objekt nie geändert werden. (die Member der Funktion jedoch schon!) Dasselbe gilt für Arrays.
+Variablen welche mit `const` instanziiert werden können nicht verändert werden (sind "*immutable*"). Also eine 5 bleibt immer eine 5. Verwendet man Objekte, kann das Objekt nie geändert werden. (die Member der Funktion jedoch schon!) Dasselbe gilt für Arrays.
 ```javascript
 const x = 5;
 const obj = {x: 10, y: 20};
@@ -77,7 +77,7 @@ obj.x = 9;                  // allowed
 ```
 Jede Variable wird aus best-practice mit `const` angelegt. Muss eine Variable dennoch irgendwann verändert werden, wird sie dann auf `let` geändert.
 ## `Let`
-Variablen welche mit `let` instanziert werden können wieder verändert werden.
+Variablen welche mit `let` instanziiert werden können wieder verändert werden.
 ```javascript
 let x = 5;
 let obj = {x: 10, y: 20};
@@ -90,16 +90,16 @@ obj.x = 9;                  // allowed
 JavaScript bietet zwei Scopes an. Man mag meinen es gäbe mehrere, jedoch bildet JavaScript alles auf eines der zwei Scopes ab. (wobei es sich meistens um einen `function` Scope handelt)  
 ## `global`
 Der `global` Scope ist das Fenster (im Browser), also quasi alles was sich auf dem Browserfenster befindet. 
-### Instanzierung
-Variablen im globalen Scope können wiefolgt angelegt werden.
+### Instanziierung
+Variablen im globalen Scope können wie folgt angelegt werden.
 ```javascript
     x = ...
 ```
 Das sollte normaleweise nicht gemacht werden.
 ## `function`
 Der `function` Scope ist der Scope einer Funktion oder eines Lambdas. Diese sind dann nur Lokal in der Funktion gültig und werden nach Verlassen der Funktion zerstört.
-### Instanzierung
-Variablen im Funktionsscope können wiefolgt angelegt werden.
+### Instanziierung
+Variablen im Funktionsscope können wie folgt angelegt werden.
 ```javascript
 var x = ... // "hoisted" -> NEVER DO THIS
 let x = ... 
@@ -132,12 +132,12 @@ document.writeln((1 === 1).toString());
 > $ Hallo true
 
 # Funktionen
-Funktionen oder auch Subroutinen sind in der Programmierung Codestücke, welche nicht bei der Initialisierung direkt ausgeführt werden müssen, sondern wenn immer nötig aufgeruft werden können
+Funktionen oder auch Subroutinen sind in der Programmierung Codestücke, welche nicht bei der Initialisierung direkt ausgeführt werden müssen, sondern wenn immer nötig aufgerufen werden können
 ## Deklaration
 Funktionen können (sinnvoll) auf zwei verschiedene Arten deklariert werden. Einmal mit dem [`function` Keyword](#function-keyword) und einmal mit einem [Lambda](#keyword-lambda).
 ### `function` Keyword
 Funktionen die mit dem `function` Keyword deklariert werden, sehen syntaktisch am schönsten aus. Der Rückgabewert wird nicht explizit vor dem Namen, sondern mit dem `return` Wert implizit definiert.  
-**Achtung, eine Funktion welche mit dem `function` Keyword deklariert wird, kann von einer gleichnahmigen Funktion überschrieben werden!**
+**Achtung, eine Funktion welche mit dem `function` Keyword deklariert wird, kann von einer gleichnamigen Funktion überschrieben werden!**
 Eine Funktion mit dem function Keyword in JavaScript sieht so aus:
 ```javascript
 function fun(arg) { return arg; }
@@ -168,7 +168,7 @@ document.writeln( (fun1(42) === 1).toString() )
 ```
 > $ true
 
-Bei JavaScript ist der Name der Funktion schon ein Ausdruck, das bedeutet es können zwar kopien erstellt werden (`blah = fun`), und `blah` kann auch mit `blah()` die Funktion `fun` aufrufen, beim Überladen wird jedoch nur die zuletzt deklarierte Funktion geladen.
+Bei JavaScript ist der Name der Funktion schon ein Ausdruck, das bedeutet es können zwar Kopien erstellt werden (`blah = fun`), und `blah` kann auch mit `blah()` die Funktion `fun` aufrufen, beim Überladen wird jedoch nur die zuletzt deklarierte Funktion geladen.
 
 ## Rückgabewerte
 Wird kein `return` angegeben, wird davon ausgegangen, dass es sich um eine **void**-Funktion handelt. Für alle anderen `return` Werte wird der entsprechende Wert zurück gegeben.
@@ -238,7 +238,7 @@ const id = x => x;
 
 ### $\eta$ - Eta reduction
 "Cancel parameter"
-Wenn das letzte Argument auf der rechten Seite dasselbe ist wie das letzte Argument auf der Linken seite, darf das gelöscht (gekürzt) werden. (Solange "plus" im Beispiel keine Nebenwirkungen hat)
+Wenn das letzte Argument auf der rechten Seite dasselbe ist wie das letzte Argument auf der Linken Seite, darf das gelöscht (gekürzt) werden. (Solange "plus" im Beispiel keine Nebenwirkungen hat)
 ```javascript
 x => y => plus(x)(y)    // Implementation of function  ...
 x =>      plus(x)       // ... with eta reduction ...
@@ -380,7 +380,7 @@ const odd = x => x % 2 === 1;
 ```
 
 ## Reduce
-Das Reduzieren von Daten bedeuted, dass auf jedes Element zusammen in der Menge eine kombinierende Funktion angewendet wird. Dabei wird auf das 1. und 2. Element die Funktion angewendet, dann auf das Resultat davon mit dem 3. Element etc. Dabei spricht man vom ersten Element (im Beispiel unten `x`) vom Akkumulator, und vom zweiten Element (im Beispiel unten `y`) vom Current. **Es ändern sich alles bis auf den Datentyp, dieser bleibt auf dem Typ des Akkumulators.**
+Das Reduzieren von Daten bedeutet, dass auf jedes Element zusammen in der Menge eine kombinierende Funktion angewendet wird. Dabei wird auf das 1. und 2. Element die Funktion angewendet, dann auf das Resultat davon mit dem 3. Element etc. Dabei spricht man vom ersten Element (im Beispiel unten `x`) vom Akkumulator, und vom zweiten Element (im Beispiel unten `y`) vom Current. **Es ändern sich alles bis auf den Datentyp, dieser bleibt auf dem Typ des Akkumulators.**
 
 > [1, 2, 3] -> x => y => x + y -> 6
 
@@ -402,7 +402,7 @@ Scripting ist ein komplett eigenes Paradigma in der Welt von JavaScript. Vieles 
 ## Progressive Web-Applikation
 Eine Web-Applikation bei welcher der (komplette) Code noch nicht bekannt ist. Dieser lädt sich dann progressiv, je nach verlangen, nach.
 ```javascript
-// Bisherige Lösung, alles einzeln starten
+// Bisherige Lösung, alles einzeln laden
 <script src="function/function.js"></script>
 <script src="function/functionTest.js"></script>
 
@@ -426,7 +426,7 @@ testSuite.forEach(name => {
     document.writeln("<script src=\"" + name + "/" + name + "Test.js\"></" + "script>");
 })  
 ```
-Progressiv ist hier, dass die Programme sowie deren Test-Programme erst im nachhinein geladen werden, während das Hauptprogramm schon gestartet ist. Dies erlaubt unter anderem hier diese schöne TestSuite aufzubauen, welche (anstatt jede Datei aufzuschreiben) nur den Namen benötigt.
+Progressiv ist hier, dass die Programme sowie deren Test-Programme erst im Nachhinein geladen werden, während das Hauptprogramm schon gestartet ist. Dies erlaubt unter anderem hier diese schöne TestSuite aufzubauen, welche (anstatt jede Datei aufzuschreiben) nur den Namen benötigt.
 
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
@@ -449,7 +449,7 @@ $   /hallo\\s/
 $   String(/hallo\s/)       
  -> "/hallo\\s/"
 ```
-Strings können mit ", ' und `(backtick) definiert werden. Die " und ' werden als normale Strings verwendet, der Backtick wird für sogenannte Template-Strings verwendet. Es handelt sich dabei um literale Strings.  
+Strings können mit ", ' und `(backtick) definiert werden. Die " und ' werden als normale Strings verwendet, der Backtick wird für sogenannte Template-Strings verwendet. Es handelt sich dabei um Literale Strings.  
 Mithilfe des String-Konstruktors können Escape-Characters umgangen werden, wie zum Beispiel beim generieren einer Regex.
 
 # Loggen
