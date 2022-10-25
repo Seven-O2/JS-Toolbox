@@ -35,6 +35,7 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [Sammlungen von Funktionen](#sammlungen-von-funktionen)
   - [Funktionenx](#funktionensupxsup)
   - [Curried vs. multiple Arguments](#curried-vs-multiple-arguments)
+  - [Anwendung](#anwendung)
 - [Lambda Calculus](#lambda-calculus)
   - [Grundbausteine](#grundbausteine)
     - [$\alpha$ - Alpha Equivalence](#alpha-alpha-equivalence)
@@ -61,6 +62,7 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
     - [`this` Keyword](#this-keyword)
     - [Funktionen aufrufen](#funktionen-aufrufen)
   - [Geschlossen und explizit](#geschlossen-und-explizit)
+    - [Anwendung](#anwendung-1)
   - [Gemischt und klassifiziert](#gemischt-und-klassifiziert)
 - [Strings](#strings)
 - [Loggen](#loggen)
@@ -235,6 +237,58 @@ document.write(bar("Hi"));
 Beim Verwenden von mehreren Argumenten in einer Funktion wird versucht, das bestmögliche Resultat zu erzielen, auch wenn das nicht immer das ist was man erwartet.
 Mit `curried` Funktionen wird nicht einfach etwas gemacht, sondern es wird dargestellt, dass hier noch eine Funktion ist, die ein Argument möchte.
 Zusätzlich erlaubt es `curried`, Funktionen zu schreiben, welche nur Teilweise ausgeführt wurden.
+
+## Anwendung
+Infolge ist ein Beispiel bei welchem Funktionen eine grosse Rolle spielen. Ein Timer zeichnet das Feld alle 1000/40 Sekunden neu, und berechnet darauf die Position des Balls neu.
+```javascript {.line-number}
+//... unrelated html
+const radius = 10;
+const ball = { x: Math.random() * 400, y: 10, dx: 5, dy: 1 };
+const old = { x: ball.x, y: ball.y };
+
+function start() {
+  const canvas = document.getElementById("canvas");
+  const context = canvas.getContext("2d");
+  context.fillStyle = "black";
+
+  // Refreshes every 1000/40 seconds
+  setInterval(() => {
+    if (Math.abs(ball.dx) < 0.1 && Math.abs(ball.dy) < 0.1) return;
+    nextBoard();
+    display(context);
+  }, 1000 / 40);
+}
+
+function nextBoard() {
+  old.x = ball.x;
+  old.y = ball.y;
+  if (ball.y >= 390 && ball.dy > 0) {  // ball.y < 0 cannot occur due to conservation of energy
+    ball.dy -= 3.5;
+    ball.dy *= -1;
+    ball.dx *= 0.95
+  }
+  if (ball.x <= 10 && ball.dx < 0 || ball.x >= 390 && ball.dx > 0) {
+    ball.dx *= -1;
+    ball.dx *= 0.8;
+  }
+
+  ball.x += ball.dx;
+  ball.y += ball.dy;
+  ball.y = Math.min(390, ball.y);
+  ball.dy += 1.5;      // constant acceleration
+}
+
+function display(context) {
+  context.clearRect(old.x - radius - 1, old.y - radius - 1, 22, 22);
+  context.beginPath();
+  context.arc(ball.x, ball.y, radius, 0, 6.3, false);
+  context.fill();
+}
+// ... unrelated html
+```
+<iframe src=resources/javascript/Ball.html frameBorder="0" style="height:430px">
+Shoot, the ball script should be here :(
+</iframe>
 
 # Lambda Calculus
 Mithilfe des Lambda Calculus kann alles berechenbare berechnet werden. JavaScript basiert auf diesen Lambda Calculus Eigenschaften.
@@ -467,67 +521,48 @@ Progressiv ist hier, dass die Programme sowie deren Test-Programme erst im Nachh
 ## Expression Evaluation
 JavaScript bietet die Möglichkeit, externe Expressions zur Laufzeit zu evaluieren und auszuführen. Dafür gibt es eine Applikation **Function Plotter**, welcher eine eine beliebige Funktion auf einem Canvas zeichnet.
 
-```html {.line-numbers}
-<!DOCTYPE html>
-<html lang="en">
+```javascript {.line-numbers}
+//... unrelated html
+function start() {
+  const userFunction = document.getElementById('user_function');
+  const canvas       = document.getElementById('canvas');
+    
+  // run display with canvas and user evaluated function
+  const displayIt = () => display(canvas, x => eval(userFunction.value));    
+  displayIt();
+  userFunction.onchange = () => displayIt();
+}
 
-<head>
-  <meta charset="UTF-8">
-  <title>Plotter</title>
-</head>
+function display(canvas, f) {
+  // clear
+  const context     = canvas.getContext("2d");
+  context.fillStyle = "papayawhip";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  // draw the function plot
+  const normx = normalizeX(canvas.width);
+  const normy = normalizeY(canvas.height);
 
-<body onload="start()">
-  <canvas id="canvas" width="800" height="600"></canvas>
-  <input type="text" id="user_function" value="Math.sin(x)">
-  <script>
-    const minX =  0;
-    const maxX =  6;
-    const minY = -1;
-    const maxY =  1;
+  context.fillStyle = "black";
+  context.beginPath();
+  context.moveTo(normx(minX), normy(f(minX)));
 
-    function start() {
-      const userFunction = document.getElementById('user_function');
-      const canvas       = document.getElementById('canvas');
-        
-      // run display with canvas and user evaluated function
-      const f = 
-      const displayIt = () => display(canvas, x => eval(userFunction.value));    
-      displayIt();
-      userFunction.onchange = () => displayIt();
-    }
+  const stride = (maxX - minX) / 100; // 100 Stützstellen
+  for (let x = minX; x <= maxX; x += stride) {
+    context.lineTo(normx(x), normy(f(x)));
+    context.stroke();
+  }
+}
 
-    function display(canvas, f) {
-      // clear
-      const context     = canvas.getContext("2d");
-      context.fillStyle = "papayawhip";
-      context.fillRect(0, 0, canvas.width, canvas.height);
-      // draw the function plot
-      const normx = normalizeX(canvas.width);
-      const normy = normalizeY(canvas.height);
+const normalizeY = height => y => {
+  const scaleFactor = height / (maxY - minY);
+  return height - (y - minY) * scaleFactor;
+};
 
-      context.fillStyle = "black";
-      context.beginPath();
-      context.moveTo(normx(minX), normy(f(minX)));
-
-      const stride = (maxX - minX) / 100; // 100 Stützstellen
-      for (let x = minX; x <= maxX; x += stride) {
-        context.lineTo(normx(x), normy(f(x)));
-        context.stroke();
-      }
-    }
-
-    const normalizeY = height => y => {
-      const scaleFactor = height / (maxY - minY);
-      return height - (y - minY) * scaleFactor;
-    };
-
-    const normalizeX = width => x => {
-      const scaleFactor = width / (maxX - minX);
-      return ( x - minX) * scaleFactor;
-    };
-  </script>
-</body>
-</html>
+const normalizeX = width => x => {
+  const scaleFactor = width / (maxX - minX);
+  return ( x - minX) * scaleFactor;
+};
+//... unrelated html
 ```
 
 <iframe src=resources/javascript/Plotter.html frameBorder="0" style="height:650px">
@@ -551,81 +586,62 @@ Wichtig, da es sich hier um eine "konventionelle" Funktion handelt, muss der Wer
 
 ## Referencing
 Zum Teil müssen von Programmen Werte aus Feldern / Forms lesen. Für das kann man in JavaScript auf deren Referenzen (wie in css mit #id) zugreifen und deren Werte auslesen. In der Excel Applikation wird genau das gemacht - es wird über die ID auf die jeweiligen Elemente zugegriffen und deren Werte evaluiert.
-```html {.line-numbers}
-<!DOCTYPE html>
-<html lang="en">
+```javascript {.line-numbers}
+//... unrelated html
+// Construct the initial table
+const Formulae = {
+  A1: '1', B1: '1', C1: 'n(A1) + n(B1)',
+  A2: '2', B2: '2', C2: 'n(A2) + n(B2)',
+  A3: 'n(A1) + n(A2)', B3: 'n(B1) + n(B2)', C3: 'n(C1) + n(C2)',
+};
 
-<head>
-  <meta charset="UTF-8">
-  <title>Excel (kind of)</title>
-</head>
+const cols = ["A", "B", "C"];
+const rows = ["1", "2", "3"];
 
-<body onload="startExcel()">
-  <table>
-    <thead></thead>
-    <tbody id="dataContainer">
-      <!-- "Excel" inserted here -->
-    </tbody>
-  </table>
-  <button onclick="refresh()">Calculate</button>
-  <script>
-    // Construct the initial table
-    const Formulae = {
-      A1: '1', B1: '1', C1: 'n(A1) + n(B1)',
-      A2: '2', B2: '2', C2: 'n(A2) + n(B2)',
-      A3: 'n(A1) + n(A2)', B3: 'n(B1) + n(B2)', C3: 'n(C1) + n(C2)',
-    };
+function startExcel() {
+  const dataContainer = document.getElementById('dataContainer');
+  fillTable(dataContainer);
+}
 
-    const cols = ["A", "B", "C"];
-    const rows = ["1", "2", "3"];
+function fillTable(container) {
+  rows.forEach(row => {
+    const tr = document.createElement("TR");
+    cols.forEach(col => {
+      const td = document.createElement("TD");
+      const input = document.createElement("INPUT");
+      const cellid = "" + col + row;
+      input.setAttribute("VALUE", Formulae[cellid]);
+      input.setAttribute("ID", cellid);
+      // Register a listener, which updates the Formulae table on change
+      input.onchange = evt => {
+        Formulae[cellid] = input.value;
+        refresh();
+      };
+      // When clicked onto the field, load formulae
+      input.onclick = evt => input.value = Formulae[cellid];
+      td.appendChild(input);
+      tr.appendChild(td);
+    });
+    container.appendChild(tr);
+  });
+}
 
-    function startExcel() {
-      const dataContainer = document.getElementById('dataContainer');
-      fillTable(dataContainer);
-    }
+// Refresh the table
+function refresh() {
+  cols.forEach(col => {
+    rows.forEach(row => {
+      const cellid = "" + col + row;
+      const input = document.getElementById(cellid);
+      input.value = eval(Formulae[cellid]);
+    });
+  });
+}
 
-    function fillTable(container) {
-      rows.forEach(row => {
-        const tr = document.createElement("TR");
-        cols.forEach(col => {
-          const td = document.createElement("TD");
-          const input = document.createElement("INPUT");
-          const cellid = "" + col + row;
-          input.setAttribute("VALUE", Formulae[cellid]);
-          input.setAttribute("ID", cellid);
-          // Register a listener, which updates the Formulae table on change
-          input.onchange = evt => {
-            Formulae[cellid] = input.value;
-            refresh();
-          };
-          // When clicked onto the field, load formulae
-          input.onclick = evt => input.value = Formulae[cellid];
-          td.appendChild(input);
-          tr.appendChild(td);
-        });
-        container.appendChild(tr);
-      });
-    }
-
-    // Refresh the table
-    function refresh() {
-      cols.forEach(col => {
-        rows.forEach(row => {
-          const cellid = "" + col + row;
-          const input = document.getElementById(cellid);
-          input.value = eval(Formulae[cellid]);
-        });
-      });
-    }
-
-    // get the numerical value of an input element's value attribute
-    function n(input) {
-      return Number(input.value);
-    }
-
-  </script>
-</body>
-</html>
+// get the numerical value of an input element's value attribute
+function n(input) {
+  return Number(input.value);
+}
+//... unrelated html
 ```
 <iframe src=resources/javascript/Excel.html frameBorder="0">
 The excel script should be here :(
@@ -713,6 +729,47 @@ function Person(first, last) {
 ```
 In diesem Beispiel wird `firstname` und `lastname` immuteable, und sie können nur Mithilfe des Setters geändert werden.  
 Alles was im `return`gegeben mitgegeben wird, ist dann von aussen zugänglich.
+
+### Anwendung
+Der geschlossene und explizite Ansatz eignet sich sehr gut für einfachen aber auch komplexeren Code, da er das Prinzip von Klassen fast am besten reflektiert. In diesem Beispiel wird das Spiel `OOPSIE` mithilfe von Objekten vereinfacht. Es ist damit auch einfacher, mehrere Spieler zu implementieren - quasi so viele wie man möchte.
+
+!!!Info OOPSIE ist ein Spiel bei welchem gewürfelt wird. Man darf würfeln bis man genug hat, oder bis man eine 3 Würfelt. Im Falle der 3 wird man auf das Feld zurückgesetzt, bei welchem man seine Runde gestartet hat.
+
+Das Objekt verwendet die versteckten Attribute `fallbackIndex` und `progressIndex` um die Position im Spiel zu speichern (und darzustellen). Im Fall dass keine 3 gewürfelt wurde, wird der `progress` erweitert, und bei einem `turn` dieser Wert als `fallback` gespeichert. Sollte man eine 3 Würfeln, wird man ganz einfach auf das Feld zurück geworfen, welches im `fallbackIndex` gespeichert ist. 
+Speziell ist noch die Reset Funktion, welche den Spieler ganz an den Anfang zurück schmeisst. Diese wird aufgerufen, wenn der andere Spieler auf demselben Feld landet wie dieser Spieler.
+```javascript {.line-number}
+// ... unrelated code
+function Player(givenName) {
+  let name = givenName;
+  let fallbackIndex = 0;
+  let progressIndex = 0;
+  return {
+    proceed: function (stride) {
+      progressIndex += stride;
+    },
+    fallback: function () {
+      progressIndex = fallbackIndex;
+    },
+    turn: function () {
+      fallbackIndex = progressIndex;
+    },
+    getFallbackIndex: function () {
+      return fallbackIndex;
+    },
+    getProgressIndex: function () {
+      return progressIndex;
+    },
+    reset: function () {
+      fallbackIndex = 0;
+      progressIndex = 0;
+    }
+  }
+}
+// ... unrelated code
+```
+<iframe src=resources/javascript/Oopsie.html frameBorder="0" style="height:550px">
+The oopsie script should be here :(
+</iframe>
 
 ## Gemischt und klassifiziert
 Das folgende Schema ist das meistverwendete - das Prototypenschema. Wir hier etwas geändert, werden alle Objekte die daraus instanziert wurden auch geändert.
