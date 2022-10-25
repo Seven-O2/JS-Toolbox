@@ -56,10 +56,18 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
     - [`eval()`](#eval)
     - [Optimierung mit `Function`](#optimierung-mit-function)
   - [Referencing](#referencing)
+- [Objekte / Objects](#objekte-objects)
+  - [Offen und dynamisch](#offen-und-dynamisch)
+    - [`this` Keyword](#this-keyword)
+    - [Funktionen aufrufen](#funktionen-aufrufen)
+  - [Geschlossen und explizit](#geschlossen-und-explizit)
+  - [Gemischt und klassifiziert](#gemischt-und-klassifiziert)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
-- [Spread-Operator `...`](#spread-operator)
+- [Arrays](#arrays)
+  - [Spread-Operator `...` an Parameterposition](#spread-operator-an-parameterposition)
+  - [Spread-Operator `...` an Konstruktorposition](#spread-operator-an-konstruktorposition)
 - [Semicolons](#semicolons)
 
 <!-- /code_chunk_output -->
@@ -117,7 +125,7 @@ const x = ...
 In verschiedenen Scopes können auch Variablen mit demselben Namen verwendet werden.
 ```javascript {.line-numbers}
 const x = 0;
-// so called iife -> immediately invoked function expression
+// so called iife → immediately invoked function expression
 (() => {
     const x = 1;
     document.writeln(String(x));
@@ -377,13 +385,13 @@ document.writeln(or(T)(T) === T);
 Das mappen von Daten bedeutet, dass auf jedes Element in einer Menge eine Funktion angewendet wird. Beim Anwenden einer `map` wird immer dieselbe Menge und der selbe Datentyp der Menge zurück gegeben. 
 
 !!!Info Es ändern sich nur die einzelnen Elemente. (Und unter Umständen ihre Datentypen) 
-> `[1, 2, 3] -> x => x * 2 -> [2, 4, 6]`
+> `[1, 2, 3] → x => x * 2 → [2, 4, 6]`
 
 ```javascript {.line-numbers}
 const times = a => b => a * b;
 [1, 2, 3].map(x => times(2)(x))
 [1, 2, 3].map(times(2))     // lambda calculus allows for eta-reduction
-const twoTimes = times(2);  // name a specific function -> alpha-reduction
+const twoTimes = times(2);  // name a specific function → alpha-reduction
 [1, 2, 3].map(twoTimes)     
 ```
 
@@ -392,12 +400,12 @@ Das Filtern von Daten bedeutet, dass auf jedes Element in einer Menge auf eine C
 
 !!!Info Es ändert sich nur die Menge an Elementen.
 
-> `[1, 2, 3] -> x => x % 2 === 1 -> [1, 3]`
+> `[1, 2, 3] → x => x % 2 === 1 → [1, 3]`
 
 ```javascript {.line-numbers}
 const odd = x => x % 2 === 1;
 [1, 2, 3].filter(x => x % 2 === 1);
-[1, 2, 3].filter(x => odd(x))   // name a specific function -> alpha-reduction
+[1, 2, 3].filter(x => odd(x))   // name a specific function → alpha-reduction
 [1, 2, 3].filter(odd);          // lambda calculus allows for eta-reduction
 ```
 
@@ -406,7 +414,7 @@ Das Reduzieren von Daten bedeutet, dass auf jedes Element zusammen in der Menge 
 
 !!!Info Es ändern sich alles bis auf den Datentyp, dieser bleibt auf dem Typ des Akkumulators.
 
-> `[1, 2, 3] -> x => y => x + y -> 6`
+> `[1, 2, 3] → x => y => x + y → 6`
 
 ```javascript {.line-numbers}
 const plus = (accu, cur) => accu + cur;
@@ -522,9 +530,9 @@ JavaScript bietet die Möglichkeit, externe Expressions zur Laufzeit zu evaluier
 </html>
 ```
 
-<iframe src=resources/javascript/Plotter.html frameBorder="0"
-style="height:650px"
->Shoot, the plotter script should be here :(</iframe>
+<iframe src=resources/javascript/Plotter.html frameBorder="0" style="height:650px">
+Shoot, the plotter script should be here :(
+</iframe>
 
 Der Plotter verwendet die Funktion `eval()` um vom Benutzer eingegebene Funktionen zu evaluieren. Wird zum Beispiel die Funktion `Math.sin(x)` verwendet, evaluiert sie zum gleichgeschriebenen Code, und mithilfe von `x => ...` wird sie zu einer richtig ausführbaren Funktion. 
 ### `eval()`
@@ -619,31 +627,135 @@ Zum Teil müssen von Programmen Werte aus Feldern / Forms lesen. Für das kann m
 </body>
 </html>
 ```
-<iframe src=resources/javascript/Excel.html frameBorder="0"
->Shoot, here should be the excel :(</iframe>
+<iframe src=resources/javascript/Excel.html frameBorder="0">
+The excel script should be here :(
+</iframe>
 
 Wie beim Plotter werden die Werte in den Zellen eingelesen, und evaluiert. Die Werte in der Klammer werden dann als `input` Objekt weitergegeben und von der Funktion `n` in Zahlen umgewandelt, und zusätzlich werden die einzelnen Funktionen (also das +) ausgeführt.
+
+# Objekte / Objects
+Objekte sind Datenstrukturen mit Methoden, die das managen und zugreiffen auf diese erlauben. Sie werden oft als Ort verwendet, um veränderbare (mutable) Daten zu speichern. Zusätzlich helfen Objekte, eine gewisse Abstraktion zu geben - indem man mehreren gleiche Objekte (wie zum Beispiel Punkte mit x- und y-Koordinaten) Namen geben kann.
+
+!!!Warning Objekte und Objects sind nicht unbedingt dasselbe. Das eine sind Objekte ähnlich zu Java, die anderen sind Objects welche sich mehr wie ein Dictionary verhalten.
+
+## Offen und dynamisch
+
+!!!Quote Keine Sicherheit aber super dynamisch
+
+Die bekannten "Dictionary" JavaScript Objects sind wiefolgt aufgebaut:
+
+```javascript {.line-numbers}
+const good = {
+  firstname : "Good",
+  lastname  : "Boy",
+  getName   : function() {
+      return this.firstname + " " + this.lastname;
+  }
+};
+```
+
+Dabei ist alles ein Key-Value-Pair, sogar [Funktionen](#funktionen).
+
+!!!Info Der Key ist immer ein String
+
+### `this` Keyword
+Um in einer Funktion mit dem `function` Keyword auf eine Variable des Objekts zuzugreifen, benögtigt man das `this` Keyword.
+
+!!!Warning Mit dem `=>` Lambda Keyword kann nicht auf Variablen des Objekts zugegriffen werden.
+
+### Funktionen aufrufen
+Das Aufrufen von Funktionen in JavaScript funktioniert vom Syntax her fast genau gleich wie in Java. Das Problem daran ist, dass sich Funktionen in JavaScript aber nicht so verhalten, sondern zum Teil ganz andere Ausgaben produzieren, wie man erwartet.
+
+```javascript {.line-numbers}
+const jedi = {
+  firstname : "Obi-Wan",
+  lastname  : "Kenobi,
+  getName   : function() {
+      return this.firstname + " " + this.lastname;
+  }
+};
+
+const sith = {
+  name     : "Luke",
+  getName  : function() {
+    return this.firstname;
+  }
+  getEnemy : jedi.getName
+};
+
+document.writeln(jedi.getName() + "\n");
+document.writeln(sith.getName() + " hates " + sith.getEnemy());
+```
+> `$ Obi-Wan Kenobi`
+> `$ Luke hates undefined`
+
+Diese Ausgabe kann sehr verwirrend sein. Das `undefined` nach "hates" ist passiert, weil das `getName` von `jedi` in `sith` auf die Elemente/Member in `sith` zugreift, und gibt dann für `lastname` `undefined` zurück weil `sith` dieses Feld nicht hat.
+
+## Geschlossen und explizit
+
+!!!Quote Beste Sicherheit, einfach zu teilen, aber keine Klasse
+
+Es gibt auch die Möglichkeit eine Art Factory zu bauen, bei welcher beim Aufrufen einer Funktion die den Konstruktor repräsentiert, ein Objekt generiert wird.
+
+```javascript {.line-numbers}
+function Person(first, last) {
+  let firstname = first;  // immutable
+  let lastname  = last;   // immutable
+  return {
+    getName: function() {
+      return firstname + " " + lastname; // 'this' is gone!
+    },
+    setName: function(asd) {
+      firstname = asd;
+    }
+  }
+}
+```
+In diesem Beispiel wird `firstname` und `lastname` immuteable, und sie können nur Mithilfe des Setters geändert werden.  
+Alles was im `return`gegeben mitgegeben wird, ist dann von aussen zugänglich.
+
+## Gemischt und klassifiziert
+Das folgende Schema ist das meistverwendete - das Prototypenschema. Wir hier etwas geändert, werden alle Objekte die daraus instanziert wurden auch geändert.
+```javascript {.line-numbers}
+const Person = ( () => {          // lexical scope
+  function Person(first, last) {  // Constructor and binding
+    this.firstname = first;
+    this.lastname  = last;
+  }
+  Person.prototype.getName = function() {
+    return this.firstname + " " + this.lastname;
+  }
+  return Person;
+}) (); // IIFE
+
+new Person("Good", "Boy") instanceof Person;
+```
+- `new` → Generiert neues leeres Objekt (einen Prototypen), mit eigenem [Scope](#scopes).
+- `function Person` → Initialisiert dieses leere Objekt mit einer Person.
+- `Person.prototype.getName` → Generiert eine neue Funktion, welche auf das `this` des neugenerierten Objekts referenziert  
+
+Objekte welche so generiert werden, haben einen Typ, in diesem Fall den Typ `Person`. Dieser kann auch mit `instanceof` geprüft werden.
 
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
 ```javascript {.line-numbers}
 $   "askf\tëä3aa"           
- -> "askf    ëä3aa"
+ → "askf    ëä3aa"
 $   "askf\\asd"             
- -> "askf\asd"
+ → "askf\asd"
 $   'askfasd'               
- -> "askfasd"
+ → "askfasd"
 $   'Er sagte "Hallo!"'     
- -> "Er sagte \"Hallo!\""
+ → "Er sagte \"Hallo!\""
 $   "Er sagte 'Hallo!'"     
- -> "Er sagte 'Hallo!'"
+ → "Er sagte 'Hallo!'"
 $   const a = 1;
 $   `x ist : ${a}`          
- -> "x ist 1"
+ → "x ist 1"
 $   /hallo\\s/              
- -> "/hallo\\s/"
+ → "/hallo\\s/"
 $   String(/hallo\s/)       
- -> "/hallo\\s/"
+ → "/hallo\\s/"
 ```
 Strings können mit `"`, `'` und `` ` `` definiert werden. Die `"` und `'` werden als normale Strings verwendet, der Backtick wird für sogenannte Template-Strings verwendet. Es handelt sich dabei um Literale Strings.  
 Mithilfe des String-Konstruktors (`String()`) können Escape-Characters umgangen werden, wie zum Beispiel beim generieren einer Regex.
@@ -653,19 +765,19 @@ Die schönste Art in JavaScript zu loggen ist über die Konsole.
 ```javascript {.line-numbers}
 $ const obj {x: 1, y: 2}
 $ console.log(obj)
--> {x: 1, y: 2}
+→ {x: 1, y: 2}
 $ console.log(document.getElementByName('body'))
--> NodeList[]...
+→ NodeList[]...
 $ console.dir(document.getElementByName('body'))
--> NodeList[]... // schon aufgefaltet
+→ NodeList[]... // schon aufgefaltet
 $ console.info(obj)
--> ℹ️ {x: 1, y: 2}
+→ ℹ️ {x: 1, y: 2}
 $ console.warn(obj)
--> ⚠️ {x: 1, y: 2}
+→ ⚠️ {x: 1, y: 2}
 $ console.error(obj)
--> ⛔ {x: 1, y: 2}
+→ ⛔ {x: 1, y: 2}
 $ console.debug(obj)
--> {x: 1, y: 2}
+→ {x: 1, y: 2}
 ```
 JavaScript bietet diverse Möglichkeiten auf die Konsole zu schreiben. Dabei gibt es wie bei den meisten Logging-Frameworks verschiedene Stufen, nach welchen auch gefiltert werden kann. 
 
@@ -700,25 +812,54 @@ Dieser Code funktioniert ganz einfach, man gibt den Loggingfunktionen eine Funkt
 
 !!!Warning Würde man das ganze mit einer Expression machen, würde diese (bei der Übergabe) zuerst evaluiert werden, auch wenn es sich dabei um eine lang laufende Funktion handelt!
 
-# Spread-Operator `...`
+# Arrays
+!!!Info Ein Array ist ein Objekt
+Arrays in JavaScript können in mehreren wegen generiert werden. Ein weg ist der Literale Konstruktor, der andere ist der Funktionale Konstruktor.  
+```javascript {.line-numbers}
+$ const foo = [0, 1, 2, 3, 4];       // Literaler Konstruktor mit '[]'
+$ const bar = Array(0, 1, 2, 3, 4);  // Literaler Konstruktor mit '[]'
+$ const [first, second] = foo;       // Literaler Dekonstruktor auf linker Seite
+$ first;
+→ 0
+$ second;
+→ 1
+$ console.log(foo === bar);
+→ true
+```
+Arrays können auch für viele andere Dinge verwendet werden, da sie on-the-fly generiert werden können. So gibt es zum Beispiel auch eine viel einfachere Möglichkeit, zwei Werte zu swappen.
+```javascript {.line-numbers}
+$ let x = 1;
+$ let y = 2;
+$ [y, x] = [x, y];
+$ x;
+→ 2
+```
+## Spread-Operator `...` an Parameterposition
 Der Spread-Operator erlaubt es dem Benutzer beliebig viele Variablen in eine Funktion mitzugeben.
 ```javascript {.line-numbers}
 $ const foo = (a, b, c) => a + b + c;
 $ foo(1, 2, 3)
--> 6
+→ 6
 $ foo("1", 2, 3)
--> "123"
+→ "123"
 $ foo("1", 2)
--> "12undefined"
+→ "12undefined"
 $ const bar = (...a) => a.length;
 $ bar(1, 2, 3)
--> 3
+→ 3
 $ bar()
--> 0
+→ 0
 ```
 Im Hintergrund wird ein Objekt erstellt, welches die einzelnen Werte abspeichert. Er verwandelt eine Liste von Elementen in ein Array von Elementen. 
 
-!!!Info Ein Array ist ein Objekt
+## Spread-Operator `...` an Konstruktorposition
+Der Spread-Operator kann auch an Konstruktorposition verwendet werden, wo bei einer Rückgabe eines Arrays alle restlichen Werte in `rest` gespeichert werden.
+```javascript {.line-numbers}
+$ const foo = [0, 1, 2, 3, 4];
+$ const [first, second, ...rest] = foo;
+$ rest
+→ [2, 3, 4]
+```
 
 # Semicolons
 Semicolons sind nicht freiwillig, JavaScript versucht einfach sie selbst zu setzen.
@@ -727,11 +868,11 @@ Semicolons sind nicht freiwillig, JavaScript versucht einfach sie selbst zu setz
 ```javascript {.line-numbers}
 $ console.log("hi");
   [1, 2, 3].map(it => it * 2);
--> "hi"
--> [2, 4, 6]
+→ "hi"
+→ [2, 4, 6]
 
 $ console.log("hi") // <- Missing Semicolon
   [1, 2, 3].map(it => it * 2);
--> TypeError: undefined is not an object (evaluation 'console.log("hi")[1, 2, 3]')
+→ TypeError: undefined is not an object (evaluation 'console.log("hi")[1, 2, 3]')
 ```
 JavaScript sieht hier das `console.log` sowie das `[1, 2, 3]` als Ausdrücke. Somit wird beim vergessenen `;` ein Ausdruck generiert, welcher auf das `console.log` ausgeführt wird, welches nach dem Ausführen undefined ist.
