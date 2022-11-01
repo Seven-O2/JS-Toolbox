@@ -3,7 +3,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       
-      <link rel="stylesheet" href="file:////Users/allemann/.vscode/extensions/shd101wyy.markdown-preview-enhanced-0.6.3/node_modules/@shd101wyy/mume/dependencies/katex/katex.min.css">
+      <link rel="stylesheet" href="file:////Users/allemann/.vscode/extensions/shd101wyy.markdown-preview-enhanced-0.6.5/node_modules/@shd101wyy/mume/dependencies/katex/katex.min.css">
       
       
       
@@ -630,8 +630,10 @@ iframe {
 </ul>
 </li>
 <li><a href="#gemischt-und-klassifiziert">Gemischt und klassifiziert</a></li>
+<li><a href="#konstruktoren">Konstruktoren</a></li>
 </ul>
 </li>
+<li><a href="#klassen">Klassen</a></li>
 <li><a href="#strings">Strings</a></li>
 <li><a href="#loggen">Loggen</a>
 <ul>
@@ -1358,22 +1360,12 @@ Speziell ist noch die Reset Funktion, welche den Spieler ganz an den Anfang zur&
   <span class="token keyword keyword-let">let</span> fallbackIndex <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
   <span class="token keyword keyword-let">let</span> progressIndex <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
   <span class="token keyword control-flow keyword-return">return</span> <span class="token punctuation">{</span>
-    <span class="token function-variable function">proceed</span><span class="token operator">:</span> <span class="token keyword keyword-function">function</span> <span class="token punctuation">(</span><span class="token parameter">stride</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      progressIndex <span class="token operator">+=</span> stride<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token function-variable function">fallback</span><span class="token operator">:</span> <span class="token keyword keyword-function">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      progressIndex <span class="token operator">=</span> fallbackIndex<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token function-variable function">turn</span><span class="token operator">:</span> <span class="token keyword keyword-function">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      fallbackIndex <span class="token operator">=</span> progressIndex<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token function-variable function">getFallbackIndex</span><span class="token operator">:</span> <span class="token keyword keyword-function">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword control-flow keyword-return">return</span> fallbackIndex<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token function-variable function">getProgressIndex</span><span class="token operator">:</span> <span class="token keyword keyword-function">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword control-flow keyword-return">return</span> progressIndex<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token function-variable function">reset</span><span class="token operator">:</span> <span class="token keyword keyword-function">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">proceed</span>          <span class="token operator">:</span> <span class="token parameter">stride</span> <span class="token arrow operator">=&gt;</span> progressIndex <span class="token operator">+=</span> stride<span class="token punctuation">,</span>
+    <span class="token function-variable function">fallback</span>         <span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> progressIndex <span class="token operator">=</span> fallbackIndex<span class="token punctuation">,</span>
+    <span class="token function-variable function">turn</span>             <span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> fallbackIndex <span class="token operator">=</span> progressIndex<span class="token punctuation">,</span>
+    <span class="token function-variable function">getFallbackIndex</span> <span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> fallbackIndex<span class="token punctuation">,</span>
+    <span class="token function-variable function">getProgressIndex</span> <span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> progressIndex<span class="token punctuation">,</span>
+    <span class="token function-variable function">reset</span>            <span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
       fallbackIndex <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
       progressIndex <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
@@ -1404,6 +1396,28 @@ The oopsie script should be here :(
 <li><code>Person.prototype.getName</code> &#x2192; Generiert eine neue Funktion, welche auf das <code>this</code> des neugenerierten Objekts referenziert</li>
 </ul>
 <p>Objekte welche so generiert werden, haben einen Typ, in diesem Fall den Typ <code>Person</code>. Dieser kann auch mit <code>instanceof</code> gepr&#xFC;ft werden.</p>
+<h2 class="mume-header" id="konstruktoren">Konstruktoren</h2>
+
+<p>Wie Arrays k&#xF6;nnen Objekte mit verschiedenen Konstruktoren generiert werden.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers">$ <span class="token keyword keyword-const">const</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span>x<span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span> y<span class="token operator">:</span><span class="token number">2</span><span class="token punctuation">,</span> z<span class="token operator">:</span><span class="token number">3</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+$ <span class="token keyword keyword-let">let</span> foo<span class="token punctuation">;</span>
+<span class="token comment">// Object in parameter position</span>
+$ <span class="token function-variable function">foo</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">myobj</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span>myobj<span class="token punctuation">.</span><span class="token property-access">x</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+$ <span class="token function">foo</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+ &#x2192; <span class="token number">1</span>
+<span class="token comment">// Object deconstruction in parameter position</span>
+$ <span class="token function-variable function">foo</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>x<span class="token punctuation">,</span> y<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// we get an object that has x and y, and maybe any other thing</span>
+$ <span class="token function">foo</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span>
+ &#x2192; <span class="token number">1</span>
+$ <span class="token keyword keyword-const">const</span> <span class="token function-variable function">baz</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> obj<span class="token punctuation">;</span>
+$ <span class="token keyword keyword-const">const</span> <span class="token punctuation">{</span>x<span class="token punctuation">,</span> y<span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">baz</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+$ x
+ &#x2192; <span class="token number">1</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><h1 class="mume-header" id="klassen">Klassen</h1>
+
+<div class="admonition quote">
+<p class="admonition-title">Classes tend to be bad modules - D. Crockford, How JS works</p>
+</div>
 <h1 class="mume-header" id="strings">Strings</h1>
 
 <p>In JavaScript k&#xF6;nnen Strings &#xFC;ber verschiedene Varianten angelegt werden. Spezielle Characters m&#xFC;ssen mit &quot;&quot; escaped werden. Das gilt auch f&#xFC;r &quot;&quot; selbst.</p>

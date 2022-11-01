@@ -64,6 +64,13 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [Geschlossen und explizit](#geschlossen-und-explizit)
     - [Anwendung](#anwendung-1)
   - [Gemischt und klassifiziert](#gemischt-und-klassifiziert)
+  - [Konstruktoren](#konstruktoren)
+- [Klassen](#klassen)
+  - [Keyword `class`](#keyword-class)
+  - [Keyword `extends`](#keyword-extends)
+  - [Prototypen](#prototypen)
+    - [Setzen von Prototypen](#setzen-von-prototypen)
+    - [Ändern von Prototypen](#ändern-von-prototypen)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
@@ -148,6 +155,7 @@ document.writeln((1 === 1).toString());
 > `$ Hallo true`
 
 # Funktionen
+!!!Info Eine Funktion ist ein Objekt
 Funktionen oder auch Subroutinen sind in der Programmierung Codestücke, welche nicht bei der Initialisierung direkt ausgeführt werden müssen, sondern wenn immer nötig aufgerufen werden können
 ## Deklaration
 Funktionen können (sinnvoll) auf zwei verschiedene Arten deklariert werden. Einmal mit dem Keyword [function](#function-keyword) und einmal mit einem [Lambda](#keyword-lambda).
@@ -721,14 +729,16 @@ function Person(first, last) {
     getName: function() {
       return firstname + " " + lastname; // 'this' is gone!
     },
-    setName: function(asd) {
-      firstname = asd;
+    setName: function(name) {
+      firstname = name;
     }
   }
 }
 ```
 In diesem Beispiel wird `firstname` und `lastname` immuteable, und sie können nur Mithilfe des Setters geändert werden.  
-Alles was im `return`gegeben mitgegeben wird, ist dann von aussen zugänglich.
+Alles was im `return` gegeben mitgegeben wird, ist dann von aussen zugänglich.
+
+→ Müssen geschlossene und explizite Objekte identifiziert werden, kann die Methode [setzen von Prototypen](#setzen-von-prototypen) verwendet werden.
 
 ### Anwendung
 Der geschlossene und explizite Ansatz eignet sich sehr gut für einfachen aber auch komplexeren Code, da er das Prinzip von Klassen fast am besten reflektiert. In diesem Beispiel wird das Spiel `OOPSIE` mithilfe von Objekten vereinfacht. Es ist damit auch einfacher, mehrere Spieler zu implementieren - quasi so viele wie man möchte.
@@ -744,22 +754,12 @@ function Player(givenName) {
   let fallbackIndex = 0;
   let progressIndex = 0;
   return {
-    proceed: function (stride) {
-      progressIndex += stride;
-    },
-    fallback: function () {
-      progressIndex = fallbackIndex;
-    },
-    turn: function () {
-      fallbackIndex = progressIndex;
-    },
-    getFallbackIndex: function () {
-      return fallbackIndex;
-    },
-    getProgressIndex: function () {
-      return progressIndex;
-    },
-    reset: function () {
+    proceed          : stride => progressIndex += stride,
+    fallback         : () => progressIndex = fallbackIndex,
+    turn             : () => fallbackIndex = progressIndex,
+    getFallbackIndex : () => fallbackIndex,
+    getProgressIndex : () => progressIndex,
+    reset            : () => {
       fallbackIndex = 0;
       progressIndex = 0;
     }
@@ -787,11 +787,125 @@ const Person = ( () => {          // lexical scope
 
 new Person("Good", "Boy") instanceof Person;
 ```
-- `new` → Generiert neues leeres Objekt (einen Prototypen), mit eigenem [Scope](#scopes).
+- `new` → Generiert neues leeres Objekt (einen [Prototypen](#prototypen)), mit eigenem [Scope](#scopes).
 - `function Person` → Initialisiert dieses leere Objekt mit einer Person.
-- `Person.prototype.getName` → Generiert eine neue Funktion, welche auf das `this` des neugenerierten Objekts referenziert  
+- `Person.prototype.getName` → Generiert eine neue Funktion im Prototyp, welche auf das `this` (also den Scope) des neugenerierten Objekts referenziert.
 
 Objekte welche so generiert werden, haben einen Typ, in diesem Fall den Typ `Person`. Dieser kann auch mit `instanceof` geprüft werden.
+
+## Konstruktoren
+Wie Arrays können Objekte mit verschiedenen Konstruktoren generiert werden.
+```javascript {.line-numbers}
+$ const obj = {x:1, y:2, z:3};
+$ let foo;
+// Object in parameter position
+$ foo = (myobj) => console.log(myobj.x);
+$ foo(obj);
+ → 1
+// Object deconstruction in parameter position
+$ foo = ({x, y}) => console.log(x); // we get an object that has x and y, and maybe any other thing
+$ foo(obj)
+ → 1
+$ const baz = () => obj;
+$ const {x, y} = baz();
+$ x
+ → 1
+```
+
+# Klassen
+!!!Quote Classes tend to be bad modules - D. Crockford, How JS works
+Klassen sind in der Objektorientierten Programmierung immer vorzufinden. Sie sind dafür da, Objekte zu "klassifizieren", also zu erkennen zu was ein Objekt gehört.
+
+## Keyword `class`
+Das `class` Keyword wurde mit ES6 eingeführt. Man kann auch ohne damit arbeiten, und sollte nur als Synktatischer Zucker angesehen werden.
+```javascript {.line-numbers}
+class Person {
+  constructor(first, last) {
+    this.firstname = first;
+    this.lastname = last;
+  }
+  getName() {
+    return this.firstname + " " + this.lastname;
+  }
+}
+const pers = new Person("Good", "Boy");
+document.writeln(pers instanceof Person)
+document.writeln(pers.getName())
+```
+> `$ true Good Boy`
+
+Das `getName()` ist im Hintergrund dasselbe wie bei [gemischt und klassifiziert](#gemischt-und-klassifiziert).
+
+## Keyword `extends`
+"Erweitert" eine Klasse mit neuen Attributen und Funktionen.
+```javascript {.line-numbers}
+class Student extends Person {
+  constructor(first, last, grade) {
+    super(first, last);
+    this.grade = grade
+  }
+}
+const s = new Student("Top", "Student", 5.5);
+```
+Im Hintergrund arbeitet JavaScript mit miteinander verknüpften Prototypen.
+
+## Prototypen
+Prototypen sind ganz normale Objekte. Ihre Anwendung macht sie jedoch speziell. Der "Typ" eines Objektes wird über seinen Prototyp bestimmt.
+```javascript
+const s = new Student();
+/*
+ |  Student  |     |  Person   |     |  Object   |
+ | prototype |  →  | prototype |  →  | prototype |
+_______|
+|                                                */
+document.writeln(s.__proto__ === Student.prototype);
+document.writeln(Object.getPrototypeOf(s) === Student.prototype);
+document.writeln(s instanceof Student)
+```
+> `$ true true true`
+
+JavaScript verarbeitet Vererbung ganz anders. Wenn auf einem Objekt eine Funktion aufgerufen wird, welche nicht vorhanden wird, prüft JavaScript ob das Objekt ein `Prototyp` hat, und wenn ja, prüft es ob der `Prototyp` die entsprechende Methode hat. Da die `Prototypen` verlinkt sind, findet JavaScript entweder die Funktion in einem verlinkten `Prototyp`, oder im Falle dass er es nicht findet einen Fehler. Darum werden auch Methoden von Objekten verändert, wenn der `Prototyp` verändert wird.
+
+Alle Methoden einer "Klasse" werden im `Prototyp` (wie in [gemischt und klassifiziert](#gemischt-und-klassifiziert)) angelegt.
+
+### Setzen von Prototypen
+Die Prototypen können auch dynamisch gesetzt werden. Hat man zum Beispiel ein Objekt [geschlossen und explizit](#geschlossen-und-explizit) angelegt, kann man die "Identifizierung" machen, indem man den Prototypen setzt.
+
+```javascript {.line-numbers}
+function Person(first, last) {
+  let firstname = first;
+  let lastname  = last;
+  const result = {
+    getName: function() {
+      return firstname + " " + lastname;
+    },
+    setName: function(name) {
+      firstname = name;
+    }
+  }
+  Object.setPrototypeOf(result, Person.prototype);
+  return result;
+}
+```
+
+!!!Warning Weil die Prototypen dyanmisch verändert werden können, können Codebasen enorm stark verändert werden!
+
+### Ändern von Prototypen
+Unsere Idee ist es nun eine Funktion zu schreiben, welche für jede erdenkliche Nummer `n` eine Funktion n-mal ausführt.
+
+```javascript {.line-numbers}
+// We need function keyword here because we need 'this'
+Number.prototype.times = function(f) {
+    return Array.from({length: this}).map((_, index) => f(index));
+}
+(10).times( n => document.writeln(n) );
+```
+> `$ 0 1 2 3 4 5 6 7 8 9`
+
+Mit dem Überschreiben des `prototype` kann man für **alle** Nummern in JavaScript diese Funktionalität hinzufügen.
+
+!!!Warning Das geht auch mit Packages welche bei npm hochgeladen werden
+
 
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
