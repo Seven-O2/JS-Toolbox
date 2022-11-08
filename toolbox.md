@@ -79,7 +79,7 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
     - [Template](#template)
   - [Datenstrukturen](#datenstrukturen)
   - [Typecast](#typecast)
-  - [Sonstige JsDoc Annotationen](#sonstige-jsdoc-annotationen)
+  - [Sonstige Annotationen](#sonstige-annotationen)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
@@ -303,8 +303,8 @@ function display(context) {
 }
 // ... unrelated html
 ```
-<iframe src=resources/javascript/Ball.html frameBorder="0" style="height:430px">
-Shoot, the ball script should be here :(
+<iframe src=resources/javascript/Ball.html frameBorder="0" style="height:440px">
+The ball script should be here :(
 </iframe>
 
 # Lambda Calculus
@@ -583,7 +583,7 @@ const normalizeX = width => x => {
 ```
 
 <iframe src=resources/javascript/Plotter.html frameBorder="0" style="height:650px">
-Shoot, the plotter script should be here :(
+The plotter script should be here :(
 </iframe>
 
 Der Plotter verwendet die Funktion `eval()` um vom Benutzer eingegebene Funktionen zu evaluieren. Wird zum Beispiel die Funktion `Math.sin(x)` verwendet, evaluiert sie zum gleichgeschriebenen Code, und mithilfe von `x => ...` wird sie zu einer richtig ausführbaren Funktion. 

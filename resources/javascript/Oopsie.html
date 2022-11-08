@@ -37,105 +37,32 @@
     #dice {
       clear: both;
     }
+
+    #dice.One {
+      color: blue;
+    }
+
+    #dice.Two {
+      color: red;
+    }
   </style>
-  <script src="oopsie.js"></script>
 </head>
 
 
 <body onload="start()">
 
 
-  <div id="fields">
+  <div id="fields"></div>
 
-  </div>
-
-  <div id="dice">
-    []
-  </div>
+  <div id="dice" class="one"></div>
 
   <div>
     <button onclick="dice()">Throw dice</button>
     <button onclick="turn()">Turn</button>
+    <button onclick="window.location.reload()">Reset</button>
   </div>
 
-  <script>
-    function Player(givenName) {
-      let name = givenName;
-      let fallbackIndex = 0;
-      let progressIndex = 0;
-      return {
-        proceed          : stride => progressIndex += stride,
-        fallback         : () => progressIndex = fallbackIndex,
-        turn             : () => fallbackIndex = progressIndex,
-        getFallbackIndex : () => fallbackIndex,
-        getProgressIndex : () => progressIndex,
-        reset            : () => {
-          fallbackIndex = 0;
-          progressIndex = 0;
-        }
-      }
-    }
-
-
-    function start() {
-      const fields = document.getElementById('fields');
-
-      for (let i = 0; i < 100; i++) {
-        const field = document.createElement("DIV");
-        field.setAttribute("ID", "FIELD-" + i);
-        field.textContent = " ";
-        fields.appendChild(field);
-      }
-      display();
-    }
-
-    function dice() {
-      const stride = Math.round(1 + Math.random() * 5);
-      document.getElementById('dice').innerText = "" + stride;
-      if (stride === 3) {
-        player.fallback();
-        switchPlayer();
-      } else {
-        player.proceed(stride);
-        if (player.getProgressIndex() === otherPlayer.getProgressIndex()) {
-          otherPlayer.reset();
-        }
-      }
-      display();
-    }
-
-    function turn() {
-      player.turn();
-      switchPlayer();
-      display();
-    }
-
-    function display() {
-      for (let i = 0; i < 100; i++) {
-        const field = document.getElementById("FIELD-" + i);
-        field.setAttribute("CLASS", "field");
-      }
-
-      const fallbackField1 = document.getElementById("FIELD-" + player1.getFallbackIndex());
-      fallbackField1.setAttribute("CLASS", "field fallback1");
-      const progressField1 = document.getElementById("FIELD-" + player1.getProgressIndex());
-      progressField1.setAttribute("CLASS", "field progress1");
-      const fallbackField2 = document.getElementById("FIELD-" + player2.getFallbackIndex());
-      fallbackField2.setAttribute("CLASS", "field fallback2");
-      const progressField2 = document.getElementById("FIELD-" + player2.getProgressIndex());
-      progressField2.setAttribute("CLASS", "field progress2");
-    }
-
-    function switchPlayer() {
-      [player, otherPlayer] = [otherPlayer, player];
-    }
-
-    player1 = Player("One");
-    player2 = Player("Two");
-    player = player1;
-    otherPlayer = player2;
-
-  </script>
+  <script src="Oopsie.js"></script>
 </body>
 
 </html>

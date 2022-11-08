@@ -633,7 +633,33 @@ iframe {
 <li><a href="#konstruktoren">Konstruktoren</a></li>
 </ul>
 </li>
-<li><a href="#klassen">Klassen</a></li>
+<li><a href="#klassen">Klassen</a>
+<ul>
+<li><a href="#keyword-class">Keyword <code>class</code></a></li>
+<li><a href="#keyword-extends">Keyword <code>extends</code></a></li>
+<li><a href="#prototypen">Prototypen</a>
+<ul>
+<li><a href="#setzen-von-prototypen">Setzen von Prototypen</a></li>
+<li><a href="#%C3%A4ndern-von-prototypen">&#xC4;ndern von Prototypen</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#typen">Typen</a>
+<ul>
+<li><a href="#eingebaute-typen">Eingebaute Typen</a></li>
+<li><a href="#jsdoc">JsDoc</a></li>
+<li><a href="#funktionen-1">Funktionen</a>
+<ul>
+<li><a href="#optionalit%C3%A4t">Optionalit&#xE4;t</a></li>
+<li><a href="#template">Template</a></li>
+</ul>
+</li>
+<li><a href="#datenstrukturen">Datenstrukturen</a></li>
+<li><a href="#typecast">Typecast</a></li>
+<li><a href="#sonstige-annotationen">Sonstige Annotationen</a></li>
+</ul>
+</li>
 <li><a href="#strings">Strings</a></li>
 <li><a href="#loggen">Loggen</a>
 <ul>
@@ -725,6 +751,9 @@ obj<span class="token punctuation">.</span><span class="token property-access">x
 </blockquote>
 <h1 class="mume-header" id="funktionen">Funktionen</h1>
 
+<div class="admonition info">
+<p class="admonition-title">Eine Funktion ist ein Objekt</p>
+</div>
 <p>Funktionen oder auch Subroutinen sind in der Programmierung Codest&#xFC;cke, welche nicht bei der Initialisierung direkt ausgef&#xFC;hrt werden m&#xFC;ssen, sondern wenn immer n&#xF6;tig aufgerufen werden k&#xF6;nnen</p>
 <h2 class="mume-header" id="deklaration">Deklaration</h2>
 
@@ -857,8 +886,8 @@ Zus&#xE4;tzlich erlaubt es <code>curried</code>, Funktionen zu schreiben, welche
   context<span class="token punctuation">.</span><span class="token method function property-access">fill</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 <span class="token comment">// ... unrelated html</span>
-</pre><iframe src="resources/javascript/Ball.html" frameborder="0" style="height:430px">
-Shoot, the ball script should be here :(
+</pre><iframe src="resources/javascript/Ball.html" frameborder="0" style="height:440px">
+The ball script should be here :(
 </iframe>
 <h1 class="mume-header" id="lambda-calculus">Lambda Calculus</h1>
 
@@ -1194,7 +1223,7 @@ testSuite<span class="token punctuation">.</span><span class="token method funct
 <span class="token punctuation">}</span><span class="token punctuation">;</span>
 <span class="token comment">//... unrelated html</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><iframe src="resources/javascript/Plotter.html" frameborder="0" style="height:650px">
-Shoot, the plotter script should be here :(
+The plotter script should be here :(
 </iframe>
 <p>Der Plotter verwendet die Funktion <code>eval()</code> um vom Benutzer eingegebene Funktionen zu evaluieren. Wird zum Beispiel die Funktion <code>Math.sin(x)</code> verwendet, evaluiert sie zum gleichgeschriebenen Code, und mithilfe von <code>x =&gt; ...</code> wird sie zu einer richtig ausf&#xFC;hrbaren Funktion.</p>
 <h3 class="mume-header" id="eval"><code>eval()</code></h3>
@@ -1339,13 +1368,14 @@ The excel script should be here :(
     <span class="token function-variable function">getName</span><span class="token operator">:</span> <span class="token keyword keyword-function">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
       <span class="token keyword control-flow keyword-return">return</span> firstname <span class="token operator">+</span> <span class="token string">&quot; &quot;</span> <span class="token operator">+</span> lastname<span class="token punctuation">;</span> <span class="token comment">// &apos;this&apos; is gone!</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token function-variable function">setName</span><span class="token operator">:</span> <span class="token keyword keyword-function">function</span><span class="token punctuation">(</span><span class="token parameter">asd</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      firstname <span class="token operator">=</span> asd<span class="token punctuation">;</span>
+    <span class="token function-variable function">setName</span><span class="token operator">:</span> <span class="token keyword keyword-function">function</span><span class="token punctuation">(</span><span class="token parameter">name</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      firstname <span class="token operator">=</span> name<span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p>In diesem Beispiel wird <code>firstname</code> und <code>lastname</code> immuteable, und sie k&#xF6;nnen nur Mithilfe des Setters ge&#xE4;ndert werden.<br>
-Alles was im <code>return</code>gegeben mitgegeben wird, ist dann von aussen zug&#xE4;nglich.</p>
+Alles was im <code>return</code> gegeben mitgegeben wird, ist dann von aussen zug&#xE4;nglich.</p>
+<p>&#x2192; M&#xFC;ssen geschlossene und explizite Objekte identifiziert werden, kann die Methode <a href="#setzen-von-prototypen">setzen von Prototypen</a> verwendet werden.</p>
 <h3 class="mume-header" id="anwendung-1">Anwendung</h3>
 
 <p>Der geschlossene und explizite Ansatz eignet sich sehr gut f&#xFC;r einfachen aber auch komplexeren Code, da er das Prinzip von Klassen fast am besten reflektiert. In diesem Beispiel wird das Spiel <code>OOPSIE</code> mithilfe von Objekten vereinfacht. Es ist damit auch einfacher, mehrere Spieler zu implementieren - quasi so viele wie man m&#xF6;chte.</p>
@@ -1391,9 +1421,9 @@ The oopsie script should be here :(
 
 <span class="token keyword keyword-new">new</span> <span class="token class-name">Person</span><span class="token punctuation">(</span><span class="token string">&quot;Good&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;Boy&quot;</span><span class="token punctuation">)</span> <span class="token keyword keyword-instanceof">instanceof</span> <span class="token class-name">Person</span><span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><ul>
-<li><code>new</code> &#x2192; Generiert neues leeres Objekt (einen Prototypen), mit eigenem <a href="#scopes">Scope</a>.</li>
+<li><code>new</code> &#x2192; Generiert neues leeres Objekt (einen <a href="#prototypen">Prototypen</a>), mit eigenem <a href="#scopes">Scope</a>.</li>
 <li><code>function Person</code> &#x2192; Initialisiert dieses leere Objekt mit einer Person.</li>
-<li><code>Person.prototype.getName</code> &#x2192; Generiert eine neue Funktion, welche auf das <code>this</code> des neugenerierten Objekts referenziert</li>
+<li><code>Person.prototype.getName</code> &#x2192; Generiert eine neue Funktion im Prototyp, welche auf das <code>this</code> (also den Scope) des neugenerierten Objekts referenziert.</li>
 </ul>
 <p>Objekte welche so generiert werden, haben einen Typ, in diesem Fall den Typ <code>Person</code>. Dieser kann auch mit <code>instanceof</code> gepr&#xFC;ft werden.</p>
 <h2 class="mume-header" id="konstruktoren">Konstruktoren</h2>
@@ -1413,12 +1443,218 @@ $ <span class="token keyword keyword-const">const</span> <span class="token func
 $ <span class="token keyword keyword-const">const</span> <span class="token punctuation">{</span>x<span class="token punctuation">,</span> y<span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">baz</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 $ x
  &#x2192; <span class="token number">1</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><h1 class="mume-header" id="klassen">Klassen</h1>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p>Der literale Objektkonstruktor kann noch etwas mehr. Er kann auch direkt die Werte in einer Variable in einen gleichnahmigen Schl&#xFC;ssel speichern. Das kann man auch nutzen um aussagekr&#xE4;ftigere Konsolenlogs zu erstellen.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers">$ <span class="token keyword keyword-let">let</span> x <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+$ <span class="token keyword keyword-let">let</span> y <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+$ <span class="token keyword keyword-let">let</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span>x<span class="token operator">:</span> x<span class="token punctuation">,</span> y<span class="token operator">:</span> y<span class="token punctuation">}</span><span class="token punctuation">;</span>
+$ obj
+&#x2192; <span class="token punctuation">{</span>x<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> y<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">}</span>
+$ obj <span class="token operator">=</span> <span class="token punctuation">{</span>x<span class="token punctuation">,</span> y<span class="token punctuation">}</span>  <span class="token comment">// shorter version of line 3</span>
+&#x2192; <span class="token punctuation">{</span>x<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> y<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">}</span>
+$ <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span><span class="token string">&quot;x: &quot;</span> <span class="token operator">+</span> x<span class="token punctuation">,</span> <span class="token string">&quot;y: &quot;</span> <span class="token operator">+</span> y<span class="token punctuation">)</span><span class="token punctuation">;</span>
+&#x2192; <span class="token string">&quot;x ist 1&quot;</span>  <span class="token string">&quot;y ist 2&quot;</span>
+$ <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span><span class="token punctuation">{</span>x<span class="token punctuation">,</span> y<span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token comment">// short version of line 8</span>
+&#x2192; <span class="token punctuation">{</span>x<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> y<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><h1 class="mume-header" id="klassen">Klassen</h1>
 
 <div class="admonition quote">
 <p class="admonition-title">Classes tend to be bad modules - D. Crockford, How JS works</p>
 </div>
-<h1 class="mume-header" id="strings">Strings</h1>
+<p>Klassen sind in der Objektorientierten Programmierung immer vorzufinden. Sie sind daf&#xFC;r da, Objekte zu &quot;klassifizieren&quot;, also zu erkennen zu was ein Objekt geh&#xF6;rt.</p>
+<h2 class="mume-header" id="keyword-class">Keyword <code>class</code></h2>
+
+<p>Das <code>class</code> Keyword wurde mit ES6 eingef&#xFC;hrt. Man kann auch ohne damit arbeiten, und sollte nur als Synktatischer Zucker angesehen werden.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token keyword keyword-class">class</span> <span class="token class-name">Person</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">first<span class="token punctuation">,</span> last</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword keyword-this">this</span><span class="token punctuation">.</span><span class="token property-access">firstname</span> <span class="token operator">=</span> first<span class="token punctuation">;</span>
+    <span class="token keyword keyword-this">this</span><span class="token punctuation">.</span><span class="token property-access">lastname</span> <span class="token operator">=</span> last<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword control-flow keyword-return">return</span> <span class="token keyword keyword-this">this</span><span class="token punctuation">.</span><span class="token property-access">firstname</span> <span class="token operator">+</span> <span class="token string">&quot; &quot;</span> <span class="token operator">+</span> <span class="token keyword keyword-this">this</span><span class="token punctuation">.</span><span class="token property-access">lastname</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword keyword-const">const</span> pers <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">Person</span><span class="token punctuation">(</span><span class="token string">&quot;Good&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;Boy&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token dom variable">document</span><span class="token punctuation">.</span><span class="token method function property-access">writeln</span><span class="token punctuation">(</span>pers <span class="token keyword keyword-instanceof">instanceof</span> <span class="token class-name">Person</span><span class="token punctuation">)</span>
+<span class="token dom variable">document</span><span class="token punctuation">.</span><span class="token method function property-access">writeln</span><span class="token punctuation">(</span>pers<span class="token punctuation">.</span><span class="token method function property-access">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><blockquote>
+<p><code>$ true Good Boy</code></p>
+</blockquote>
+<p>Das <code>getName()</code> ist im Hintergrund dasselbe wie bei <a href="#gemischt-und-klassifiziert">gemischt und klassifiziert</a>.</p>
+<h2 class="mume-header" id="keyword-extends">Keyword <code>extends</code></h2>
+
+<p>&quot;Erweitert&quot; eine Klasse mit neuen Attributen und Funktionen.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token keyword keyword-class">class</span> <span class="token class-name">Student</span> <span class="token keyword keyword-extends">extends</span> <span class="token class-name">Person</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">first<span class="token punctuation">,</span> last<span class="token punctuation">,</span> grade</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword keyword-super">super</span><span class="token punctuation">(</span>first<span class="token punctuation">,</span> last<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword keyword-this">this</span><span class="token punctuation">.</span><span class="token property-access">grade</span> <span class="token operator">=</span> grade
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword keyword-const">const</span> s <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">Student</span><span class="token punctuation">(</span><span class="token string">&quot;Top&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;Student&quot;</span><span class="token punctuation">,</span> <span class="token number">5.5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p>Im Hintergrund arbeitet JavaScript mit miteinander verkn&#xFC;pften Prototypen.</p>
+<h2 class="mume-header" id="prototypen">Prototypen</h2>
+
+<p>Prototypen sind ganz normale Objekte. Ihre Anwendung macht sie jedoch speziell. Der &quot;Typ&quot; eines Objektes wird &#xFC;ber seinen Prototyp bestimmt.</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript"><span class="token keyword keyword-const">const</span> s <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">Student</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">/*
+ |  Student  |     |  Person   |     |  Object   |
+ | prototype |  &#x2192;  | prototype |  &#x2192;  | prototype |
+_______|
+|                                                */</span>
+<span class="token dom variable">document</span><span class="token punctuation">.</span><span class="token method function property-access">writeln</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span><span class="token property-access">__proto__</span> <span class="token operator">===</span> <span class="token class-name">Student</span><span class="token punctuation">.</span><span class="token property-access">prototype</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token dom variable">document</span><span class="token punctuation">.</span><span class="token method function property-access">writeln</span><span class="token punctuation">(</span><span class="token known-class-name class-name">Object</span><span class="token punctuation">.</span><span class="token method function property-access">getPrototypeOf</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token class-name">Student</span><span class="token punctuation">.</span><span class="token property-access">prototype</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token dom variable">document</span><span class="token punctuation">.</span><span class="token method function property-access">writeln</span><span class="token punctuation">(</span>s <span class="token keyword keyword-instanceof">instanceof</span> <span class="token class-name">Student</span><span class="token punctuation">)</span>
+</pre><blockquote>
+<p><code>$ true true true</code></p>
+</blockquote>
+<p>JavaScript verarbeitet Vererbung ganz anders. Wenn auf einem Objekt eine Funktion aufgerufen wird, welche nicht vorhanden wird, pr&#xFC;ft JavaScript ob das Objekt ein <code>Prototyp</code> hat, und wenn ja, pr&#xFC;ft es ob der <code>Prototyp</code> die entsprechende Methode hat. Da die <code>Prototypen</code> verlinkt sind, findet JavaScript entweder die Funktion in einem verlinkten <code>Prototyp</code>, oder im Falle dass er es nicht findet einen Fehler. Darum werden auch Methoden von Objekten ver&#xE4;ndert, wenn der <code>Prototyp</code> ver&#xE4;ndert wird.</p>
+<p>Alle Methoden einer &quot;Klasse&quot; werden im <code>Prototyp</code> (wie in <a href="#gemischt-und-klassifiziert">gemischt und klassifiziert</a>) angelegt.</p>
+<h3 class="mume-header" id="setzen-von-prototypen">Setzen von Prototypen</h3>
+
+<p>Die Prototypen k&#xF6;nnen auch dynamisch gesetzt werden. Hat man zum Beispiel ein Objekt <a href="#geschlossen-und-explizit">geschlossen und explizit</a> angelegt, kann man die &quot;Identifizierung&quot; machen, indem man den Prototypen setzt.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token keyword keyword-function">function</span> <span class="token function"><span class="token maybe-class-name">Person</span></span><span class="token punctuation">(</span><span class="token parameter">first<span class="token punctuation">,</span> last</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword keyword-let">let</span> firstname <span class="token operator">=</span> first<span class="token punctuation">;</span>
+  <span class="token keyword keyword-let">let</span> lastname  <span class="token operator">=</span> last<span class="token punctuation">;</span>
+  <span class="token keyword keyword-const">const</span> result <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">getName</span><span class="token operator">:</span> <span class="token keyword keyword-function">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword control-flow keyword-return">return</span> firstname <span class="token operator">+</span> <span class="token string">&quot; &quot;</span> <span class="token operator">+</span> lastname<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">setName</span><span class="token operator">:</span> <span class="token keyword keyword-function">function</span><span class="token punctuation">(</span><span class="token parameter">name</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      firstname <span class="token operator">=</span> name<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token known-class-name class-name">Object</span><span class="token punctuation">.</span><span class="token method function property-access">setPrototypeOf</span><span class="token punctuation">(</span>result<span class="token punctuation">,</span> <span class="token class-name">Person</span><span class="token punctuation">.</span><span class="token property-access">prototype</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword control-flow keyword-return">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><div class="admonition warning">
+<p class="admonition-title">Weil die Prototypen dyanmisch ver&#xE4;ndert werden k&#xF6;nnen, k&#xF6;nnen Codebasen enorm stark ver&#xE4;ndert werden!</p>
+</div>
+<h3 class="mume-header" id="%C3%A4ndern-von-prototypen">&#xC4;ndern von Prototypen</h3>
+
+<p>Unsere Idee ist es nun eine Funktion zu schreiben, welche f&#xFC;r jede erdenkliche Nummer <code>n</code> eine Funktion n-mal ausf&#xFC;hrt.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token comment">// We need function keyword here because we need &apos;this&apos;</span>
+<span class="token class-name">Number</span><span class="token punctuation">.</span><span class="token property-access">prototype</span><span class="token punctuation">.</span><span class="token method-variable function-variable method function property-access">times</span> <span class="token operator">=</span> <span class="token keyword keyword-function">function</span><span class="token punctuation">(</span><span class="token parameter">f</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword control-flow keyword-return">return</span> <span class="token known-class-name class-name">Array</span><span class="token punctuation">.</span><span class="token keyword module keyword-from">from</span><span class="token punctuation">(</span><span class="token punctuation">{</span>length<span class="token operator">:</span> <span class="token keyword keyword-this">this</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method function property-access">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">_<span class="token punctuation">,</span> index</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token function">f</span><span class="token punctuation">(</span>index<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method function property-access">times</span><span class="token punctuation">(</span> <span class="token parameter">n</span> <span class="token arrow operator">=&gt;</span> <span class="token dom variable">document</span><span class="token punctuation">.</span><span class="token method function property-access">writeln</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></pre><blockquote>
+<p><code>$ 0 1 2 3 4 5 6 7 8 9</code></p>
+</blockquote>
+<p>Mit dem &#xDC;berschreiben des <code>prototype</code> kann man f&#xFC;r <strong>alle</strong> Nummern in JavaScript diese Funktionalit&#xE4;t hinzuf&#xFC;gen.</p>
+<div class="admonition warning">
+<p class="admonition-title">Das geht auch mit Packages welche bei npm hochgeladen werden</p>
+</div>
+<h1 class="mume-header" id="typen">Typen</h1>
+
+<p>JavaScript hat ein Typsystem namens Unityped, jedoch ist Javascript nicht streng typisiert. Es ist m&#xF6;glich, mit Hilfe von JsDoc Typen in einer IDE zu pr&#xFC;fen, wenn sie so konfiguriert ist.</p>
+<h2 class="mume-header" id="eingebaute-typen">Eingebaute Typen</h2>
+
+<p>Eingebaute Typen umfassen: <code>Boolean</code>, <code>Number</code>, <code>String</code>, <code>Object</code>, <code>BigInt</code>, <code>Symbol</code>, <code>Null</code>, <code>Undefined</code>, <code>Function</code> (typeof)<br>
+Zus&#xE4;tzlich bietet JavaScript Objekt &quot;Klassen&quot; an: <code>Array</code>, <code>Date</code>, <code>RegExp</code>, <code>Error</code>, <code>Map</code>, <code>Set</code>, <code>JSON</code>, ...</p>
+<h2 class="mume-header" id="jsdoc">JsDoc</h2>
+
+<p>JsDoc hilft, den Code sauber zu dokumentieren. Zus&#xE4;tzlich hilft es, Variablen zu typisieren. Dabei wird der IDE gesagt, dass sie auf Typen pr&#xFC;fen soll. Der Code funktioniert aber immernoch, auch wenn die Typisierung nicht einghalten wird.</p>
+<div class="admonition note">
+<p class="admonition-title">Dass dies in Visual Studio Code Funktioniert, muss das Dokument mit <code>// @ts-check</code> beginnen</p>
+</div>
+<h2 class="mume-header" id="funktionen-1">Funktionen</h2>
+
+<p>Funktionen werden mit JsDoc folgendermassen dokumentiert:</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token doc-comment comment">/**
+ * Prints something to the log
+ * <span class="token keyword keyword-@param">@param</span> <span class="token class-name"><span class="token punctuation">{</span> !String <span class="token punctuation">}</span></span> <span class="token parameter">toPrint</span> - the string which will logged to console
+ * <span class="token keyword keyword-@returns">@returns</span> <span class="token class-name"><span class="token punctuation">{</span> <span class="token keyword keyword-void">void</span> <span class="token punctuation">}</span></span>
+ */</span>
+<span class="token keyword keyword-function">function</span> <span class="token function">print</span><span class="token punctuation">(</span><span class="token parameter">toPrint</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token dom variable">document</span><span class="token punctuation">.</span><span class="token method function property-access">writeln</span><span class="token punctuation">(</span>toPrint<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token function">print</span><span class="token punctuation">(</span><span class="token string">&quot;Hello&quot;</span><span class="token punctuation">)</span>  <span class="token comment">// IDE will be ok with that</span>
+<span class="token function">print</span><span class="token punctuation">(</span><span class="token number">123</span><span class="token punctuation">)</span>      <span class="token comment">// IDE will report that types do not match</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><blockquote>
+<p><code>$ Hello 123</code></p>
+</blockquote>
+<h3 class="mume-header" id="optionalit%C3%A4t">Optionalit&#xE4;t</h3>
+
+<p>Um einen Typen zu forcieren, oder auch optional zu machen, k&#xF6;nnen zus&#xE4;tzliche Zeichen verwendet werden:</p>
+<ul>
+<li><code>!</code> am Anfang sagt, dass der Wert nicht <code>null</code> sein darf</li>
+<li><code>?</code> am Ende sagt, dass das Element optinal ist</li>
+<li><code>...</code> am Anfang bedeutet, dass 0, 1 oder beliebig viele Elemente von dem Typ erlaubt sind</li>
+</ul>
+<h3 class="mume-header" id="template">Template</h3>
+
+<p>Wenn eine Funktion genau den Typen zur&#xFC;ck gibt, die ihr als Parameter mitgegeben wird, wird ein sogenanntes <code>template</code> verwendet.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token doc-comment comment">/**
+ * Identity function
+ * The function is pure and runs in O(1). Function calls can be inlined.
+ * <span class="token keyword keyword-@template">@template</span> a
+ * <span class="token keyword keyword-@param">@param</span> <span class="token class-name"><span class="token punctuation">{</span> a <span class="token punctuation">}</span></span> <span class="token parameter">x</span>
+ * <span class="token keyword keyword-@return">@return</span> <span class="token class-name"><span class="token punctuation">{</span> a <span class="token punctuation">}</span></span> - the parameter <span class="token punctuation">{</span><span class="token keyword keyword-@link">@link</span> x<span class="token punctuation">}</span> unchanged
+ * <span class="token keyword keyword-@example">@example</span>
+ <span class="token example">* <span class="token code language-javascript"><span class="token function">id</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token number">1</span></span></span>
+ */</span>
+<span class="token keyword keyword-const">const</span> <span class="token function-variable function">id</span> <span class="token operator">=</span> <span class="token parameter">x</span> <span class="token arrow operator">=&gt;</span> x<span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p>Das <code>a</code> repr&#xE4;sentiert dabei den beliebigen Typ.<br>
+Zus&#xE4;tzlich kann man das <code>@template a</code> auch durch ein <code>&lt;a&gt;</code> tauschen, welches dann f&#xFC;r eine Zeile z&#xE4;hlt.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token doc-comment comment">/**
+ * A function with two parameters in curried form, that returns the first of the two parameters.
+ * <span class="token keyword keyword-@type">@type</span> <span class="token class-name"><span class="token punctuation">{</span> <span class="token punctuation">&lt;</span>a<span class="token punctuation">&gt;</span> <span class="token punctuation">(</span>x<span class="token operator">:</span>a<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span><span class="token operator">...</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> a  <span class="token punctuation">}</span></span>
+ * <span class="token keyword keyword-@example">@example</span>
+ <span class="token example">* <span class="token code language-javascript"><span class="token function">konst</span><span class="token punctuation">(</span><span class="token number">42</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword null nil keyword-null">null</span><span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token number">42</span><span class="token punctuation">;</span></span></span>
+ */</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><h2 class="mume-header" id="datenstrukturen">Datenstrukturen</h2>
+
+<p>Datenstrukturen werden mit JsDoc folgendermassen dokumentiert:</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token doc-comment comment">/**
+ * <span class="token keyword keyword-@typedef">@typedef</span> <span class="token class-name">PlayerType</span>
+ * <span class="token keyword keyword-@property">@property</span> <span class="token class-name"><span class="token punctuation">{</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> String <span class="token punctuation">}</span></span> <span class="token parameter">getName</span>
+ * <span class="token keyword keyword-@property">@property</span> <span class="token class-name"><span class="token punctuation">{</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> Number <span class="token punctuation">}</span></span> <span class="token parameter">getAge</span>
+ * <span class="token keyword keyword-@property">@property</span> <span class="token class-name"><span class="token punctuation">{</span> <span class="token punctuation">(</span>age<span class="token operator">:</span>!Number<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword keyword-void">void</span> <span class="token punctuation">}</span></span> <span class="token parameter">getOlder</span> - ages the person by <span class="token punctuation">{</span><span class="token keyword keyword-@link">@link</span> age<span class="token punctuation">}</span>
+ */</span>
+
+<span class="token doc-comment comment">/**
+ * <span class="token keyword keyword-@param">@param</span> <span class="token class-name"><span class="token punctuation">{</span> String <span class="token punctuation">}</span></span> <span class="token parameter">first</span>
+ * <span class="token keyword keyword-@param">@param</span> <span class="token class-name"><span class="token punctuation">{</span> String <span class="token punctuation">}</span></span> <span class="token parameter">last</span>
+ * <span class="token keyword keyword-@return">@return</span> <span class="token class-name"><span class="token punctuation">{</span> PlayerType <span class="token punctuation">}</span></span>
+ * <span class="token keyword keyword-@constructor">@constructor</span>
+ * <span class="token keyword keyword-@example">@example</span>
+ <span class="token example">* <span class="token code language-javascript"><span class="token function"><span class="token maybe-class-name">Person</span></span><span class="token punctuation">(</span><span class="token string">&quot;Joel&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;Allemann&quot;</span><span class="token punctuation">)</span></span></span>
+ */</span>
+<span class="token keyword keyword-const">const</span> <span class="token function-variable function"><span class="token maybe-class-name">Person</span></span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">first<span class="token punctuation">,</span> last</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword keyword-const">const</span> firstname <span class="token operator">=</span> first<span class="token punctuation">;</span>
+  <span class="token keyword keyword-const">const</span> lastname <span class="token operator">=</span> last<span class="token punctuation">;</span>
+  <span class="token keyword keyword-let">let</span> age <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword control-flow keyword-return">return</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">getName</span>  <span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span> <span class="token keyword control-flow keyword-return">return</span> <span class="token punctuation">(</span>firstname <span class="token operator">+</span> <span class="token string">&quot;  &quot;</span> <span class="token operator">+</span> lastname<span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">getAge</span>   <span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span> <span class="token keyword control-flow keyword-return">return</span> age <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">getOlder</span> <span class="token operator">:</span> <span class="token parameter">years</span> <span class="token arrow operator">=&gt;</span> age <span class="token operator">+=</span> years
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p>Properties der Objekte, also sogesehen Methoden eines Objekts werden mit <code>@property</code> gekennzeichnet. Mithilfe von <code>@typedef</code> wird definiert, dass das folgende JsDoc einen Typ definiert.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers">  <span class="token doc-comment comment">/**
+   * <span class="token keyword keyword-@param">@param</span> <span class="token class-name"><span class="token punctuation">{</span> <span class="token string">&quot;NEW&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;OLD&quot;</span> <span class="token punctuation">}</span></span> <span class="token parameter">oldOrNew</span>
+   * <span class="token keyword keyword-@return">@return</span> <span class="token class-name"><span class="token punctuation">{</span> <span class="token keyword keyword-void">void</span> <span class="token punctuation">}</span></span>
+   */</span>
+  <span class="token keyword keyword-function">function</span> <span class="token function">oldOrNew</span> <span class="token punctuation">(</span><span class="token parameter">type</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword control-flow keyword-if">if</span><span class="token punctuation">(</span>type <span class="token operator">==</span> <span class="token string">&quot;OLD&quot;</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+      <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span><span class="token string">&quot;The string is old&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword control-flow keyword-else">else</span> <span class="token punctuation">{</span>
+      <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span><span class="token string">&quot;The string is new&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p>Zus&#xE4;tzlich k&#xF6;nnen <code>|</code> und <code>&amp;</code> verwendet werden, um entweder unions oder intersections zu generieren. Auch String literale k&#xF6;nnen definiert werden, was bedeuetet, nur die literalen Strings sind erlaubt. Das <code>&amp;</code> macht vor allem Sinn, wenn man nur z.B. Personen m&#xF6;chte, welche das property <code>cool</code> haben.</p>
+<h2 class="mume-header" id="typecast">Typecast</h2>
+
+<p>Manchmal muss man Typen casten. Man hilft so, dass Typen welche nicht klar gefolgert werden k&#xF6;nnen, klar definiert sind.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token comment">/* @type { String } */</span> <span class="token keyword keyword-const">const</span> <span class="token keyword keyword-var">var</span> <span class="token operator">=</span> <span class="token string">&quot;Hello&quot;</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></pre><h2 class="mume-header" id="sonstige-annotationen">Sonstige Annotationen</h2>
+
+<p>JsDoc erlaubt es beliebige Annotationen zu schreiben. Diese werden zwar von der IDE nicht speziell dargestellt, trotzdem ist es ein nettes Feature. Zus&#xE4;tzlich unterst&#xFC;tzt die Beschreibung Markdown.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token doc-comment comment">/**
+ * @LambdaCalculus $\lambda x . x$
+ * ... 
+ */</span>
+  <span class="token keyword keyword-const">const</span> <span class="token function-variable function">id</span> <span class="token operator">=</span> <span class="token parameter">x</span> <span class="token arrow operator">=&gt;</span> x<span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></pre><h1 class="mume-header" id="strings">Strings</h1>
 
 <p>In JavaScript k&#xF6;nnen Strings &#xFC;ber verschiedene Varianten angelegt werden. Spezielle Characters m&#xFC;ssen mit &quot;&quot; escaped werden. Das gilt auch f&#xFC;r &quot;&quot; selbst.</p>
 <pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers">$   <span class="token string">&quot;askf\t&#xEB;&#xE4;3aa&quot;</span>           
