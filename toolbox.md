@@ -71,6 +71,15 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [Prototypen](#prototypen)
     - [Setzen von Prototypen](#setzen-von-prototypen)
     - [Ändern von Prototypen](#ändern-von-prototypen)
+- [Typen](#typen)
+  - [Eingebaute Typen](#eingebaute-typen)
+  - [JsDoc](#jsdoc)
+  - [Funktionen](#funktionen-1)
+    - [Optionalität](#optionalität)
+    - [Template](#template)
+  - [Datenstrukturen](#datenstrukturen)
+  - [Typecast](#typecast)
+  - [Sonstige JsDoc Annotationen](#sonstige-jsdoc-annotationen)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
@@ -811,6 +820,20 @@ $ const {x, y} = baz();
 $ x
  → 1
 ```
+Der literale Objektkonstruktor kann noch etwas mehr. Er kann auch direkt die Werte in einer Variable in einen gleichnahmigen Schlüssel speichern. Das kann man auch nutzen um aussagekräftigere Konsolenlogs zu erstellen.
+```javascript {.line-numbers}
+$ let x = 1;
+$ let y = 2;
+$ let obj = {x: x, y: y};
+$ obj
+→ {x: 1, y: 2}
+$ obj = {x, y}  // shorter version of line 3
+→ {x: 1, y: 2}
+$ console.log("x: " + x, "y: " + y);
+→ "x ist 1"  "y ist 2"
+$ console.log({x, y}) // short version of line 8
+→ {x: 1, y: 2}
+```
 
 # Klassen
 !!!Quote Classes tend to be bad modules - D. Crockford, How JS works
@@ -906,6 +929,126 @@ Mit dem Überschreiben des `prototype` kann man für **alle** Nummern in JavaScr
 
 !!!Warning Das geht auch mit Packages welche bei npm hochgeladen werden
 
+# Typen
+JavaScript hat ein Typsystem namens Unityped, jedoch ist Javascript nicht streng typisiert. Es ist möglich, mit Hilfe von JsDoc Typen in einer IDE zu prüfen, wenn sie so konfiguriert ist.
+## Eingebaute Typen
+Eingebaute Typen umfassen: `Boolean`, `Number`, `String`, `Object`, `BigInt`, `Symbol`, `Null`, `Undefined`, `Function` (typeof)
+Zusätzlich bietet JavaScript Objekt "Klassen" an: `Array`, `Date`, `RegExp`, `Error`, `Map`, `Set`, `JSON`, ...
+
+## JsDoc
+JsDoc hilft, den Code sauber zu dokumentieren. Zusätzlich hilft es, Variablen zu typisieren. Dabei wird der IDE gesagt, dass sie auf Typen prüfen soll. Der Code funktioniert aber immernoch, auch wenn die Typisierung nicht einghalten wird.
+
+!!! Note Dass dies in Visual Studio Code Funktioniert, muss das Dokument mit `// @ts-check` beginnen
+
+## Funktionen
+Funktionen werden mit JsDoc folgendermassen dokumentiert:
+```javascript {.line-numbers}
+/**
+ * Prints something to the log
+ * @param { !String } toPrint - the string which will logged to console
+ * @returns { void }
+ */
+function print(toPrint) {
+  document.writeln(toPrint)
+}
+print("Hello")  // IDE will be ok with that
+print(123)      // IDE will report that types do not match
+```
+> `$ Hello 123`
+
+### Optionalität
+
+Um einen Typen zu forcieren, oder auch optional zu machen, können zusätzliche Zeichen verwendet werden:
+- `!` am Anfang sagt, dass der Wert nicht `null` sein darf
+- `?` am Ende sagt, dass das Element optinal ist
+- `...` am Anfang bedeutet, dass 0, 1 oder beliebig viele Elemente von dem Typ erlaubt sind
+
+### Template
+Wenn eine Funktion genau den Typen zurück gibt, die ihr als Parameter mitgegeben wird, wird ein sogenanntes `template` verwendet.
+
+```javascript {.line-numbers}
+/**
+ * Identity function
+ * The function is pure and runs in O(1). Function calls can be inlined.
+ * @template a
+ * @param { a } x
+ * @return { a } - the parameter {@link x} unchanged
+ * @example
+ * id(1) === 1
+ */
+const id = x => x;
+```
+Das `a` repräsentiert dabei den beliebigen Typ.
+Zusätzlich kann man das `@template a` auch durch ein `<a>` tauschen, welches dann für eine Zeile zählt.
+```javascript {.line-numbers}
+/**
+ * A function with two parameters in curried form, that returns the first of the two parameters.
+ * @type { <a> (x:a) => (...*) => a  }
+ * @example
+ * konst(42)(null) === 42;
+ */
+```
+## Datenstrukturen
+Datenstrukturen werden mit JsDoc folgendermassen dokumentiert:
+```javascript {.line-numbers}
+/**
+ * @typedef PlayerType
+ * @property { () => String } getName
+ * @property { () => Number } getAge
+ * @property { (age:!Number) => void } getOlder - ages the person by {@link age}
+ */
+
+/**
+ * @param { String } first
+ * @param { String } last
+ * @return { PlayerType }
+ * @constructor
+ * @example
+ * Person("Joel", "Allemann")
+ */
+const Person = (first, last) => {
+  const firstname = first;
+  const lastname = last;
+  let age = 0;
+  return {
+    getName  : () => { return (firstname + "  " + lastname) },
+    getAge   : () => { return age },
+    getOlder : years => age += years
+  }
+}
+```
+Properties der Objekte, also sogesehen Methoden eines Objekts werden mit `@property` gekennzeichnet. Mithilfe von `@typedef` wird definiert, dass das folgende JsDoc einen Typ definiert.
+
+```javascript {.line-numbers}
+  /**
+   * @param { "NEW" | "OLD" } oldOrNew
+   * @return { void }
+   */
+  function oldOrNew (type) {
+    if(type == "OLD"){
+      console.log("The string is old");
+    } else {
+      console.log("The string is new");
+    }
+  }
+```
+Zusätzlich können `|` und `&` verwendet werden, um entweder unions oder intersections zu generieren. Auch String literale können definiert werden, was bedeuetet, nur die literalen Strings sind erlaubt. Das `&` macht vor allem Sinn, wenn man nur z.B. Personen möchte, welche das property `cool` haben.
+
+## Typecast
+Manchmal muss man Typen casten. Man hilft so, dass Typen welche nicht klar gefolgert werden können, klar definiert sind.
+```javascript {.line-numbers}
+/* @type { String } */ const var = "Hello";
+```
+
+## Sonstige Annotationen
+JsDoc erlaubt es beliebige Annotationen zu schreiben. Diese werden zwar von der IDE nicht speziell dargestellt, trotzdem ist es ein nettes Feature. Zusätzlich unterstützt die Beschreibung Markdown.
+```javascript {.line-numbers}
+/**
+ * @LambdaCalculus $\lambda x . x$
+ * ... 
+ */
+  const id = x => x;
+```
 
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
