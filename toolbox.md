@@ -1332,11 +1332,11 @@ $ console.log(document.getElementByName('body'))
 $ console.dir(document.getElementByName('body'))
 → NodeList[]... // schon aufgefaltet
 $ console.info(obj)
-→ ℹ️ {x: 1, y: 2}
+→ 🟦 {x: 1, y: 2}
 $ console.warn(obj)
-→ ⚠️ {x: 1, y: 2}
+→ 🟨 {x: 1, y: 2}
 $ console.error(obj)
-→ ⛔ {x: 1, y: 2}
+→ 🟥 {x: 1, y: 2}
 $ console.debug(obj)
 → {x: 1, y: 2}
 ```
