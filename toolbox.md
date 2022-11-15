@@ -77,9 +77,15 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [Funktionen](#funktionen-1)
     - [Optionalität](#optionalität)
     - [Template](#template)
-  - [Datenstrukturen](#datenstrukturen)
+  - [Datenstrukturen / Klassen](#datenstrukturen-klassen)
   - [Typecast](#typecast)
   - [Sonstige Annotationen](#sonstige-annotationen)
+- [Patterns](#patterns)
+  - [Observer](#observer)
+  - [MVC](#mvc)
+    - [View](#view)
+    - [Controller](#controller)
+    - [Model](#model)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
@@ -303,9 +309,11 @@ function display(context) {
 }
 // ... unrelated html
 ```
-<iframe src=resources/javascript/Ball.html frameBorder="0" style="height:440px">
+<iframe src=resources/javascript/Ball/Ball.html frameBorder="0" style="height:440px; width: 100%">
 The ball script should be here :(
 </iframe>
+
+[Source](resources/javascript/Ball/Ball.js)
 
 # Lambda Calculus
 Mithilfe des Lambda Calculus kann alles berechenbare berechnet werden. JavaScript basiert auf diesen Lambda Calculus Eigenschaften.
@@ -582,9 +590,11 @@ const normalizeX = width => x => {
 //... unrelated html
 ```
 
-<iframe src=resources/javascript/Plotter.html frameBorder="0" style="height:650px">
+<iframe src=resources/javascript/Plotter/Plotter.html frameBorder="0" style="height:650px; width: 100%">
 The plotter script should be here :(
 </iframe>
+
+[Source](resources/javascript/Plotter/Plotter.js)
 
 Der Plotter verwendet die Funktion `eval()` um vom Benutzer eingegebene Funktionen zu evaluieren. Wird zum Beispiel die Funktion `Math.sin(x)` verwendet, evaluiert sie zum gleichgeschriebenen Code, und mithilfe von `x => ...` wird sie zu einer richtig ausführbaren Funktion. 
 ### `eval()`
@@ -660,9 +670,11 @@ function n(input) {
 }
 //... unrelated html
 ```
-<iframe src=resources/javascript/Excel.html frameBorder="0">
+<iframe src=resources/javascript/Excel/Excel.html frameBorder="0" style="width: 100%">
 The excel script should be here :(
 </iframe>
+
+[Source](resources/javascript/Excel/Excel.js)
 
 Wie beim Plotter werden die Werte in den Zellen eingelesen, und evaluiert. Die Werte in der Klammer werden dann als `input` Objekt weitergegeben und von der Funktion `n` in Zahlen umgewandelt, und zusätzlich werden die einzelnen Funktionen (also das +) ausgeführt.
 
@@ -776,9 +788,11 @@ function Player(givenName) {
 }
 // ... unrelated code
 ```
-<iframe src=resources/javascript/Oopsie.html frameBorder="0" style="height:550px">
+<iframe src=resources/javascript/Oopsie/Oopsie.html frameBorder="0" style="height:550px; width: 100%">
 The oopsie script should be here :(
 </iframe>
+
+[Source](resources/javascript/Oopsie/Oopsie.js)
 
 ## Gemischt und klassifiziert
 Das folgende Schema ist das meistverwendete - das Prototypenschema. Wir hier etwas geändert, werden alle Objekte die daraus instanziert wurden auch geändert.
@@ -833,6 +847,15 @@ $ console.log("x: " + x, "y: " + y);
 → "x ist 1"  "y ist 2"
 $ console.log({x, y}) // short version of line 8
 → {x: 1, y: 2}
+```
+Auch Funktionen müssen nicht explizit mit `function` definiert werden. Das Keyword kann weggelassen werden, und JavaScript evaluiert dies automatisch in einen Key des Objekts.
+```javascript {.line-numbers}
+$ let obj = { foo : function (x) {console.log(x)} };
+$ obj.foo(42)
+-> 42
+$ obj = { foo(x) {console.log(x)} }; // JavaScript evalutes this into a function automatically
+$ obj.foo(42)
+-> 42
 ```
 
 # Klassen
@@ -947,6 +970,7 @@ Funktionen werden mit JsDoc folgendermassen dokumentiert:
  * Prints something to the log
  * @param { !String } toPrint - the string which will logged to console
  * @returns { void }
+ * @function
  */
 function print(toPrint) {
   document.writeln(toPrint)
@@ -956,11 +980,14 @@ print(123)      // IDE will report that types do not match
 ```
 > `$ Hello 123`
 
-### Optionalität
+- `@function` definiert dass der folgende Codeblock eine Funktion ist.
+- `@param` definiert die Parameter einer Funktion
+- `returns` definiert den zurückgegebenen Wert einer Funktion
 
+### Optionalität
 Um einen Typen zu forcieren, oder auch optional zu machen, können zusätzliche Zeichen verwendet werden:
 - `!` am Anfang sagt, dass der Wert nicht `null` sein darf
-- `?` am Ende sagt, dass das Element optinal ist
+- `?` am Ende sagt, dass das Element optional ist
 - `...` am Anfang bedeutet, dass 0, 1 oder beliebig viele Elemente von dem Typ erlaubt sind
 
 ### Template
@@ -977,19 +1004,19 @@ Wenn eine Funktion genau den Typen zurück gibt, die ihr als Parameter mitgegebe
  * id(1) === 1
  */
 const id = x => x;
-```
-Das `a` repräsentiert dabei den beliebigen Typ.
-Zusätzlich kann man das `@template a` auch durch ein `<a>` tauschen, welches dann für eine Zeile zählt.
-```javascript {.line-numbers}
+
 /**
  * A function with two parameters in curried form, that returns the first of the two parameters.
  * @type { <a> (x:a) => (...*) => a  }
  * @example
  * konst(42)(null) === 42;
  */
+const konst = x => y => x;
 ```
-## Datenstrukturen
-Datenstrukturen werden mit JsDoc folgendermassen dokumentiert:
+Das `a` repräsentiert dabei den beliebigen Typ. Zusätzlich kann man das `@template a` auch durch ein `<a>` tauschen, welches dann für eine Zeile zählt.
+
+## Datenstrukturen / Klassen
+Datenstrukturen, also Klassen, werden mit JsDoc folgendermassen dokumentiert:
 ```javascript {.line-numbers}
 /**
  * @typedef PlayerType
@@ -1017,7 +1044,7 @@ const Person = (first, last) => {
   }
 }
 ```
-Properties der Objekte, also sogesehen Methoden eines Objekts werden mit `@property` gekennzeichnet. Mithilfe von `@typedef` wird definiert, dass das folgende JsDoc einen Typ definiert.
+Konstruktoren werden mit `@constructor` gekennzeichnet. Properties dieser Klassen, also sogesehen Methoden, werden mit `@property` gekennzeichnet. Mithilfe von `@typedef` wird definiert, dass das folgende JsDoc einen Typen definiert.
 
 ```javascript {.line-numbers}
   /**
@@ -1032,7 +1059,7 @@ Properties der Objekte, also sogesehen Methoden eines Objekts werden mit `@prope
     }
   }
 ```
-Zusätzlich können `|` und `&` verwendet werden, um entweder unions oder intersections zu generieren. Auch String literale können definiert werden, was bedeuetet, nur die literalen Strings sind erlaubt. Das `&` macht vor allem Sinn, wenn man nur z.B. Personen möchte, welche das property `cool` haben.
+Zusätzlich können `|` und `&` verwendet werden, um entweder **unions** (nur diese Werte sind erlaubt) oder **intersections** (dieser Wert welcher auch den anderen Wert hat sind erlaubt) zu generieren. Auch String literale können definiert werden, was bedeuetet, nur die literalen Strings sind erlaubt. Das `&` macht vor allem Sinn, wenn man nur z.B. Personen möchte, welche das property `cool` haben.
 
 ## Typecast
 Manchmal muss man Typen casten. Man hilft so, dass Typen welche nicht klar gefolgert werden können, klar definiert sind.
@@ -1049,6 +1076,38 @@ JsDoc erlaubt es beliebige Annotationen zu schreiben. Diese werden zwar von der 
  */
   const id = x => x;
 ```
+
+# Patterns
+Wie in Java gibt es diverse Patterns, welche mit JavaScript implementiert werden können.
+
+## Observer
+
+## MVC
+Das MVC Pattern, oder auch **M**odel **V**iew **C**ontroller Pattern wird in JavaScript auch oft verwendet. Dabei wird die Business Logik von der UI Logik getrennt und mit einem Layer verbunden. Infolge wird das MVC anhand einer grafischen ToDo Liste implementiert.
+
+### View
+Die View ist die HTML-Datei. In dieser wird definiert wie das Programm aussehen soll. Zusätzlich wird bei der View die Elemente des HTMLs definiert, welche von JavaScript verändert werden. Dies hat den Vorteil, dass Elemente, welche über die ID ausgewählt werden, nicht quasi-zufällig im Code geöffnet werden.
+
+// TODO: add the ToDoList application
+// TODO: link the source code in the markdown
+// TODO: javascript source -> put programs in folders
+// TODO: add document.getElementById to HTML for all programs
+```html {.line-numbers}
+
+<!-- The actual JavaScript source code -->
+
+<!-- The elements we'll need in the JavaScript source code -->
+```
+
+### Controller
+Der Controller ist die nächste Komponente des MVCs. Er verbindet die View mit dem Model, und schützt dabei die View von dem Model und umgekehrt.
+```javascript {.line-numbers}
+```
+### Model
+Das Model ist die letzte Komponente des MVCs. Das Model handelt die internen Daten und bietet eine Datenstruktur dafür an.
+```javascript {.line-numbers}
+```
+
 
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
