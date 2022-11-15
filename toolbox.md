@@ -83,9 +83,9 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
 - [Patterns](#patterns)
   - [Observer](#observer)
   - [MVC](#mvc)
+    - [Model](#model)
     - [View](#view)
     - [Controller](#controller)
-    - [Model](#model)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
@@ -1143,6 +1143,33 @@ observable.setValue(7);
 ## MVC
 Das MVC Pattern, oder auch **M**odel **V**iew **C**ontroller Pattern wird in JavaScript oft verwendet. Dabei wird die Business Logik von der UI Logik getrennt und mit einem Layer verbunden. Infolge wird das MVC anhand einer grafischen ToDo Liste implementiert.
 
+### Model
+Das Model ist die letzte Komponente des MVCs. Das Model handelt die internen Daten und bietet eine Datenstruktur dafür an. Für die ToDo Liste sind es Observables sowie eine Observable Liste.
+```javascript {.line-numbers}
+// ... observable from above, without remove function
+const ObservableList = list => {
+  const addListeners = [];
+  const delListeners = [];
+  return {
+    onAdd: listener => addListeners.push(listener),
+    onDel: listener => delListeners.push(listener),
+    add: item => {
+        list.push(item);
+        addListeners.forEach( listener => listener(item))
+    },
+    del: item => {
+        const i = list.indexOf(item);
+        if (i >= 0) { list.splice(i, 1) } // essentially "remove(item)"
+        delListeners.forEach( listener => listener(item));
+    },
+    count:   ()   => list.length,
+    countIf: pred => list.reduce( (sum, item) => pred(item) ? sum + 1 : sum, 0)
+  }
+};
+```
+
+[Source](resources/javascript/Todo/TodoModel.js)
+
 ### View
 Die View ist die HTML-Datei. In dieser wird definiert wie das Programm aussehen soll. Zusätzlich wird bei der View die HTML-Elemente definiert, welche von JavaScript verändert werden. Dies hat den Vorteil, dass Elemente, welche über die ID ausgewählt werden, nicht direkt ersichtlich sind und nicht "magisch" im Code auftauchen. Zusätzlich wird aus dem HTML noch der Code gestartet.
 
@@ -1266,32 +1293,6 @@ const TodoController = () => {
   }
 };
 ```
-### Model
-Das Model ist die letzte Komponente des MVCs. Das Model handelt die internen Daten und bietet eine Datenstruktur dafür an. Für die ToDo Liste sind es Observables sowie eine Observable Liste.
-```javascript {.line-numbers}
-// ... observable from above, without remove function
-const ObservableList = list => {
-  const addListeners = [];
-  const delListeners = [];
-  return {
-    onAdd: listener => addListeners.push(listener),
-    onDel: listener => delListeners.push(listener),
-    add: item => {
-        list.push(item);
-        addListeners.forEach( listener => listener(item))
-    },
-    del: item => {
-        const i = list.indexOf(item);
-        if (i >= 0) { list.splice(i, 1) } // essentially "remove(item)"
-        delListeners.forEach( listener => listener(item));
-    },
-    count:   ()   => list.length,
-    countIf: pred => list.reduce( (sum, item) => pred(item) ? sum + 1 : sum, 0)
-  }
-};
-```
-
-[Source](resources/javascript/Todo/TodoModel.js)
 
 <iframe src=resources/javascript/Todo/Todo.html frameBorder="0" style="height:440px; width: 100%">
 The todolist script should be here :(
