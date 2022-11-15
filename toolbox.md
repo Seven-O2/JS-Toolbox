@@ -1081,33 +1081,221 @@ JsDoc erlaubt es beliebige Annotationen zu schreiben. Diese werden zwar von der 
 Wie in Java gibt es diverse Patterns, welche mit JavaScript implementiert werden können.
 
 ## Observer
+Das Observer Pattern erlaubt es aufgrund von Wertänderungen Funktionen auszuführen. Das erlaubt, dass zum Beispiel im UI ein Text geändert wird, weil sich in der Business Logik ein Wert geändert hat. 
+
+```javascript {.line-numbers}
+/**
+ * @template _T_
+ * @param { _T_ } value
+ * @param { _T_ } oldValue
+ * @function ObserverCallback
+ */
+
+/**
+ * @typedef ObservableType
+ * @template _T_
+ * @property { () => _T_ } getValue - returns the current value of the observable
+ * @property { newValue:_T_ => void } setValue - sets the observable to the value {@link newValue} and updates all listeners
+ * @property { ObserverCallback<_T_> => void } onChange - the callback that should be called when the value changes
+ * @property { ObserverCallback<_T_> => void } removeListener - removes the listener from the listener list and thus ending all notifications to it
+ */
+
+/**
+ * A simple Observable that updates listeners with the old and new value
+ * @param { _T_ } value - the initial value of the variable
+ * @return { ObservableType<_T_> }
+ * @constructor 
+ */
+const Observable = value => {
+  const listeners = [];
+  return {
+    getValue: ()             => value,
+    setValue: newValue       => {
+      if (value === newValue) return;
+      const oldValue = value;
+      value = newValue;
+      listeners.forEach(callback => callback(value, oldValue));
+    },
+    onChange: callback       => {
+      listeners.push(callback);
+      callback(value, value);
+    },
+    removeListener: callback => {
+      const i = list.indexOf(callback);
+      if (i >= 0) { list.splice(i, 1) }
+    }
+  }
+};
+
+const observable = new Observable(0);
+observable.onChange((value, oldValue) => {
+  document.writeln("The value is " + value + " and was " + oldValue + "\n")
+});
+observable.setValue(42);
+observable.setValue(7);
+```
+> `$ The value is 0 and was 0`
+> `$ The value is 42 and was 0`
+> `$ The value is 7 and was 42`
+
+!!! Warning Wird ein Listener nicht mehr gebraucht sollte er unbedingt aus dem Observable entfernt werden, ansonsten entstehen Memory Leaks.
 
 ## MVC
-Das MVC Pattern, oder auch **M**odel **V**iew **C**ontroller Pattern wird in JavaScript auch oft verwendet. Dabei wird die Business Logik von der UI Logik getrennt und mit einem Layer verbunden. Infolge wird das MVC anhand einer grafischen ToDo Liste implementiert.
+Das MVC Pattern, oder auch **M**odel **V**iew **C**ontroller Pattern wird in JavaScript oft verwendet. Dabei wird die Business Logik von der UI Logik getrennt und mit einem Layer verbunden. Infolge wird das MVC anhand einer grafischen ToDo Liste implementiert.
 
 ### View
-Die View ist die HTML-Datei. In dieser wird definiert wie das Programm aussehen soll. Zusätzlich wird bei der View die Elemente des HTMLs definiert, welche von JavaScript verändert werden. Dies hat den Vorteil, dass Elemente, welche über die ID ausgewählt werden, nicht quasi-zufällig im Code geöffnet werden.
+Die View ist die HTML-Datei. In dieser wird definiert wie das Programm aussehen soll. Zusätzlich wird bei der View die HTML-Elemente definiert, welche von JavaScript verändert werden. Dies hat den Vorteil, dass Elemente, welche über die ID ausgewählt werden, nicht direkt ersichtlich sind und nicht "magisch" im Code auftauchen. Zusätzlich wird aus dem HTML noch der Code gestartet.
 
-// TODO: add the ToDoList application
-// TODO: link the source code in the markdown
-// TODO: javascript source -> put programs in folders
-// TODO: add document.getElementById to HTML for all programs
 ```html {.line-numbers}
+<!-- unrelated html -->
+</main>
 
-<!-- The actual JavaScript source code -->
+<!-- The actual scripts containing logic -->
+<script src="../observable/observable.js"></script>
+<script src="TodoController.js"></script>
+<script src="TodoView.js"></script>
 
 <!-- The elements we'll need in the JavaScript source code -->
+<script>
+    const todoController = TodoController();
+
+    TodoItemsView(todoController, document.getElementById('todoContainer'));
+    TodoTotalView(todoController, document.getElementById('numberOfTasks'));
+    TodoOpenView (todoController, document.getElementById('openTasks'));
+
+    todoController.addTodo();
+
+</script>
+<!-- unrelated html -->
 ```
+
+[Source](resources/javascript/Todo/Todo.html)
+
+Das HTML soll hauptsächlich für die Formatierung verwendet werden. Deswegen gibt es trotzdem eine JavaScript source Datei, welche die dynamische Logik beinhaltet.
+
+```javascript {.line-numbers}
+const TodoItemsView = (todoController, rootElement) => {
+  const render = todo => {
+    const createElements = () => {
+      const template = document.createElement('DIV'); // only for parsing
+      template.innerHTML = `
+          <button class="delete">&times;</button>
+          <input type="text" size="42">
+          <input type="checkbox">            
+      `;
+      return template.children;
+    };
+    const [deleteButton, inputElement, checkboxElement] = createElements();
+
+    checkboxElement.onclick = _ => todo.setDone(checkboxElement.checked);
+    deleteButton.onclick    = _ => todoController.removeTodo(todo);
+
+    todoController.onTodoRemove( removedTodo => {
+      if (removedTodo !== todo) return;
+      rootElement.removeChild(inputElement);
+      rootElement.removeChild(deleteButton);
+      rootElement.removeChild(checkboxElement);
+    } );
+
+    rootElement.appendChild(deleteButton);
+    rootElement.appendChild(inputElement);
+    rootElement.appendChild(checkboxElement);
+  };
+
+  // binding
+  todoController.onTodoAdd(render);
+
+  // we do not expose anything as the view is totally passive.
+};
+
+const TodoTotalView = (todoController, numberOfTasksElement) => {
+
+  const render = () =>
+    numberOfTasksElement.innerText = "" + todoController.numberOfTodos();
+
+  // binding
+  todoController.onTodoAdd(render);
+  todoController.onTodoRemove(render);
+};
+
+const TodoOpenView = (todoController, numberOfOpenTasksElement) => {
+
+  const render = () =>
+    numberOfOpenTasksElement.innerText = "" + todoController.numberOfOpenTasks();
+
+  // binding
+  todoController.onTodoAdd(todo => {
+    render();
+    todo.onDoneChanged(render);
+  });
+  todoController.onTodoRemove(render);
+};
+
+```
+
+[Source](resources/javascript/Todo/TodoView.js)
 
 ### Controller
-Der Controller ist die nächste Komponente des MVCs. Er verbindet die View mit dem Model, und schützt dabei die View von dem Model und umgekehrt.
+Der Controller ist die nächste Komponente des MVCs. Er verbindet die View mit dem Model, und schützt dabei die View von dem Model und umgekehrt. Der Controller hat eine Instanz des Models, und die Views haben eine referenz auf einen Controller.
 ```javascript {.line-numbers}
+const TodoController = () => {
+  const Todo = () => {
+    const textAttr = Observable("text");
+    const doneAttr = Observable(false);
+    return {
+      getDone:       doneAttr.getValue,
+      setDone:       doneAttr.setValue,
+      onDoneChanged: doneAttr.onChange,
+    }
+  };
+
+  // observable array of Todos, this state is private
+  const todoModel = ObservableList([]); 
+  const addTodo = () => {
+    const newTodo = Todo();
+    todoModel.add(newTodo);
+    return newTodo;
+  };
+  return {
+    numberOfTodos:      todoModel.count,
+    numberOfOpenTasks:  () => todoModel.countIf( todo => ! todo.getDone() ),
+    addTodo:            addTodo,
+    removeTodo:         todoModel.del,
+    onTodoAdd:          todoModel.onAdd,
+    onTodoRemove:       todoModel.onDel,
+  }
+};
 ```
 ### Model
-Das Model ist die letzte Komponente des MVCs. Das Model handelt die internen Daten und bietet eine Datenstruktur dafür an.
+Das Model ist die letzte Komponente des MVCs. Das Model handelt die internen Daten und bietet eine Datenstruktur dafür an. Für die ToDo Liste sind es Observables sowie eine Observable Liste.
 ```javascript {.line-numbers}
+// ... observable from above, without remove function
+const ObservableList = list => {
+  const addListeners = [];
+  const delListeners = [];
+  return {
+    onAdd: listener => addListeners.push(listener),
+    onDel: listener => delListeners.push(listener),
+    add: item => {
+        list.push(item);
+        addListeners.forEach( listener => listener(item))
+    },
+    del: item => {
+        const i = list.indexOf(item);
+        if (i >= 0) { list.splice(i, 1) } // essentially "remove(item)"
+        delListeners.forEach( listener => listener(item));
+    },
+    count:   ()   => list.length,
+    countIf: pred => list.reduce( (sum, item) => pred(item) ? sum + 1 : sum, 0)
+  }
+};
 ```
 
+[Source](resources/javascript/Todo/TodoModel.js)
+
+<iframe src=resources/javascript/Todo/Todo.html frameBorder="0" style="height:440px; width: 100%">
+The todolist script should be here :(
+</iframe>
 
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
