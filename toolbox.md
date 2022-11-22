@@ -87,6 +87,8 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
     - [View](#view)
     - [Controller](#controller)
 - [Asynchrone Programmierung](#asynchrone-programmierung)
+  - [Promise](#promise)
+    - [Async / Await](#async-await)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
@@ -1307,6 +1309,72 @@ const TodoController = () => {
 The todolist script should be here :(
 </iframe>
 
+# Asynchrone Programmierung
+Ein Grundbaustein von JavaScript ist die asynchrone Programmierung. Gerade das Callback-Paradigma erlaubt es, immer nach Erfolg einer Funktion eine andere Funktion aufzurufen. Oft führt dies aber zu sogenannten Wildgänsepattern, wo aufgrund vieler Callbacks ein grosses `>` in der Codebasis entsteht.
+## Promise
+Promises schaffen hier Abhilfe. Sie sind auch bekannt als `thenable`, also quasi "dannbar".
+```javascript {.line-numbers}
+fetch ('http://fhnw.ch/json/students/list')       // fetch from web
+ .then(response => response.json())               // make a new (async) JSON parse
+ .then(students => console.log(students.length))  // when JSON is finished, log
+ .catch(err     => console.error(err))            // when fetch or parse fails
+```
+Wenn immer eine Promise erfüllt wird, wir die Funktion im `.then()` ausgeführt. Geschieht ein Fehler, wird die Funktion in `.catch()` ausgeführt. Promises, die Promises zurückgeben, können wiederum mit `.then()` verknüft werden - dies nennt sich dann **Monad**.
+
+Man kann auch selbst Promises erstellen.
+```javascript {.line-numbers}
+const processEven = i => new Promise(
+  (resolve, reject) => {
+    i % 2 === 0 ? resolve(i) : reject(i)
+  });
+
+const run = number => processEven(number)
+ .then(i => document.writeln("Good, " + i + " is even!"))
+ .catch(i => document.writeln("Oh no, " + i + " is odd!"));
+
+run(2);
+document.writeln("\n");
+run(3);
+```
+> `$ Good, 2 is even!`
+> `$ Oh no, 3 is odd!`
+
+Das obere Beispiel zeigt eine Funktion, welche nur gerade Zahlen prozessiert.
+```javascript {.line-numbers}
+processEven(4)                            // ↓ auto promotion to promise
+ .then ( it => {document.writeln(it); return it})
+ .then ( it => processEven(it + 1))
+ .catch( err => {document.writeln( "Error: " + err)});
+```
+> `4 Error: 5`
+
+Zusätzlich werden Werte, welche nicht als Promise zurückgegeben werden, automatisch befördert (auto promotion). Das Promise wird einfach sofort nach dem Ausführen `resolved`. 
+
+### Async / Await
+Async und Await sind alternative Syntax für Promises. Funktionen lesen sich so mehr wie imperativen Code.
+```javascript {.line-numbers}
+const foo = async i => {
+  const x = await processEven(i).catch( err => err ); // on catch, err is returned
+  document.writeln("foo: " + x);
+}
+
+async function bar(i) {
+  try{
+    const x = await processEven(i);
+    document.writeln("bar: " + x)
+  } catch (err) {
+    document.writeln("bar: " + err)
+  }
+}
+
+foo(4); bar(4); foo(3); bar(3);
+```
+> `$ foo:4 bar:4 foo:3 bar:3`
+
+Async und Await müssen nicht verwendet werden, helfen aber manchmal beim Verständnis des Codes.
+
+!!! Warning Nur funktionen welche mit `async` gekenntzeichnet sind können auch `await` verwenden.
+
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
 ```javascript {.line-numbers}
@@ -1474,7 +1542,9 @@ $ chars.splice(1, 1, "x", "y", "z");  // get all in between this index and repla
 $ chars
 → ["a", "x", "y", "z", "e", "f", "g"] // Attention, original array was changed!
 ```
+
 !!!Warning Splice arbeitet auf dem originalen Array, nicht auf einer Kopie.
+
 # Semicolons
 Semicolons sind nicht freiwillig, JavaScript versucht einfach sie selbst zu setzen.
 
