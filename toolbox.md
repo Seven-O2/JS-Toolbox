@@ -86,12 +86,15 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
     - [Model](#model)
     - [View](#view)
     - [Controller](#controller)
+- [Asynchrone Programmierung](#asynchrone-programmierung)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
 - [Arrays](#arrays)
   - [Spread-Operator `...` an Parameterposition](#spread-operator-an-parameterposition)
   - [Spread-Operator `...` an Konstruktorposition](#spread-operator-an-konstruktorposition)
+  - [Slice](#slice)
+  - [Splice](#splice)
 - [Semicolons](#semicolons)
 
 <!-- /code_chunk_output -->
@@ -1144,26 +1147,31 @@ observable.setValue(7);
 Das MVC Pattern, oder auch **M**odel **V**iew **C**ontroller Pattern wird in JavaScript oft verwendet. Dabei wird die Business Logik von der UI Logik getrennt und mit einem Layer verbunden. Infolge wird das MVC anhand einer grafischen ToDo Liste implementiert.
 
 ### Model
-Das Model ist die letzte Komponente des MVCs. Das Model handelt die internen Daten und bietet eine Datenstruktur dafür an. Für die ToDo Liste sind es Observables sowie eine Observable Liste.
+Das Model ist die erste Komponente des MVCs. Das Model hält die internen Daten und bietet eine Datenstruktur dafür an. Für die ToDo Liste sind es Observables sowie eine Observable Liste.
 ```javascript {.line-numbers}
-// ... observable from above, without remove function
+// ... observable from above, without removeListener function
 const ObservableList = list => {
-  const addListeners = [];
-  const delListeners = [];
+  const addListeners       = [];
+  const delListeners       = [];
+  const removeAt           = array => index => array.splice(index, 1);
+  const removeItem         = array => item  => { const i = array.indexOf(item); if (i>=0) removeAt(array)(i); };
+  const listRemoveItem     = removeItem(list);
+  const delListenersRemove = removeAt(delListeners);
   return {
     onAdd: listener => addListeners.push(listener),
     onDel: listener => delListeners.push(listener),
-    add: item => {
+    add: item       => {
         list.push(item);
         addListeners.forEach( listener => listener(item))
     },
-    del: item => {
-        const i = list.indexOf(item);
-        if (i >= 0) { list.splice(i, 1) } // essentially "remove(item)"
-        delListeners.forEach( listener => listener(item));
+    del: item       => {
+        listRemoveItem(item);
+        const safeIterate = [...delListeners]; // shallow copy as we might change listeners array while iterating
+        safeIterate.forEach( (listener, index) => listener(item, () => delListenersRemove(index) ));
     },
-    count:   ()   => list.length,
-    countIf: pred => list.reduce( (sum, item) => pred(item) ? sum + 1 : sum, 0)
+    removeDeleteListener: removeItem(delListeners),
+    count:   ()     => list.length,
+    countIf: pred   => list.reduce( (sum, item) => pred(item) ? sum + 1 : sum, 0)
   }
 };
 ```
@@ -1203,25 +1211,26 @@ Das HTML soll hauptsächlich für die Formatierung verwendet werden. Deswegen gi
 ```javascript {.line-numbers}
 const TodoItemsView = (todoController, rootElement) => {
   const render = todo => {
-    const createElements = () => {
-      const template = document.createElement('DIV'); // only for parsing
-      template.innerHTML = `
-          <button class="delete">&times;</button>
-          <input type="text" size="42">
-          <input type="checkbox">            
-      `;
-      return template.children;
-    };
+    function createElements() {
+        const template = document.createElement('DIV'); // only for parsing
+        template.innerHTML = `
+            <button class="delete">&times;</button>
+            <input type="text" size="36">
+            <input type="checkbox">            
+        `;
+        return template.children;
+    }
     const [deleteButton, inputElement, checkboxElement] = createElements();
 
     checkboxElement.onclick = _ => todo.setDone(checkboxElement.checked);
     deleteButton.onclick    = _ => todoController.removeTodo(todo);
 
-    todoController.onTodoRemove( removedTodo => {
+    todoController.onTodoRemove( (removedTodo, removeMe) => {
       if (removedTodo !== todo) return;
       rootElement.removeChild(inputElement);
       rootElement.removeChild(deleteButton);
       rootElement.removeChild(checkboxElement);
+      removeMe();
     } );
 
     rootElement.appendChild(deleteButton);
@@ -1257,39 +1266,39 @@ const TodoOpenView = (todoController, numberOfOpenTasksElement) => {
   });
   todoController.onTodoRemove(render);
 };
-
 ```
 
 [Source](resources/javascript/Todo/TodoView.js)
 
 ### Controller
-Der Controller ist die nächste Komponente des MVCs. Er verbindet die View mit dem Model, und schützt dabei die View von dem Model und umgekehrt. Der Controller hat eine Instanz des Models, und die Views haben eine referenz auf einen Controller.
+Der Controller ist die letzte Komponente des MVCs. Er verbindet die View mit dem Model, und schützt dabei die View von dem Model und umgekehrt. Der Controller hat eine Instanz des Models, und die Views haben eine referenz auf einen Controller.
 ```javascript {.line-numbers}
-const TodoController = () => {
-  const Todo = () => {
-    const textAttr = Observable("text");
-    const doneAttr = Observable(false);
-    return {
-      getDone:       doneAttr.getValue,
-      setDone:       doneAttr.setValue,
-      onDoneChanged: doneAttr.onChange,
-    }
-  };
+const Todo = () => {                                // facade
+  const textAttr = Observable("text");            // we currently don't expose it as we don't use it elsewhere
+  const doneAttr = Observable(false);
+  return {
+    getDone:       doneAttr.getValue,
+    setDone:       doneAttr.setValue,
+    onDoneChanged: doneAttr.onChange,
+  }
+};
 
+const TodoController = () => {
   // observable array of Todos, this state is private
-  const todoModel = ObservableList([]); 
+  const todoModel = ObservableList([]);
   const addTodo = () => {
     const newTodo = Todo();
     todoModel.add(newTodo);
     return newTodo;
   };
   return {
-    numberOfTodos:      todoModel.count,
-    numberOfOpenTasks:  () => todoModel.countIf( todo => ! todo.getDone() ),
-    addTodo:            addTodo,
-    removeTodo:         todoModel.del,
-    onTodoAdd:          todoModel.onAdd,
-    onTodoRemove:       todoModel.onDel,
+    numberOfTodos:            todoModel.count,
+    numberOfOpenTasks:        () => todoModel.countIf(todo => ! todo.getDone() ),
+    addTodo:                  addTodo,
+    removeTodo:               todoModel.del,
+    onTodoAdd:                todoModel.onAdd,
+    onTodoRemove:             todoModel.onDel,
+    removeTodoRemoveListener: todoModel.removeDeleteListener, // only for the test case, not used below
   }
 };
 ```
@@ -1423,6 +1432,49 @@ $ rest
 → [2, 3, 4]
 ```
 
+## Slice
+Slice wird verwendet um Arrays zu schneiden. Slice schneidet einen an einem und an einem anderen Ort, und gibt ein neues Array zurück.
+```javascript{.line-numbers}
+Array.slice(StartIndex, EndIndex)
+```
+`StartIndex` bestimmt wo das slicing beginnt, und der `EndIndex` bestimmt wo das slicing endet.
+```javascript{.line-numbers}
+$ const chars = "a b c d e f g".split(" ");
+$ chars
+→ ["a", "b", "c", "d", "e", "f", "g"]
+$ chars.slice(1,3)      // get all in between this index
+→ ["b", "c", "d"]
+$ chars.slice(-3, -1)   // also works with negative indexes
+→ ["e", "f"]
+$ chars.slice(1)        // get all after the index
+→ ["b", "c", "d", "e", "f", "g"]
+$ chars.slice()         // copy the array
+→ ["a", "b", "c", "d", "e", "f", "g"]
+$ chars.slice(-1)       // remove last element
+→ ["a", "b", "c", "d", "e", "f"]
+
+```
+
+## Splice
+Splice wird verwendet, um Arrays zu schneiden, aber auch um darin Elemente zu ersetzen. Splice entfernt die Werte in einem Bereich, und ersetzt Sie wenn ein Argument angegeben wird.
+```javascript{.line-numbers}
+Array.splice(StartIndex, Length, ...ReplaceWith)
+```
+`StartIndex` bestimmt, wo das splice beginnt, `Length` wie viele Elemente entfernt werden, und `RepalceWith` sind die Elemente welche dann in das Array eingefügt werden.
+```javascript{.line-numbers}
+$ const chars = "a b c d e f g".split(" ");
+$ chars
+→ ["a", "b", "c", "d", "e", "f", "g"]
+$ chars.splice(1, 2)                  // get all in between this index
+→ ["b", "c"]
+$ chars                               // Attention, original array was changed!
+→ ["a", "d", "e", "f", "g"]
+$ chars.splice(1, 1, "x", "y", "z");  // get all in between this index and replace
+→ ["d"]                               
+$ chars
+→ ["a", "x", "y", "z", "e", "f", "g"] // Attention, original array was changed!
+```
+!!!Warning Splice arbeitet auf dem originalen Array, nicht auf einer Kopie.
 # Semicolons
 Semicolons sind nicht freiwillig, JavaScript versucht einfach sie selbst zu setzen.
 

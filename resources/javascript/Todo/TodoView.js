@@ -1,30 +1,33 @@
 /**
- * The item view that renders the list elements
- * @param { TodoControllerType } todoController 
- * @param { HTMLElement } rootElement 
+ * @constructor
+ * @param { TodoControllerType } todoController
+ * @param { HTMLElement }        rootElement
+ * @return void
  */
  const TodoItemsView = (todoController, rootElement) => {
 
     const render = todo => {
-        const createElements = () => {
+
+        function createElements() {
             const template = document.createElement('DIV'); // only for parsing
             template.innerHTML = `
                 <button class="delete">&times;</button>
-                <input type="text" size="42">
+                <input type="text" size="36">
                 <input type="checkbox">            
             `;
             return template.children;
-        };
+        }
         const [deleteButton, inputElement, checkboxElement] = createElements();
 
         checkboxElement.onclick = _ => todo.setDone(checkboxElement.checked);
         deleteButton.onclick    = _ => todoController.removeTodo(todo);
 
-        todoController.onTodoRemove( removedTodo => {
+        todoController.onTodoRemove( (removedTodo, removeMe) => {
             if (removedTodo !== todo) return;
             rootElement.removeChild(inputElement);
             rootElement.removeChild(deleteButton);
             rootElement.removeChild(checkboxElement);
+            removeMe();
         } );
 
         rootElement.appendChild(deleteButton);
@@ -39,9 +42,10 @@
 };
 
 /**
- * 
- * @param { TodoControllerType } todoController 
- * @param { HTMLElement } numberOfTasksElement - the element that displays the number of tasks
+ * @constructor
+ * @param { TodoControllerType } todoController
+ * @param { HTMLElement }        numberOfTasksElement
+ * @return void
  */
 const TodoTotalView = (todoController, numberOfTasksElement) => {
 
@@ -54,9 +58,10 @@ const TodoTotalView = (todoController, numberOfTasksElement) => {
 };
 
 /**
- * 
- * @param { TodoControlelrType } todoController 
- * @param { HTMLElement } numberOfOpenTasksElement - the element sthat displays the number of open tasks
+ * @constructor
+ * @param { TodoControllerType } todoController
+ * @param { HTMLElement }        numberOfOpenTasksElement
+ * @return void
  */
 const TodoOpenView = (todoController, numberOfOpenTasksElement) => {
 
