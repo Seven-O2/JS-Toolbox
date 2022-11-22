@@ -1161,13 +1161,13 @@ const ObservableList = list => {
     onAdd: listener => addListeners.push(listener),
     onDel: listener => delListeners.push(listener),
     add: item       => {
-        list.push(item);
-        addListeners.forEach( listener => listener(item))
+      list.push(item);
+      addListeners.forEach( listener => listener(item))
     },
     del: item       => {
-        listRemoveItem(item);
-        const safeIterate = [...delListeners]; // shallow copy as we might change listeners array while iterating
-        safeIterate.forEach( (listener, index) => listener(item, () => delListenersRemove(index) ));
+      listRemoveItem(item);
+      const safeIterate = [...delListeners]; // shallow copy as we might change listeners array while iterating
+      safeIterate.forEach( (listener, index) => listener(item, () => delListenersRemove(index) ));
     },
     removeDeleteListener: removeItem(delListeners),
     count:   ()     => list.length,
@@ -1212,13 +1212,13 @@ Das HTML soll hauptsächlich für die Formatierung verwendet werden. Deswegen gi
 const TodoItemsView = (todoController, rootElement) => {
   const render = todo => {
     function createElements() {
-        const template = document.createElement('DIV'); // only for parsing
-        template.innerHTML = `
-            <button class="delete">&times;</button>
-            <input type="text" size="36">
-            <input type="checkbox">            
-        `;
-        return template.children;
+      const template = document.createElement('DIV'); // only for parsing
+      template.innerHTML = `
+        <button class="delete">&times;</button>
+        <input type="text" size="36">
+        <input type="checkbox">            
+      `;
+      return template.children;
     }
     const [deleteButton, inputElement, checkboxElement] = createElements();
 
