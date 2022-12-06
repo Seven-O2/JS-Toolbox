@@ -98,6 +98,7 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [Slice](#slice)
   - [Splice](#splice)
 - [Semicolons](#semicolons)
+- [JavaScript Iterator Protokol](#javascript-iterator-protokol)
 
 <!-- /code_chunk_output -->
 
@@ -1373,7 +1374,7 @@ foo(4); bar(4); foo(3); bar(3);
 
 Async und Await müssen nicht verwendet werden, helfen aber manchmal beim Verständnis des Codes.
 
-!!! Warning Nur funktionen welche mit `async` gekenntzeichnet sind können auch `await` verwenden.
+!!! Warning Nur Funktionen welche mit `async` gekenntzeichnet sind können auch `await` verwenden.
 
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
@@ -1488,6 +1489,9 @@ $ bar(1, 2, 3)
 → 3
 $ bar()
 → 0
+$ const foobar = (a, b) => console.log(a, b)
+$ foobar(...[1,2,3])
+→ 1, 2
 ```
 Im Hintergrund wird ein Objekt erstellt, welches die einzelnen Werte abspeichert. Er verwandelt eine Liste von Elementen in ein Array von Elementen. 
 
@@ -1560,3 +1564,43 @@ $ console.log("hi") // <- Missing Semicolon
 → TypeError: undefined is not an object (evaluation 'console.log("hi")[1, 2, 3]')
 ```
 JavaScript sieht hier das `console.log` sowie das `[1, 2, 3]` als Ausdrücke. Somit wird beim vergessenen `;` ein Ausdruck generiert, welcher auf das `console.log` ausgeführt wird, welches nach dem Ausführen undefined ist.
+
+# JavaScript Iterator Protokol
+Mit dem query selector von JavaScript erhält man eine sogenannte `NodeList`. Diese kann als iterierbare Liste angesehen werden - ist aber kein Array. Dem Iterator Protokoll gehören noch weitere Klassen dazu, wie zum Beispiel HTMLCollection und Array.
+
+```javascript {.line-numbers}
+$ const p = document.querySelectorAll("p");
+$ p;
+→ NodeList[<p>, <p>, <p>]
+$ for (const n of p) { console.log(n); } // Supports lazy loading
+→ <p>Lorem</p>
+→ <p>Ipsum</p>
+→ <p>dolor</p>
+
+$ const body = document.querySelector("body").children; // HTMLCollection
+$ for (const c of body) { console.log(c); }
+→ <h1>Hello</h1>
+→ <p>Lorem</p>
+→ <p>Ipsum</p>
+→ <p>dolor</p>
+
+$ for (const a of [1, 2, 3, 4]) { console.log(a); } // Array
+→ 1
+→ 2
+→ 3
+→ 4
+
+$ [...document.querySeectorAll("body")]
+→ [<body>]
+
+$ [...p] // We can also put iterators into the literal array constructor, and maken an array out of it
+→ [<p>, <p>, <p>]
+
+$ for(const n of "abc") {console.log(n); }
+→ "a"
+→ "b"
+→ "c"
+```
+Jedes Objekt kann Iterierbar werden, indem es die Symbol.iterator Funktion implementiert.
+
+!!!Warning Bei for-Schleifen kann auch `in` verwendet werden. Dies führt aber nicht zum Ziel und zeigt die einzelnen Properties des Elements an - also zum Beispiel auch Funktionen.
