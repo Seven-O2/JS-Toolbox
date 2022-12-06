@@ -89,6 +89,10 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
 - [Asynchrone Programmierung](#asynchrone-programmierung)
   - [Promise](#promise)
     - [Async / Await](#async-await)
+- [Koordination](#koordination)
+  - [Keine Koordination](#keine-koordination)
+  - [Sequenz](#sequenz)
+  - [Resultatabhängigkeit](#resultatabhängigkeit)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
@@ -683,6 +687,8 @@ The excel script should be here :(
 [Source](resources/javascript/Excel/Excel.js)
 
 Wie beim Plotter werden die Werte in den Zellen eingelesen, und evaluiert. Die Werte in der Klammer werden dann als `input` Objekt weitergegeben und von der Funktion `n` in Zahlen umgewandelt, und zusätzlich werden die einzelnen Funktionen (also das +) ausgeführt.
+
+!!!Warning Dieses Excel funktioniert nur gegen oben, also wenn eine Variable unter dem Feld benötigt wird (welche auch zuerst noch berechnet werden muss), funktioniert diese Funktion nicht. Siehe [Resultatabhängigkeit](#resultatabhängigkeit)
 
 # Objekte / Objects
 Objekte sind Datenstrukturen mit Methoden, die das managen und zugreiffen auf diese erlauben. Sie werden oft als Ort verwendet, um veränderbare (mutable) Daten zu speichern. Zusätzlich helfen Objekte, eine gewisse Abstraktion zu geben - indem man mehreren gleiche Objekte (wie zum Beispiel Punkte mit x- und y-Koordinaten) Namen geben kann.
@@ -1375,6 +1381,143 @@ foo(4); bar(4); foo(3); bar(3);
 Async und Await müssen nicht verwendet werden, helfen aber manchmal beim Verständnis des Codes.
 
 !!! Warning Nur Funktionen welche mit `async` gekenntzeichnet sind können auch `await` verwenden.
+
+# Koordination
+Koordination wird dann benötigt, wenn asynchron Programmiert wird. Mit Koordination ist dabei gemeint, wie asynchrone Aufrufe ausgeführt werden. Dafür gibt es drei Arten, wie dies gemacht werden kann.
+
+Für die Beispielcodes wird auf die [Todo Liste](#mvc) die Koordination Beispielhaft implementiert. Dazu wird ein "Feelin' lucky" Button hinzugefügt, welcher ein zufälliges Fortune nach einer gewissen Zeit hinzufügt.
+
+```javascript {.line-numbers}
+const fortunes = [
+    "Do the WebPr Homework",
+    "Care for the JavaScript Toolbox",
+    "Watch the recommended videos",
+    "Read the recommended chapters in You-dont-know-JS",
+    "Do the dataflow excel challenge!"
+];
+
+// This function is called on button-click
+function fortuneService(whenDone) {
+    setTimeout(
+        () => whenDone(fortunes[Math.floor((Math.random() * fortunes.length))]),
+        Math.floor((Math.random() * 3000))
+    );
+}
+```
+
+[Source](./resources/javascript/Coordination/Todo/FortuneService.js)
+
+## Keine Koordination
+Es wird nichts für die Koordination getan. JavaScript im Browser ist in diesem Fall Thread confined, also der Browser handhabt diese Asynchronität und wir als Programmierer müssen uns nicht darum kümmern.
+```javascript {.line-numbers}
+const addFortuneTodo = button => {
+  const newTodo = Todo();
+  todoModel.add(newTodo);
+  newTodo.setText("...");
+  fortuneService( text => {
+    newTodo.setText(text);
+  });
+  return newTodo;
+};
+```
+
+[Source](./resources/javascript/Coordination/Todo/NoCoordination/Todo.js)
+
+<iframe src=resources/javascript/Coordination/Todo/NoCoordination/todo.html frameBorder="0" style="height:350px; width: 100%">
+The todolist script should be here :(
+</iframe>
+
+## Sequenz
+Sequenzen sind asynchrone Aktionen, welche in einer gewissen Reihenfolge ausgeführt werden müssen. Dies erfordert Koordination. Um dies umzusetzen wird sogenannte Delegated Coordination verwendet. Dabei wird die Koordination in an einen Koordinator gegeben, welcher dann diese Aktionen ab arbeitet (bzw. die Aktionen startet).
+
+```javascript {.line-numbers}
+const scheduler = Scheduler();
+const addFortuneTodo = button => {
+  button.disabled = true;
+  const newTodo = Todo();
+  todoModel.add(newTodo);
+  newTodo.setText("...");
+
+  // The scheduler runs the task in the lambda expression and
+  // waits until resolve is called
+  scheduler.add( resolve => {
+    fortuneService( text => {
+      newTodo.setText(text);
+      button.disabled = false;
+      resolve();
+    });
+  });
+};
+```
+
+[Source](./resources/javascript/Coordination/Todo/Sequencial/Todo.js)
+
+Für die sequenzielle Implementierung wird ein sogenannter `Scheduler` verwendet. Dieser schaut unter anderem, dass erst wenn der Task fertig generiert ist, der Button um ein neuen Task anzulegen auch wieder freigegeben wird. Wird der Button nicht deaktiviert, werden die Tasks trotzdem nur nacheinander ausgeführt.
+
+```javascript {.line-numbers}
+// execute asynchronous tasks in strict sequence, aka "reactive stream", "flux architecture"
+const Scheduler = () => {
+  let inProcess = false;
+  const tasks = [];                     // fifo queue
+  const process = () => {
+    if (inProcess)          { return; } // guard clause -> when already running, skip
+    if (tasks.length === 0) { return; } // guard clause -> when no tasks in queue, skip
+    inProcess = true;
+    const task = tasks.pop();           // Load the new task
+    new Promise( (resolve, _) => { 
+      task(resolve);                    // Run the task
+    }).then ( () => {                   // When finished
+      inProcess = false;                // show that the scheduler is finished
+      process();                        // Restart the process
+    });
+  }
+  const add = task => {
+    tasks.unshift(task);  // append to end
+    process();            // process the task
+  }
+  return {
+    add: add,
+    addResolve: task => add( ok => { task(); ok(); }) // convenience, will automatically make a scheduler task from a function
+  }
+};
+```
+
+[Source](./resources/javascript/Coordination/Todo/Sequencial/Scheduler.js)
+
+<iframe src=resources/javascript/Coordination/Todo/Sequencial/Todo.html frameBorder="0" style="height:350px; width: 100%">
+The todolist script should be here :(
+</iframe>
+
+## Resultatabhängigkeit
+Aktion B und C benötigen das Resultat von A. A muss genau einmal vor B und C ausgeführt werden. Diese sogenannte implizite Koordination ist durch die Architektur gegeben, wesswegen diese implizit genannt wird. Umgesetzt wird dies mit sogenannten `DataFlowVariablen`.
+
+Da die resultatabhängige Koordination für andere Use-Cases als die Todo Liste gedacht ist, wird hierfür das Beispiel [Excel](#referencing) verwendet.
+
+```javascript {.line-numbers}
+// a dataflow abstraction that is not based on concurrency but on laziness
+const DataFlowVariable = howto => {
+  let value = undefined;
+  return () => undefined === value  // when undefined, run the howto function
+    ? value = howto()
+    : value;
+};
+```
+
+[Source](./resources/javascript/Coordination/ResultDependency/DataflowVariable.js)
+
+Bevor man die Evaluation laufen lässt baut man voneinander abhängige DataFlows. Diese werden dann der Abhängikeit nach abgearbeitet.
+
+```javascript {.line-numbers}
+// Make a DFV of the eval function, which is later executed
+return DataFlowVariable ( () => {
+  return Number(eval(Formulae[input.id]))
+} ) ;
+```
+
+<iframe src=resources/javascript/Coordination/ResultDependency/View.html frameBorder="0" style="width: 100%">
+The excel script should be here :(
+</iframe>
+
 
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.

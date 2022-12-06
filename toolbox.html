@@ -672,6 +672,13 @@ pre[data-line] .line-highlight[data-end]:after {
 </li>
 </ul>
 </li>
+<li><a href="#koordination">Koordination</a>
+<ul>
+<li><a href="#keine-koordination">Keine Koordination</a></li>
+<li><a href="#sequenz">Sequenz</a></li>
+<li><a href="#resultatabh%C3%A4ngigkeit">Resultatabh&#xE4;ngigkeit</a></li>
+</ul>
+</li>
 <li><a href="#strings">Strings</a></li>
 <li><a href="#loggen">Loggen</a>
 <ul>
@@ -687,6 +694,7 @@ pre[data-line] .line-highlight[data-end]:after {
 </ul>
 </li>
 <li><a href="#semicolons">Semicolons</a></li>
+<li><a href="#javascript-iterator-protokol">JavaScript Iterator Protokol</a></li>
 </ul>
 <h1 class="mume-header" id="generell">Generell</h1>
 
@@ -1317,6 +1325,9 @@ The excel script should be here :(
 </iframe>
 <p><a href="resources/javascript/Excel/Excel.js">Source</a></p>
 <p>Wie beim Plotter werden die Werte in den Zellen eingelesen, und evaluiert. Die Werte in der Klammer werden dann als <code>input</code> Objekt weitergegeben und von der Funktion <code>n</code> in Zahlen umgewandelt, und zus&#xE4;tzlich werden die einzelnen Funktionen (also das +) ausgef&#xFC;hrt.</p>
+<div class="admonition warning">
+<p class="admonition-title">Dieses Excel funktioniert nur gegen oben, also wenn eine Variable unter dem Feld ben&#xF6;tigt wird (welche auch zuerst noch berechnet werden muss), funktioniert diese Funktion nicht. Siehe <a href="#resultatabh%C3%A4ngigkeit">Resultatabh&#xE4;ngigkeit</a></p>
+</div>
 <h1 class="mume-header" id="objekte-objects">Objekte / Objects</h1>
 
 <p>Objekte sind Datenstrukturen mit Methoden, die das managen und zugreiffen auf diese erlauben. Sie werden oft als Ort verwendet, um ver&#xE4;nderbare (mutable) Daten zu speichern. Zus&#xE4;tzlich helfen Objekte, eine gewisse Abstraktion zu geben - indem man mehreren gleiche Objekte (wie zum Beispiel Punkte mit x- und y-Koordinaten) Namen geben kann.</p>
@@ -1958,8 +1969,111 @@ The todolist script should be here :(
 </blockquote>
 <p>Async und Await m&#xFC;ssen nicht verwendet werden, helfen aber manchmal beim Verst&#xE4;ndnis des Codes.</p>
 <div class="admonition warning">
-<p class="admonition-title">Nur funktionen welche mit <code>async</code> gekenntzeichnet sind k&#xF6;nnen auch <code>await</code> verwenden.</p>
+<p class="admonition-title">Nur Funktionen welche mit <code>async</code> gekenntzeichnet sind k&#xF6;nnen auch <code>await</code> verwenden.</p>
 </div>
+<h1 class="mume-header" id="koordination">Koordination</h1>
+
+<p>Koordination wird dann ben&#xF6;tigt, wenn asynchron Programmiert wird. Mit Koordination ist dabei gemeint, wie asynchrone Aufrufe ausgef&#xFC;hrt werden. Daf&#xFC;r gibt es drei Arten, wie dies gemacht werden kann.</p>
+<p>F&#xFC;r die Beispielcodes wird auf die <a href="#mvc">Todo Liste</a> die Koordination Beispielhaft implementiert. Dazu wird ein &quot;Feelin&apos; lucky&quot; Button hinzugef&#xFC;gt, welcher ein zuf&#xE4;lliges Fortune nach einer gewissen Zeit hinzuf&#xFC;gt.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token keyword keyword-const">const</span> fortunes <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token string">&quot;Do the WebPr Homework&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;Care for the JavaScript Toolbox&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;Watch the recommended videos&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;Read the recommended chapters in You-dont-know-JS&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;Do the dataflow excel challenge!&quot;</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token comment">// This function is called on button-click</span>
+<span class="token keyword keyword-function">function</span> <span class="token function">fortuneService</span><span class="token punctuation">(</span><span class="token parameter">whenDone</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">setTimeout</span><span class="token punctuation">(</span>
+        <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token function">whenDone</span><span class="token punctuation">(</span>fortunes<span class="token punctuation">[</span><span class="token known-class-name class-name">Math</span><span class="token punctuation">.</span><span class="token method function property-access">floor</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token known-class-name class-name">Math</span><span class="token punctuation">.</span><span class="token method function property-access">random</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span> fortunes<span class="token punctuation">.</span><span class="token property-access">length</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token known-class-name class-name">Math</span><span class="token punctuation">.</span><span class="token method function property-access">floor</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token known-class-name class-name">Math</span><span class="token punctuation">.</span><span class="token method function property-access">random</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">3000</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p><a href="./resources/javascript/Coordination/Todo/FortuneService.js">Source</a></p>
+<h2 class="mume-header" id="keine-koordination">Keine Koordination</h2>
+
+<p>Es wird nichts f&#xFC;r die Koordination getan. JavaScript im Browser ist in diesem Fall Thread confined, also der Browser handhabt diese Asynchronit&#xE4;t und wir als Programmierer m&#xFC;ssen uns nicht darum k&#xFC;mmern.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token keyword keyword-const">const</span> <span class="token function-variable function">addFortuneTodo</span> <span class="token operator">=</span> <span class="token parameter">button</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword keyword-const">const</span> newTodo <span class="token operator">=</span> <span class="token function"><span class="token maybe-class-name">Todo</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  todoModel<span class="token punctuation">.</span><span class="token method function property-access">add</span><span class="token punctuation">(</span>newTodo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  newTodo<span class="token punctuation">.</span><span class="token method function property-access">setText</span><span class="token punctuation">(</span><span class="token string">&quot;...&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">fortuneService</span><span class="token punctuation">(</span> <span class="token parameter">text</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
+    newTodo<span class="token punctuation">.</span><span class="token method function property-access">setText</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword control-flow keyword-return">return</span> newTodo<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p><a href="./resources/javascript/Coordination/Todo/NoCoordination/Todo.js">Source</a></p>
+<iframe src="resources/javascript/Coordination/Todo/NoCoordination/todo.html" frameborder="0" style="height:350px; width: 100%">
+The todolist script should be here :(
+</iframe>
+<h2 class="mume-header" id="sequenz">Sequenz</h2>
+
+<p>Sequenzen sind asynchrone Aktionen, welche in einer gewissen Reihenfolge ausgef&#xFC;hrt werden m&#xFC;ssen. Dies erfordert Koordination. Um dies umzusetzen wird sogenannte Delegated Coordination verwendet. Dabei wird die Koordination in an einen Koordinator gegeben, welcher dann diese Aktionen ab arbeitet (bzw. die Aktionen startet).</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token keyword keyword-const">const</span> scheduler <span class="token operator">=</span> <span class="token function"><span class="token maybe-class-name">Scheduler</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> <span class="token function-variable function">addFortuneTodo</span> <span class="token operator">=</span> <span class="token parameter">button</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
+  button<span class="token punctuation">.</span><span class="token property-access">disabled</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+  <span class="token keyword keyword-const">const</span> newTodo <span class="token operator">=</span> <span class="token function"><span class="token maybe-class-name">Todo</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  todoModel<span class="token punctuation">.</span><span class="token method function property-access">add</span><span class="token punctuation">(</span>newTodo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  newTodo<span class="token punctuation">.</span><span class="token method function property-access">setText</span><span class="token punctuation">(</span><span class="token string">&quot;...&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// The scheduler runs the task in the lambda expression and</span>
+  <span class="token comment">// waits until resolve is called</span>
+  scheduler<span class="token punctuation">.</span><span class="token method function property-access">add</span><span class="token punctuation">(</span> <span class="token parameter">resolve</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token function">fortuneService</span><span class="token punctuation">(</span> <span class="token parameter">text</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
+      newTodo<span class="token punctuation">.</span><span class="token method function property-access">setText</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      button<span class="token punctuation">.</span><span class="token property-access">disabled</span> <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+      <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p><a href="./resources/javascript/Coordination/Todo/Sequencial/Todo.js">Source</a></p>
+<p>F&#xFC;r die sequenzielle Implementierung wird ein sogenannter <code>Scheduler</code> verwendet. Dieser schaut unter anderem, dass erst wenn der Task fertig generiert ist, der Button um ein neuen Task anzulegen auch wieder freigegeben wird. Wird der Button nicht deaktiviert, werden die Tasks trotzdem nur nacheinander ausgef&#xFC;hrt.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token comment">// execute asynchronous tasks in strict sequence, aka &quot;reactive stream&quot;, &quot;flux architecture&quot;</span>
+<span class="token keyword keyword-const">const</span> <span class="token function-variable function"><span class="token maybe-class-name">Scheduler</span></span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword keyword-let">let</span> inProcess <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+  <span class="token keyword keyword-const">const</span> tasks <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>                     <span class="token comment">// fifo queue</span>
+  <span class="token keyword keyword-const">const</span> <span class="token function-variable function">process</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword control-flow keyword-if">if</span> <span class="token punctuation">(</span>inProcess<span class="token punctuation">)</span>          <span class="token punctuation">{</span> <span class="token keyword control-flow keyword-return">return</span><span class="token punctuation">;</span> <span class="token punctuation">}</span> <span class="token comment">// guard clause -&gt; when already running, skip</span>
+    <span class="token keyword control-flow keyword-if">if</span> <span class="token punctuation">(</span>tasks<span class="token punctuation">.</span><span class="token property-access">length</span> <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword control-flow keyword-return">return</span><span class="token punctuation">;</span> <span class="token punctuation">}</span> <span class="token comment">// guard clause -&gt; when no tasks in queue, skip</span>
+    inProcess <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token keyword keyword-const">const</span> task <span class="token operator">=</span> tasks<span class="token punctuation">.</span><span class="token method function property-access">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>           <span class="token comment">// Load the new task</span>
+    <span class="token keyword keyword-new">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span> <span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> _</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span> 
+      <span class="token function">task</span><span class="token punctuation">(</span>resolve<span class="token punctuation">)</span><span class="token punctuation">;</span>                    <span class="token comment">// Run the task</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method function property-access">then</span> <span class="token punctuation">(</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>                   <span class="token comment">// When finished</span>
+      inProcess <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>                <span class="token comment">// show that the scheduler is finished</span>
+      <span class="token function">process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>                        <span class="token comment">// Restart the process</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword keyword-const">const</span> <span class="token function-variable function">add</span> <span class="token operator">=</span> <span class="token parameter">task</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
+    tasks<span class="token punctuation">.</span><span class="token method function property-access">unshift</span><span class="token punctuation">(</span>task<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// append to end</span>
+    <span class="token function">process</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>            <span class="token comment">// process the task</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword control-flow keyword-return">return</span> <span class="token punctuation">{</span>
+    add<span class="token operator">:</span> add<span class="token punctuation">,</span>
+    <span class="token function-variable function">addResolve</span><span class="token operator">:</span> <span class="token parameter">task</span> <span class="token arrow operator">=&gt;</span> <span class="token function">add</span><span class="token punctuation">(</span> <span class="token parameter">ok</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span> <span class="token function">task</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token function">ok</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token comment">// convenience, will automatically make a scheduler task from a function</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p><a href="./resources/javascript/Coordination/Todo/Sequencial/Scheduler.js">Source</a></p>
+<iframe src="resources/javascript/Coordination/Todo/Sequencial/Todo.html" frameborder="0" style="height:350px; width: 100%">
+The todolist script should be here :(
+</iframe>
+<h2 class="mume-header" id="resultatabh%C3%A4ngigkeit">Resultatabh&#xE4;ngigkeit</h2>
+
+<p>Aktion B und C ben&#xF6;tigen das Resultat von A. A muss genau einmal vor B und C ausgef&#xFC;hrt werden. Diese sogenannte implizite Koordination ist durch die Architektur gegeben, wesswegen diese implizit genannt wird. Umgesetzt wird dies mit sogenannten <code>DataFlowVariablen</code>.</p>
+<p>Da die resultatabh&#xE4;ngige Koordination f&#xFC;r andere Use-Cases als die Todo Liste gedacht ist, wird hierf&#xFC;r das Beispiel <a href="#referencing">Excel</a> verwendet.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token comment">// a dataflow abstraction that is not based on concurrency but on laziness</span>
+<span class="token keyword keyword-const">const</span> <span class="token function-variable function"><span class="token maybe-class-name">DataFlowVariable</span></span> <span class="token operator">=</span> <span class="token parameter">howto</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword keyword-let">let</span> value <span class="token operator">=</span> <span class="token keyword nil keyword-undefined">undefined</span><span class="token punctuation">;</span>
+  <span class="token keyword control-flow keyword-return">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token keyword nil keyword-undefined">undefined</span> <span class="token operator">===</span> value
+    <span class="token operator">?</span> value <span class="token operator">=</span> <span class="token function">howto</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token operator">:</span> value<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p><a href="./resources/javascript/Coordination/ResultDependency/DataflowVariable.js">Source</a></p>
+<iframe src="resources/javascript/Coordination/ResultDependency/View.html" frameborder="0" style="width: 100%">
+The excel script should be here :(
+</iframe>
+<p><a href="resources/javascript/Coordination/ResultDependency/Excel.js">Source</a></p>
 <h1 class="mume-header" id="strings">Strings</h1>
 
 <p>In JavaScript k&#xF6;nnen Strings &#xFC;ber verschiedene Varianten angelegt werden. Spezielle Characters m&#xFC;ssen mit &quot;&quot; escaped werden. Das gilt auch f&#xFC;r &quot;&quot; selbst.</p>
@@ -2068,7 +2182,10 @@ $ <span class="token function">bar</span><span class="token punctuation">(</span
 &#x2192; <span class="token number">3</span>
 $ <span class="token function">bar</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 &#x2192; <span class="token number">0</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p>Im Hintergrund wird ein Objekt erstellt, welches die einzelnen Werte abspeichert. Er verwandelt eine Liste von Elementen in ein Array von Elementen.</p>
+$ <span class="token keyword keyword-const">const</span> <span class="token function-variable function">foobar</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span> b</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span>
+$ <span class="token function">foobar</span><span class="token punctuation">(</span><span class="token spread operator">...</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+&#x2192; <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p>Im Hintergrund wird ein Objekt erstellt, welches die einzelnen Werte abspeichert. Er verwandelt eine Liste von Elementen in ein Array von Elementen.</p>
 <h2 class="mume-header" id="spread-operator-an-konstruktorposition">Spread-Operator <code>...</code> an Konstruktorposition</h2>
 
 <p>Der Spread-Operator kann auch an Konstruktorposition verwendet werden, wo bei einer R&#xFC;ckgabe eines Arrays alle restlichen Werte in <code>rest</code> gespeichert werden.</p>
@@ -2129,6 +2246,44 @@ $ <span class="token console class-name">console</span><span class="token punctu
   <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token method function property-access">map</span><span class="token punctuation">(</span><span class="token parameter">it</span> <span class="token arrow operator">=&gt;</span> it <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 &#x2192; <span class="token known-class-name class-name">TypeError</span><span class="token operator">:</span> <span class="token keyword nil keyword-undefined">undefined</span> is not an <span class="token function">object</span> <span class="token punctuation">(</span>evaluation <span class="token string">&apos;console.log(&quot;hi&quot;)[1, 2, 3]&apos;</span><span class="token punctuation">)</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p>JavaScript sieht hier das <code>console.log</code> sowie das <code>[1, 2, 3]</code> als Ausdr&#xFC;cke. Somit wird beim vergessenen <code>;</code> ein Ausdruck generiert, welcher auf das <code>console.log</code> ausgef&#xFC;hrt wird, welches nach dem Ausf&#xFC;hren undefined ist.</p>
+<h1 class="mume-header" id="javascript-iterator-protokol">JavaScript Iterator Protokol</h1>
+
+<p>Mit dem query selector von JavaScript erh&#xE4;lt man eine sogenannte <code>NodeList</code>. Diese kann als iterierbare Liste angesehen werden - ist aber kein Array. Dem Iterator Protokoll geh&#xF6;ren noch weitere Klassen dazu, wie zum Beispiel HTMLCollection und Array.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers">$ <span class="token keyword keyword-const">const</span> p <span class="token operator">=</span> <span class="token dom variable">document</span><span class="token punctuation">.</span><span class="token method function property-access">querySelectorAll</span><span class="token punctuation">(</span><span class="token string">&quot;p&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+$ p<span class="token punctuation">;</span>
+&#x2192; <span class="token maybe-class-name">NodeList</span><span class="token punctuation">[</span><span class="token operator">&lt;</span>p<span class="token operator">&gt;</span><span class="token punctuation">,</span> <span class="token operator">&lt;</span>p<span class="token operator">&gt;</span><span class="token punctuation">,</span> <span class="token operator">&lt;</span>p<span class="token operator">&gt;</span><span class="token punctuation">]</span>
+$ <span class="token keyword control-flow keyword-for">for</span> <span class="token punctuation">(</span><span class="token keyword keyword-const">const</span> n <span class="token keyword keyword-of">of</span> p<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span> <span class="token comment">// Supports lazy loading</span>
+&#x2192; <span class="token operator">&lt;</span>p<span class="token operator">&gt;</span><span class="token maybe-class-name">Lorem</span><span class="token operator">&lt;</span><span class="token operator">/</span>p<span class="token operator">&gt;</span>
+&#x2192; <span class="token operator">&lt;</span>p<span class="token operator">&gt;</span><span class="token maybe-class-name">Ipsum</span><span class="token operator">&lt;</span><span class="token operator">/</span>p<span class="token operator">&gt;</span>
+&#x2192; <span class="token operator">&lt;</span>p<span class="token operator">&gt;</span>dolor<span class="token operator">&lt;</span><span class="token operator">/</span>p<span class="token operator">&gt;</span>
+
+$ <span class="token keyword keyword-const">const</span> body <span class="token operator">=</span> <span class="token dom variable">document</span><span class="token punctuation">.</span><span class="token method function property-access">querySelector</span><span class="token punctuation">(</span><span class="token string">&quot;body&quot;</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token property-access">children</span><span class="token punctuation">;</span> <span class="token comment">// HTMLCollection</span>
+$ <span class="token keyword control-flow keyword-for">for</span> <span class="token punctuation">(</span><span class="token keyword keyword-const">const</span> c <span class="token keyword keyword-of">of</span> body<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span>c<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+&#x2192; <span class="token operator">&lt;</span>h1<span class="token operator">&gt;</span><span class="token maybe-class-name">Hello</span><span class="token operator">&lt;</span><span class="token operator">/</span>h1<span class="token operator">&gt;</span>
+&#x2192; <span class="token operator">&lt;</span>p<span class="token operator">&gt;</span><span class="token maybe-class-name">Lorem</span><span class="token operator">&lt;</span><span class="token operator">/</span>p<span class="token operator">&gt;</span>
+&#x2192; <span class="token operator">&lt;</span>p<span class="token operator">&gt;</span><span class="token maybe-class-name">Ipsum</span><span class="token operator">&lt;</span><span class="token operator">/</span>p<span class="token operator">&gt;</span>
+&#x2192; <span class="token operator">&lt;</span>p<span class="token operator">&gt;</span>dolor<span class="token operator">&lt;</span><span class="token operator">/</span>p<span class="token operator">&gt;</span>
+
+$ <span class="token keyword control-flow keyword-for">for</span> <span class="token punctuation">(</span><span class="token keyword keyword-const">const</span> a <span class="token keyword keyword-of">of</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span> <span class="token comment">// Array</span>
+&#x2192; <span class="token number">1</span>
+&#x2192; <span class="token number">2</span>
+&#x2192; <span class="token number">3</span>
+&#x2192; <span class="token number">4</span>
+
+$ <span class="token punctuation">[</span><span class="token spread operator">...</span><span class="token dom variable">document</span><span class="token punctuation">.</span><span class="token method function property-access">querySeectorAll</span><span class="token punctuation">(</span><span class="token string">&quot;body&quot;</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+&#x2192; <span class="token punctuation">[</span><span class="token operator">&lt;</span>body<span class="token operator">&gt;</span><span class="token punctuation">]</span>
+
+$ <span class="token punctuation">[</span><span class="token spread operator">...</span>p<span class="token punctuation">]</span> <span class="token comment">// We can also put iterators into the literal array constructor, and maken an array out of it</span>
+&#x2192; <span class="token punctuation">[</span><span class="token operator">&lt;</span>p<span class="token operator">&gt;</span><span class="token punctuation">,</span> <span class="token operator">&lt;</span>p<span class="token operator">&gt;</span><span class="token punctuation">,</span> <span class="token operator">&lt;</span>p<span class="token operator">&gt;</span><span class="token punctuation">]</span>
+
+$ <span class="token keyword control-flow keyword-for">for</span><span class="token punctuation">(</span><span class="token keyword keyword-const">const</span> n <span class="token keyword keyword-of">of</span> <span class="token string">&quot;abc&quot;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+&#x2192; <span class="token string">&quot;a&quot;</span>
+&#x2192; <span class="token string">&quot;b&quot;</span>
+&#x2192; <span class="token string">&quot;c&quot;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p>Jedes Objekt kann Iterierbar werden, indem es die Symbol.iterator Funktion implementiert.</p>
+<div class="admonition warning">
+<p class="admonition-title">Bei for-Schleifen kann auch <code>in</code> verwendet werden. Dies f&#xFC;hrt aber nicht zum Ziel und zeigt die einzelnen Properties des Elements an - also zum Beispiel auch Funktionen.</p>
+</div>
 
       </div>
       
