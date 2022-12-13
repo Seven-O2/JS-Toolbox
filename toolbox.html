@@ -593,6 +593,7 @@ pre[data-line] .line-highlight[data-end]:after {
 <li><a href="#map">Map</a></li>
 <li><a href="#filter">Filter</a></li>
 <li><a href="#reduce">Reduce</a></li>
+<li><a href="#indexing">Indexing</a></li>
 </ul>
 </li>
 <li><a href="#scripting">Scripting</a>
@@ -677,6 +678,14 @@ pre[data-line] .line-highlight[data-end]:after {
 <li><a href="#keine-koordination">Keine Koordination</a></li>
 <li><a href="#sequenz">Sequenz</a></li>
 <li><a href="#resultatabh%C3%A4ngigkeit">Resultatabh&#xE4;ngigkeit</a></li>
+</ul>
+</li>
+<li><a href="#modulsystem">Modulsystem</a>
+<ul>
+<li><a href="#module-importieren">Module importieren</a></li>
+<li><a href="#module-exportieren">Module exportieren</a></li>
+<li><a href="#auswirkungen">Auswirkungen</a></li>
+<li><a href="#sop">SOP</a></li>
 </ul>
 </li>
 <li><a href="#strings">Strings</a></li>
@@ -1165,6 +1174,14 @@ The ball script should be here :(
 <div class="admonition info">
 <p class="admonition-title">Das Setzen des zweiten Arguments der <code>reduce</code> Funktion hat zwei Vorteile. Zum einen ist klar definiert, welcher Wert gesetzt ist, wenn die Liste leer ist. Zum anderen ist der Datentyp klar definiert.</p>
 </div>
+<h2 class="mume-header" id="indexing">Indexing</h2>
+
+<p>Ben&#xF6;tigt man in <code>map</code>, <code>reduce</code> oder <code>filter</code> einmal die Indexe, kann man Problemlos den Index abgreifen.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers">$ <span class="token keyword keyword-const">const</span> a1 <span class="token operator">=</span> <span class="token string">&quot;a b c d&quot;</span><span class="token punctuation">.</span><span class="token method function property-access">split</span><span class="token punctuation">(</span><span class="token string">&quot;&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+&#x2192; <span class="token punctuation">[</span><span class="token string">&quot;a&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;b&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;c&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;d&quot;</span><span class="token punctuation">]</span>
+$ <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token method function property-access">map</span><span class="token punctuation">(</span> <span class="token punctuation">(</span><span class="token parameter">it<span class="token punctuation">,</span> idx</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> a1<span class="token punctuation">[</span>idx<span class="token punctuation">]</span> <span class="token operator">+</span> it <span class="token punctuation">)</span><span class="token punctuation">;</span>
+&#x2192; <span class="token punctuation">[</span><span class="token string">&quot;a1&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;b2&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;c3&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;d4&quot;</span><span class="token punctuation">]</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></pre><p>Hier wird <code>it</code> verwendet um die Indizes aus dem Array <code>[1, 2, 3, 4]</code> zu verwerten und mit dem Array <code>[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]</code> zu verkn&#xFC;pfen.</p>
 <h1 class="mume-header" id="scripting">Scripting</h1>
 
 <p>Scripting ist ein komplett eigenes Paradigma in der Welt von JavaScript. Vieles kann mit Scripting sehr einfach programmiert werden, wie zum Beispiel Automation, Build Systeme, Command Line, self-modifying-code etc. Scripting bedeutet, dass der Code als Text w&#xE4;hrend der Laufzeit &quot;gelesen&quot; wird und dann evaluiert wird, das ist auch als <em>interpretiert</em> bekannt.</p>
@@ -1463,15 +1480,15 @@ $ <span class="token keyword keyword-let">let</span> foo<span class="token punct
 <span class="token comment">// Object in parameter position</span>
 $ <span class="token function-variable function">foo</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">myobj</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span>myobj<span class="token punctuation">.</span><span class="token property-access">x</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 $ <span class="token function">foo</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
- &#x2192; <span class="token number">1</span>
+&#x2192; <span class="token number">1</span>
 <span class="token comment">// Object deconstruction in parameter position</span>
 $ <span class="token function-variable function">foo</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>x<span class="token punctuation">,</span> y<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// we get an object that has x and y, and maybe any other thing</span>
 $ <span class="token function">foo</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span>
- &#x2192; <span class="token number">1</span>
+&#x2192; <span class="token number">1</span>
 $ <span class="token keyword keyword-const">const</span> <span class="token function-variable function">baz</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> obj<span class="token punctuation">;</span>
 $ <span class="token keyword keyword-const">const</span> <span class="token punctuation">{</span>x<span class="token punctuation">,</span> y<span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">baz</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 $ x
- &#x2192; <span class="token number">1</span>
+&#x2192; <span class="token number">1</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p>Der literale Objektkonstruktor kann noch etwas mehr. Er kann auch direkt die Werte in einer Variable in einen gleichnahmigen Schl&#xFC;ssel speichern. Das kann man auch nutzen um aussagekr&#xE4;ftigere Konsolenlogs zu erstellen.</p>
 <pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers">$ <span class="token keyword keyword-let">let</span> x <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
 $ <span class="token keyword keyword-let">let</span> y <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
@@ -2065,37 +2082,88 @@ The todolist script should be here :(
 <pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token comment">// a dataflow abstraction that is not based on concurrency but on laziness</span>
 <span class="token keyword keyword-const">const</span> <span class="token function-variable function"><span class="token maybe-class-name">DataFlowVariable</span></span> <span class="token operator">=</span> <span class="token parameter">howto</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
   <span class="token keyword keyword-let">let</span> value <span class="token operator">=</span> <span class="token keyword nil keyword-undefined">undefined</span><span class="token punctuation">;</span>
-  <span class="token keyword control-flow keyword-return">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token keyword nil keyword-undefined">undefined</span> <span class="token operator">===</span> value
+  <span class="token keyword control-flow keyword-return">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token keyword nil keyword-undefined">undefined</span> <span class="token operator">===</span> value  <span class="token comment">// when undefined, run the howto function</span>
     <span class="token operator">?</span> value <span class="token operator">=</span> <span class="token function">howto</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
     <span class="token operator">:</span> value<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p><a href="./resources/javascript/Coordination/ResultDependency/DataflowVariable.js">Source</a></p>
-<iframe src="resources/javascript/Coordination/ResultDependency/View.html" frameborder="0" style="width: 100%">
+<p>Bevor man die Evaluation laufen l&#xE4;sst baut man voneinander abh&#xE4;ngige DataFlows. Diese werden dann der Abh&#xE4;ngikeit nach abgearbeitet. Diese Werte sind sogesehen <a href="https://en.wikipedia.org/wiki/Lazy_loading">lazy-loaded</a>. Die schon berechneten Werte (also die Abh&#xE4;ngigen) werden dann bevor sie an der Reihe sind berechnet und gecached.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token comment">// Make a DFV of the eval function, which is later executed</span>
+<span class="token keyword control-flow keyword-return">return</span> <span class="token function"><span class="token maybe-class-name">DataFlowVariable</span></span> <span class="token punctuation">(</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword control-flow keyword-return">return</span> <span class="token known-class-name class-name">Number</span><span class="token punctuation">(</span><span class="token function">eval</span><span class="token punctuation">(</span><span class="token maybe-class-name">Formulae</span><span class="token punctuation">[</span>input<span class="token punctuation">.</span><span class="token property-access">id</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span> <span class="token punctuation">)</span> <span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></pre><iframe src="resources/javascript/Coordination/ResultDependency/View.html" frameborder="0" style="width: 100%">
 The excel script should be here :(
 </iframe>
-<p><a href="resources/javascript/Coordination/ResultDependency/Excel.js">Source</a></p>
+<h1 class="mume-header" id="modulsystem">Modulsystem</h1>
+
+<p>Module helfen Code zu organisieren und klar die Abh&#xE4;ngigkeiten zu definieren. Zus&#xE4;tzlich helfen sie Fehler bei <a href="#global">Globals</a>, <a href="#scopes">Scopes</a> und Namespaces zu verhindern. Man m&#xF6;chte den Code gut und feingranular bearbeiten k&#xF6;nnen.<br>
+Module sind keine:</p>
+<ul>
+<li>Pakete (diese sind versioniert)</li>
+<li>Abh&#xE4;ngigkeiten, Bibliotheken oder Releases</li>
+<li>Sind keine Einheit der Publikation</li>
+<li>Objekte</li>
+</ul>
+<p>Ein Modul ist Code welcher <code>import</code> oder <code>export</code> verwendet. Sobald man ein Modul importiert, ist man selber auch ein Modul.</p>
+<h2 class="mume-header" id="module-importieren">Module importieren</h2>
+
+<div class="admonition warning">
+<p class="admonition-title">Module k&#xF6;nnen nur asynchron geladen werden.</p>
+</div>
+<p>Wenn man das macht, sollte man die Speicherorte direkt per <code>URI</code> angeben</p>
+<p>Im HTML wird normalerweise eine Datei importiert, welche dann alle weiteren Imports via <code>import</code> importiert.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token operator">&lt;</span>script src<span class="token operator">=</span><span class="token string">&quot;./my.js&quot;</span> type<span class="token operator">=</span><span class="token string">&quot;module&quot;</span><span class="token operator">&gt;</span>
+<span class="token keyword module keyword-import">import</span><span class="token punctuation">(</span><span class="token string">&quot;./my.js&quot;</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method function property-access">then</span><span class="token punctuation">(</span><span class="token parameter">mod</span> <span class="token arrow operator">=&gt;</span> <span class="token spread operator">...</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//     &#x2191; must be a literal string, no variables allowed</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></pre><p>M&#xF6;chte man auf eine Funktion oder eine Variable im Modul zugreifen, muss im <code>.then</code> via <code>mod.x</code> darauf zugegriffen werden. Achtung, dies ist invasiv.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token keyword module keyword-import">import</span> <span class="token string">&quot;module-name&quot;</span><span class="token punctuation">;</span> <span class="token comment">// loads all</span>
+<span class="token keyword module keyword-import">import</span> <span class="token imports"><span class="token punctuation">{</span>export1<span class="token punctuation">,</span> export2<span class="token punctuation">}</span></span> <span class="token keyword module keyword-from">from</span> <span class="token string">&quot;module-name&quot;</span><span class="token punctuation">;</span> <span class="token comment">// loads export1, export2</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></pre><p>Module werden am besten mit dem oben stehenden Syntax geladen. Wenn man nur eine Menge exports ben&#xF6;tigt, sollte man dies auch explizit angeben.</p>
+<h2 class="mume-header" id="module-exportieren">Module exportieren</h2>
+
+<p>Module k&#xF6;nnen auch exportiert werden. Exportierte Werte sind immer <code>read-only</code>.</p>
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"><span class="token keyword module keyword-export">export</span> <span class="token exports"><span class="token punctuation">{</span>name1<span class="token punctuation">,</span> name2<span class="token punctuation">,</span> <span class="token spread operator">...</span><span class="token punctuation">,</span> nameN<span class="token punctuation">}</span></span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></pre><p>Am meisten Sinn macht es, am Anfang des Files zu definieren, welche Teile genau exportiert werden. Auch hier sollte immer alles explizit angegeben werden.</p>
+<h2 class="mume-header" id="auswirkungen">Auswirkungen</h2>
+
+<ul>
+<li>Module sind immer <code>use strict</code></li>
+<li>Exports sind read-only (<code>const</code>)</li>
+<li>Das <code>this</code> kann nicht wirklich verwendet werden, man hat also auch kein Zugriff auf das globale Objekt</li>
+<li>Es gibt kein <a href="#let">hoisting</a></li>
+<li>Implizit ist man im <code>defer</code> Modus &#x2192; <code>document.writeln</code> ist nicht mehr n&#xFC;tzlich</li>
+<li>Module sind Namespaces</li>
+<li>Module sind Singleton</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title"><code>defer</code> (engl. f&#xFC;r Verschoben) steht f&#xFC;r asynchrone Ausf&#xFC;hrung</p>
+</div>
+<h2 class="mume-header" id="sop">SOP</h2>
+
+<p>Module m&#xFC;ssen die <code>SOP</code> (<strong>S</strong>ame <strong>O</strong>rigin <strong>P</strong>olicy) beachten. Das bedeutet, das Dateisystem ist <code>null</code>. Am besten Umgeht man dies indem man den Debugmodus des Browsers startet (welcher SOP deaktiviert hat und die Daten nicht cached) oder man verwendet einen lokalen Webserver.</p>
 <h1 class="mume-header" id="strings">Strings</h1>
 
 <p>In JavaScript k&#xF6;nnen Strings &#xFC;ber verschiedene Varianten angelegt werden. Spezielle Characters m&#xFC;ssen mit &quot;&quot; escaped werden. Das gilt auch f&#xFC;r &quot;&quot; selbst.</p>
 <pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers">$   <span class="token string">&quot;askf\t&#xEB;&#xE4;3aa&quot;</span>           
- &#x2192; <span class="token string">&quot;askf    &#xEB;&#xE4;3aa&quot;</span>
+&#x2192; <span class="token string">&quot;askf    &#xEB;&#xE4;3aa&quot;</span>
 $   <span class="token string">&quot;askf\\asd&quot;</span>             
- &#x2192; <span class="token string">&quot;askf\asd&quot;</span>
+&#x2192; <span class="token string">&quot;askf\asd&quot;</span>
 $   <span class="token string">&apos;askfasd&apos;</span>               
- &#x2192; <span class="token string">&quot;askfasd&quot;</span>
+&#x2192; <span class="token string">&quot;askfasd&quot;</span>
 $   <span class="token string">&apos;Er sagte &quot;Hallo!&quot;&apos;</span>     
- &#x2192; <span class="token string">&quot;Er sagte \&quot;Hallo!\&quot;&quot;</span>
+&#x2192; <span class="token string">&quot;Er sagte \&quot;Hallo!\&quot;&quot;</span>
 $   <span class="token string">&quot;Er sagte &apos;Hallo!&apos;&quot;</span>     
- &#x2192; <span class="token string">&quot;Er sagte &apos;Hallo!&apos;&quot;</span>
+&#x2192; <span class="token string">&quot;Er sagte &apos;Hallo!&apos;&quot;</span>
 $   <span class="token keyword keyword-const">const</span> a <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
 $   <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">x ist : </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>a<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>          
- &#x2192; <span class="token string">&quot;x ist 1&quot;</span>
+&#x2192; <span class="token string">&quot;x ist 1&quot;</span>
 $   <span class="token operator">/</span>hallo\\s<span class="token operator">/</span>              
- &#x2192; <span class="token string">&quot;/hallo\\s/&quot;</span>
+&#x2192; <span class="token string">&quot;/hallo\\s/&quot;</span>
 $   <span class="token known-class-name class-name">String</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">hallo\s</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">)</span>       
- &#x2192; <span class="token string">&quot;/hallo\\s/&quot;</span>
+&#x2192; <span class="token string">&quot;/hallo\\s/&quot;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p>Strings k&#xF6;nnen mit <code>&quot;</code>, <code>&apos;</code> und <code>`</code> definiert werden. Die <code>&quot;</code> und <code>&apos;</code> werden als normale Strings verwendet, der Backtick wird f&#xFC;r sogenannte Template-Strings verwendet. Es handelt sich dabei um Literale Strings.<br>
-Mithilfe des String-Konstruktors (<code>String()</code>) k&#xF6;nnen Escape-Characters umgangen werden, wie zum Beispiel beim generieren einer Regex.</p>
+Mithilfe des String-Konstruktors <code>String()</code> k&#xF6;nnen Escape-Characters umgangen werden, wie zum Beispiel beim generieren einer Regex.</p>
 <h1 class="mume-header" id="loggen">Loggen</h1>
 
 <p>Die sch&#xF6;nste Art in JavaScript zu loggen ist &#xFC;ber die Konsole.</p>

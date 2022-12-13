@@ -51,6 +51,7 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [Map](#map)
   - [Filter](#filter)
   - [Reduce](#reduce)
+  - [Indexing](#indexing)
 - [Scripting](#scripting)
   - [Progressive Web-Applikation](#progressive-web-applikation)
   - [Expression Evaluation](#expression-evaluation)
@@ -93,6 +94,11 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [Keine Koordination](#keine-koordination)
   - [Sequenz](#sequenz)
   - [Resultatabhängigkeit](#resultatabhängigkeit)
+- [Modulsystem](#modulsystem)
+  - [Module importieren](#module-importieren)
+  - [Module exportieren](#module-exportieren)
+  - [Auswirkungen](#auswirkungen)
+  - [SOP](#sop)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
@@ -518,6 +524,16 @@ document.write([1, 2, 3].reduce((acc, cur) => [...acc, cur], [])) // Copies an a
 
 !!!Info Das Setzen des zweiten Arguments der `reduce` Funktion hat zwei Vorteile. Zum einen ist klar definiert, welcher Wert gesetzt ist, wenn die Liste leer ist. Zum anderen ist der Datentyp klar definiert.
 
+## Indexing
+Benötigt man in `map`, `reduce` oder `filter` einmal die Indexe, kann man Problemlos den Index abgreifen.
+```javascript {.line-numbers}
+$ const a1 = "a b c d".split("");
+→ ["a", "b", "c", "d"]
+$ [1, 2, 3, 4].map( (it, idx) => a1[idx] + it );
+→ ["a1", "b2", "c3", "d4"]
+```
+Hier wird `it` verwendet um die Indizes aus dem Array `[1, 2, 3, 4]` zu verwerten und mit dem Array `["a", "b", "c", "d"]` zu verknüpfen.
+
 # Scripting
 Scripting ist ein komplett eigenes Paradigma in der Welt von JavaScript. Vieles kann mit Scripting sehr einfach programmiert werden, wie zum Beispiel Automation, Build Systeme, Command Line, self-modifying-code etc. Scripting bedeutet, dass der Code als Text während der Laufzeit "gelesen" wird und dann evaluiert wird, das ist auch als *interpretiert* bekannt.
 ## Progressive Web-Applikation
@@ -836,15 +852,15 @@ $ let foo;
 // Object in parameter position
 $ foo = (myobj) => console.log(myobj.x);
 $ foo(obj);
- → 1
+→ 1
 // Object deconstruction in parameter position
 $ foo = ({x, y}) => console.log(x); // we get an object that has x and y, and maybe any other thing
 $ foo(obj)
- → 1
+→ 1
 $ const baz = () => obj;
 $ const {x, y} = baz();
 $ x
- → 1
+→ 1
 ```
 Der literale Objektkonstruktor kann noch etwas mehr. Er kann auch direkt die Werte in einer Variable in einen gleichnahmigen Schlüssel speichern. Das kann man auch nutzen um aussagekräftigere Konsolenlogs zu erstellen.
 ```javascript {.line-numbers}
@@ -1505,7 +1521,7 @@ const DataFlowVariable = howto => {
 
 [Source](./resources/javascript/Coordination/ResultDependency/DataflowVariable.js)
 
-Bevor man die Evaluation laufen lässt baut man voneinander abhängige DataFlows. Diese werden dann der Abhängikeit nach abgearbeitet.
+Bevor man die Evaluation laufen lässt baut man voneinander abhängige DataFlows. Diese werden dann der Abhängikeit nach abgearbeitet. Diese Werte sind sogesehen [lazy-loaded](https://en.wikipedia.org/wiki/Lazy_loading). Die schon berechneten Werte (also die Abhängigen) werden dann bevor sie an der Reihe sind berechnet und gecached.
 
 ```javascript {.line-numbers}
 // Make a DFV of the eval function, which is later executed
@@ -1518,30 +1534,79 @@ return DataFlowVariable ( () => {
 The excel script should be here :(
 </iframe>
 
+# Modulsystem
+Module helfen Code zu organisieren und klar die Abhängigkeiten zu definieren. Zusätzlich helfen sie Fehler bei [Globals](#global), [Scopes](#scopes) und Namespaces zu verhindern. Man möchte den Code gut und feingranular bearbeiten können.  
+Module sind keine:
+
+- Pakete (diese sind versioniert)
+- Abhängigkeiten, Bibliotheken oder Releases
+- Sind keine Einheit der Publikation
+- Objekte
+
+Ein Modul ist Code welcher `import` oder `export` verwendet. Sobald man ein Modul importiert, ist man selber auch ein Modul.
+
+## Module importieren
+!!!Warning Module können nur asynchron geladen werden.
+Wenn man das macht, sollte man die Speicherorte direkt per `URI` angeben
+
+Im HTML wird normalerweise eine Datei importiert, welche dann alle weiteren Imports via `import` importiert.
+```javascript {.line-numbers}
+<script src="./my.js" type="module">
+import("./my.js").then(mod => ...);
+//     ↑ must be a literal string, no variables allowed
+```
+Möchte man auf eine Funktion oder eine Variable im Modul zugreifen, muss im `.then` via `mod.x` darauf zugegriffen werden. Achtung, dies ist invasiv.
+
+```javascript {.line-numbers}
+import "module-name"; // loads all
+import {export1, export2} from "module-name"; // loads export1, export2
+```
+Module werden am besten mit dem oben stehenden Syntax geladen. Wenn man nur eine Menge exports benötigt, sollte man dies auch explizit angeben.
+
+## Module exportieren
+Module können auch exportiert werden. Exportierte Werte sind immer `read-only`.
+```javascript {.line-numbers}
+export {name1, name2, ..., nameN};
+```
+Am meisten Sinn macht es, am Anfang des Files zu definieren, welche Teile genau exportiert werden. Auch hier sollte immer alles explizit angegeben werden.
+
+## Auswirkungen
+- Module sind immer `use strict`
+- Exports sind read-only (`const`)
+- Das `this` kann nicht wirklich verwendet werden, man hat also auch kein Zugriff auf das globale Objekt
+- Es gibt kein [hoisting](#let)
+- Implizit ist man im `defer` Modus → `document.writeln` ist nicht mehr nützlich
+- Module sind Namespaces
+- Module sind Singleton
+
+!!!Info `defer` (engl. für Verschoben) steht für asynchrone Ausführung
+
+## SOP
+Module müssen die `SOP` (**S**ame **O**rigin **P**olicy) beachten. Das bedeutet, das Dateisystem ist `null`. Am besten Umgeht man dies indem man den Debugmodus des Browsers startet (welcher SOP deaktiviert hat und die Daten nicht cached) oder man verwendet einen lokalen Webserver.
 
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
 ```javascript {.line-numbers}
 $   "askf\tëä3aa"           
- → "askf    ëä3aa"
+→ "askf    ëä3aa"
 $   "askf\\asd"             
- → "askf\asd"
+→ "askf\asd"
 $   'askfasd'               
- → "askfasd"
+→ "askfasd"
 $   'Er sagte "Hallo!"'     
- → "Er sagte \"Hallo!\""
+→ "Er sagte \"Hallo!\""
 $   "Er sagte 'Hallo!'"     
- → "Er sagte 'Hallo!'"
+→ "Er sagte 'Hallo!'"
 $   const a = 1;
 $   `x ist : ${a}`          
- → "x ist 1"
+→ "x ist 1"
 $   /hallo\\s/              
- → "/hallo\\s/"
+→ "/hallo\\s/"
 $   String(/hallo\s/)       
- → "/hallo\\s/"
+→ "/hallo\\s/"
 ```
 Strings können mit `"`, `'` und `` ` `` definiert werden. Die `"` und `'` werden als normale Strings verwendet, der Backtick wird für sogenannte Template-Strings verwendet. Es handelt sich dabei um Literale Strings.  
-Mithilfe des String-Konstruktors (`String()`) können Escape-Characters umgangen werden, wie zum Beispiel beim generieren einer Regex.
+Mithilfe des String-Konstruktors `String()` können Escape-Characters umgangen werden, wie zum Beispiel beim generieren einer Regex.
 
 # Loggen
 Die schönste Art in JavaScript zu loggen ist über die Konsole.
