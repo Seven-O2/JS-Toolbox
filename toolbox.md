@@ -100,6 +100,10 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [Auswirkungen](#auswirkungen)
   - [SOP](#sop)
 - [Transpilers](#transpilers)
+  - [TypeScript](#typescript)
+  - [Elm](#elm)
+  - [PureScript](#purescript)
+    - [PureScript ausprobiert](#purescript-ausprobiert)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
@@ -1586,10 +1590,295 @@ Am meisten Sinn macht es, am Anfang des Files zu definieren, welche Teile genau 
 Module müssen die `SOP` (**S**ame **O**rigin **P**olicy) beachten. Das bedeutet, das Dateisystem ist `null`. Am besten Umgeht man dies indem man den Debugmodus des Browsers startet (welcher SOP deaktiviert hat und die Daten nicht cached) oder man verwendet einen lokalen Webserver.
 
 # Transpilers
-
-```javascript {.line-numbers}
-
+Transpiling bedeutet, dass Sprachen in eine andere Programmiersprache (in diesem Fall JavaScript) übersetzt wird.
+Oft verwendete Transpilers sind:
+- TypeScript
+- PureScript
+- Elm
+Alle haben prinzipiell denselben Rendering-Status.
 ```
+  ↓ ----------------- ←
+State → View → Action ↑
+```
+Infolge werden die verschiedenen Transpilers mithilfe einer Multiplikationstabelle dargestellt.
+|n|1|2|3|4|5|6|7|8|9|
+|-|-|-|-|-|-|-|-|-|-|-|
+|*2|2|4|6|8|10|12|14|16|18|
+Verbindet man nun jeweils die 1 mit der 2, die 2 mit der 4 usw. erhält man einen sogenannten Times Table.
+Für folgende Beispiele wurden direkt von [Dierk König](https://gist.github.com/Dierk)'s Github Gist kopiert und mit Kommentaren beschrieben.
+
+## TypeScript
+TypeScript ist typisiert geschrieben und Aktionen sind Funktionen oder Lambdas. Zustandsunveränderbarkeit und Seiteneffektfrei kann nur mit Disziplin erreicht werden. Objekte/Komponenten werden abstrahiert, es können also Objekte und Komponenten erstellt werden.
+
+Ein Paar Eindrücke aus Typescript:
+```typescript {.line-numbers}
+import * as React from "react";
+
+export interface HelloProps { compiler: string; framework: string; }
+export interface HelloState { slices: number; table: number }
+
+export class Hello extends React.Component<HelloProps, HelloState> {
+
+  constructor(props: HelloProps) {
+    super(props);
+    this.state = { slices:10, table:2 }
+
+    this.modifyState = this.modifyState.bind(this); // oh, this is so silly
+  }
+  render() {
+    // eventually compiles into createElement('h1') → Uses h1 function from react
+    // and also replaces the {this.props.compiler} with the actual string
+    return <div>
+      <h1>Beautiful Math with {this.props.compiler} and {this.props.framework}</h1>
+
+      <p>See also implementations in
+        <a href="https://gist.github.com/Dierk/221e2991955578f196b5ae81ab0b9956">Elm</a>
+        and
+        <a href="https://gist.github.com/Dierk/c820c4a9dd6f60ecb4e78fe90709bd6c">Purescript/Pux</a>
+      </p>
+
+      <div>
+        <button onClick={ () => this.modifyState(1, 0) }> Slices + </button>
+        { this.state.slices }
+        <button onClick={ () => this.modifyState(-1, 0)}> Slices - </button>
+      </div>
+
+      <div>
+        <button onClick={ () => this.modifyState(0, 1) }> Table + </button>
+        { this.state.table }
+        <button onClick={ () => this.modifyState(0, -1)}> Table - </button>
+      </div>
+
+      <div>
+        <svg viewBox="0 0 100 100" width="400px">
+          <circle cx="50"  cy="50" r="49" fill="transparent"  stroke="papayawhip"></circle>
+          { this.lines(this.state) }
+        </svg>
+      </div>
+
+    </div>;
+    }
+
+  lines(state : HelloState) {
+    const xpos       = (angle: number) => 50.0 + 50.0 * Math.cos(angle);
+    const ypos       = (angle: number) => 50.0 + 50.0 * Math.sin(angle);
+    const sliceAngle = (slice: number) => slice * 2.0 * Math.PI / state.slices;
+    const origin     = (slice: number) => sliceAngle (slice);
+    const target     = (slice: number) => sliceAngle (slice * state.table);
+                        // TypeScript forces us to define the type with :
+    const numbers = new Array(state.slices);
+    for (let i = 1; i <= state.slices; i++) {
+      numbers.push(
+        <line key={"line"+i}
+          x1={xpos(origin(i))}
+          y1={ypos(origin(i))}
+          x2={xpos(target(i))}
+          y2={ypos(target(i))}
+          stroke="#A0A0F080">
+        </line>
+      );
+    }
+    return numbers;
+  }
+
+  modifyState(sliceDelta : number, tableDelta : number) {
+    this.setState( {
+      slices: this.state.slices + sliceDelta,
+      table : this.state.table  + tableDelta
+    })
+  }
+}
+```
+- Das FFI (**F**oreign **F**unction **I**nterface) JavaScript wird via Typdeklaration aufgerufen
+- Kann überall ausgeführt werden, wo JavaScript läuft (also u.A. mit Node)
+- Das Programmierparadigma ist stark Objekt Orientiert mit Generics
+- TypeScript wird als Sprache beworben
+- Summe / Union Typ und literaler typ String
+
+## Elm
+Elm ist wie TypeScript typisiert, und die Actionstypen haben Werte. Der Status ist immer `immutable` und Nebeneffekte von Aktionsänderungen werden vermieden. Die Sprache besteht aus Funktionskomposition.
+
+Hier ein paar Eindrücke aus Elm.
+```elm {.line-numbers}
+import Html exposing (Html, button, div, text)
+import Html.App as App
+import Html.Events exposing (onClick)
+import Svg exposing (svg, circle, line)
+import Svg.Attributes exposing (..)
+import List exposing (map, (::))
+
+
+main = App.beginnerProgram { model = state, view = view, update = update }
+
+
+-- MODEL
+                              -- like Typescript, we have defined types here
+type alias State = { slices : Int, table  : Int }
+
+state : State
+state = { slices = 10, table = 2 }
+
+
+-- UPDATE
+-- ALL actions are clearly defined in a list
+type Action = SlicePlus | SliceMinus | TablePlus | TableMinus
+
+update : Action -> State -> State -- type declaration
+update msg state = -- implementation
+  case msg of 
+    SlicePlus  ->  { state | slices = state.slices + 1 }
+    SliceMinus ->  { state | slices = state.slices - 1 }
+    TablePlus  ->  { state | table  = state.table  + 1 }
+    TableMinus ->  { state | table  = state.table  - 1 }
+
+
+-- VIEW
+-- This is somewhat the same from <div> in TypeScript
+view : State -> Html Action
+view state =
+  div []
+    [ div []
+      [ button [ onClick SlicePlus ]  [ text "Slice +" ]
+      , text (toString state.slices)
+      , button [ onClick SliceMinus ] [ text "Slice -" ]
+      ]
+    , div []
+      [ button [ onClick TablePlus ]  [ text "Table +" ]
+      , text (toString state.table)
+      , button [ onClick TableMinus ] [ text "Table -" ]
+      ]
+    , div []
+      [ svg [ viewBox "0 0 100 100", width "500px"] <|
+          circle [ cx "50", cy "50", r "49", fill "transparent", stroke "papayawhip" ] []
+          :: allLines state
+      ]
+    ]
+
+allLines state = map(\slice -> sliceLine state slice)[1 .. state.slices]
+
+sliceLine state slice =
+  let
+    xpos angle   = toString <| 50.0 + 50.0 * cos angle
+    ypos angle   = toString <| 50.0 + 50.0 * sin angle
+    origin       = sliceAngle  slice
+    target       = sliceAngle (slice * state.table)
+    sliceAngle x = (toFloat x) * 2.0 * pi / (toFloat state.slices)
+  in line
+    [ x1 <| xpos origin
+    , y1 <| ypos origin
+    , x2 <| xpos target
+    , y2 <| ypos target
+    , stroke "#A0A0F080"
+    , strokeWidth "0.8"
+    ] []
+```
+- Das FFI von JavaScript wird via Port aufgerufen, also so wie als wenn JavaScript auf einer anderen Maschine ausgeführt wird. Um das performant zu machen, wird dies über Flags erledigt.
+- Elm lief lange nur in Browser, hat inzwischen aber Unterstützung für Node etc.
+- Das Programmierparadigma ist Funktional
+- Elm wird als ganzes Programmiersystem beworben.
+- Elm bietet semantische Versionsgarantie, das bedeuted dass nicht eine veränderte Codebasis gepusht wird, und es kann sogenanntes `Time Travel Debug` gemacht werden.
+
+
+## PureScript
+PureScript sieht im Vergleich zu [Elm](#elm) fast genau gleich aus, ist aber noch etwas mehr wie Haskell.
+
+Hier ein Paar Eindrücke aus Purescript:
+```purescript {.line-numbers}
+module App.Counter where
+
+import Prelude (($), (+), (-), (*), (/), (>), const, show)
+import Data.Array ((..), (:), mapWithIndex)
+import Data.Int (toNumber, floor)
+import Math (sin, cos, pi )
+import Pux.Html (Html, div, span, button, text, canvas, svg, circle, line )
+import Pux.Html.Attributes (width, height, viewBox, cx, cy, r, fill, x1, y1, x2, y2, stroke, strokeWidth)
+import Pux.Html.Events (onClick)
+
+data Action = SlicePlus | SliceMinus | TablePlus | TableMinus
+
+type State =
+  { slices :: Number -- so many points on the circle circumference to make slices
+  , table  :: Number -- the base number of the multiplication table
+  }
+
+init :: State
+init = { slices : 10.0, table : 2.0 }
+
+update :: Action -> State -> State
+update SlicePlus  state = state { slices = state.slices + if state.slices > 19.0 then 10.0 else 1.0 }
+update SliceMinus state = state { slices = state.slices - if state.slices > 19.0 then 10.0 else 1.0 }
+update TablePlus  state = state { table = state.table + 1.0 }
+update TableMinus state = state { table = state.table - 1.0 }
+
+view :: State -> Html Action
+view state =
+  div []
+    [ div []
+      [ button [ onClick (const SlicePlus) ] [ text "Slices +" ]
+      , span   []                            [ text (show state.slices) ]
+      , button [ onClick (const SliceMinus) ] [ text "Slices -" ]
+      ]
+    , div []
+      [ button [ onClick (const TablePlus) ] [ text "Table +" ]
+      , span   []                            [ text (show state.table) ]
+      , button [ onClick (const TableMinus)] [ text "Table -" ]
+      ]
+    , div []
+      [ svg [ viewBox "0 0 100 100", width "500px"] $
+        circle [ cx "50", cy "50", r "49", fill "white", stroke "papayawhip" ] []
+        : allLines state
+      ]
+    ]
+
+allLines state = mapWithIndex (\i n -> sliceLine state (toNumber n)) $
+  1 .. floor state.slices
+
+sliceLine state n =
+  line
+    [ x1 $ xpos $ origin n
+    , y1 $ ypos $ origin n
+    , x2 $ xpos $ target n
+    , y2 $ ypos $ target n
+    , stroke "#A0A0F080"
+    , strokeWidth "0.8"
+    ] []
+  where
+    origin n   = sliceAngle state.slices n
+    target n   = sliceAngle state.slices (n * state.table)
+    xpos angle = show $ 50.0 + 50.0 * cos angle
+    ypos angle = show $ 50.0 + 50.0 * sin angle
+    sliceAngle slices n = n * 2.0 * pi / slices
+```
+- Das FFI von JavaScript wird via Typdeklaration aufgerufen
+- Kann überall ausgeführt werden, wo JavaScript läuft (also u.A. mit Node)
+- Das Programmierparadigma ist Funktional
+- PureScript wird als Sprache mit Werkzeugen (Modulssystem, etc.) beworben. Interessant ist der Ansatz, dass jedes Modul immer mitkompiliert wird und somit viel sicherer wird, da zum Beispiel der Zugriff aufs Filesystem limitiert ist
+- PureScript erlaubt es sehr feingranular zu bestimmen, wann und wie der Status ändert
+
+### PureScript ausprobiert
+!!! Warning ```f x === f(x) → bedeuted dasselbe```
+
+```purescript {.line-numbers}
+-- id :: String -> String → ID only supports Strings
+
+id :: forall a. a -> a -- we define that ID returns a for all a 
+id x = x -- the ID function from the lambda calculus
+
+--                  ↓ f must be a function
+once :: forall a b. (a -> b) -> a -> b -- f makes b out of an a, thus x must be from type a
+-- if we replace b with a, we can only run functions that take a and return a
+once f x = f x -- run the function f once with argument x
+
+twice :: foreall a. (a -> a) -> a -> a
+twice f x = f (f x)
+
+-- document.writeln() kindof
+main :: Effect Unit
+main = render =<< withConsole do logShow (once id "Hi webPr")
+main = render =<< withConsole do logShow (twice id "Hi webPr")
+```
+> `Hi webPr`
+> `Hi webPr` Only shown once, because we call id(id("Hi webPr"))
 
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
