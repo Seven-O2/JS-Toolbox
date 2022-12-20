@@ -688,6 +688,7 @@ pre[data-line] .line-highlight[data-end]:after {
 <li><a href="#sop">SOP</a></li>
 </ul>
 </li>
+<li><a href="#transpilers">Transpilers</a></li>
 <li><a href="#strings">Strings</a></li>
 <li><a href="#loggen">Loggen</a>
 <ul>
@@ -2142,7 +2143,9 @@ Module sind keine:</p>
 <h2 class="mume-header" id="sop">SOP</h2>
 
 <p>Module m&#xFC;ssen die <code>SOP</code> (<strong>S</strong>ame <strong>O</strong>rigin <strong>P</strong>olicy) beachten. Das bedeutet, das Dateisystem ist <code>null</code>. Am besten Umgeht man dies indem man den Debugmodus des Browsers startet (welcher SOP deaktiviert hat und die Daten nicht cached) oder man verwendet einen lokalen Webserver.</p>
-<h1 class="mume-header" id="strings">Strings</h1>
+<h1 class="mume-header" id="transpilers">Transpilers</h1>
+
+<pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers"></pre><h1 class="mume-header" id="strings">Strings</h1>
 
 <p>In JavaScript k&#xF6;nnen Strings &#xFC;ber verschiedene Varianten angelegt werden. Spezielle Characters m&#xFC;ssen mit &quot;&quot; escaped werden. Das gilt auch f&#xFC;r &quot;&quot; selbst.</p>
 <pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers">$   <span class="token string">&quot;askf\t&#xEB;&#xE4;3aa&quot;</span>           
@@ -2303,7 +2306,7 @@ $ chars
 
 <p>Semicolons sind nicht freiwillig, JavaScript versucht einfach sie selbst zu setzen.</p>
 <div class="admonition quote">
-<p class="admonition-title">&quot;Unfortunately, JS has a misfeature called Automated Semicolon Insertion. It can fail in bad ways, so write like a professional.&quot; - Douglas Crockford, &quot;How JavaScript works.&quot;</p>
+<p class="admonition-title">&quot;<em>Unfortunately, JS has a misfeature called Automated Semicolon Insertion. It can fail in bad ways, so write like a professional.</em>&quot; - Douglas Crockford, &quot;How JavaScript works.&quot;</p>
 </div>
 <pre data-role="codeBlock" data-info="javascript {.line-numbers}" class="language-javascript line-numbers">$ <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span><span class="token string">&quot;hi&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token method function property-access">map</span><span class="token punctuation">(</span><span class="token parameter">it</span> <span class="token arrow operator">=&gt;</span> it <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -2312,7 +2315,7 @@ $ chars
 
 $ <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span><span class="token string">&quot;hi&quot;</span><span class="token punctuation">)</span> <span class="token comment">// &lt;- Missing Semicolon</span>
   <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token method function property-access">map</span><span class="token punctuation">(</span><span class="token parameter">it</span> <span class="token arrow operator">=&gt;</span> it <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-&#x2192; <span class="token known-class-name class-name">TypeError</span><span class="token operator">:</span> <span class="token keyword nil keyword-undefined">undefined</span> is not an <span class="token function">object</span> <span class="token punctuation">(</span>evaluation <span class="token string">&apos;console.log(&quot;hi&quot;)[1, 2, 3]&apos;</span><span class="token punctuation">)</span>
+&#x2192; <span class="token known-class-name class-name">TypeError</span><span class="token operator">:</span> <span class="token keyword nil keyword-undefined">undefined</span> is not an <span class="token function">object</span> <span class="token punctuation">(</span>evaluating <span class="token string">&apos;console.log(&quot;hi&quot;)[1, 2, 3]&apos;</span><span class="token punctuation">)</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></pre><p>JavaScript sieht hier das <code>console.log</code> sowie das <code>[1, 2, 3]</code> als Ausdr&#xFC;cke. Somit wird beim vergessenen <code>;</code> ein Ausdruck generiert, welcher auf das <code>console.log</code> ausgef&#xFC;hrt wird, welches nach dem Ausf&#xFC;hren undefined ist.</p>
 <h1 class="mume-header" id="javascript-iterator-protokol">JavaScript Iterator Protokol</h1>
 

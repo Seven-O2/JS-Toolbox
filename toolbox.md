@@ -99,6 +99,7 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [Module exportieren](#module-exportieren)
   - [Auswirkungen](#auswirkungen)
   - [SOP](#sop)
+- [Transpilers](#transpilers)
 - [Strings](#strings)
 - [Loggen](#loggen)
   - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
@@ -1584,6 +1585,12 @@ Am meisten Sinn macht es, am Anfang des Files zu definieren, welche Teile genau 
 ## SOP
 Module müssen die `SOP` (**S**ame **O**rigin **P**olicy) beachten. Das bedeutet, das Dateisystem ist `null`. Am besten Umgeht man dies indem man den Debugmodus des Browsers startet (welcher SOP deaktiviert hat und die Daten nicht cached) oder man verwendet einen lokalen Webserver.
 
+# Transpilers
+
+```javascript {.line-numbers}
+
+```
+
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
 ```javascript {.line-numbers}
@@ -1760,7 +1767,7 @@ $ chars
 # Semicolons
 Semicolons sind nicht freiwillig, JavaScript versucht einfach sie selbst zu setzen.
 
-!!!Quote "Unfortunately, JS has a misfeature called Automated Semicolon Insertion. It can fail in bad ways, so write like a professional." - Douglas Crockford, "How JavaScript works."
+!!!Quote "*Unfortunately, JS has a misfeature called Automated Semicolon Insertion. It can fail in bad ways, so write like a professional.*" - Douglas Crockford, "How JavaScript works."
 ```javascript {.line-numbers}
 $ console.log("hi");
   [1, 2, 3].map(it => it * 2);
@@ -1769,7 +1776,7 @@ $ console.log("hi");
 
 $ console.log("hi") // <- Missing Semicolon
   [1, 2, 3].map(it => it * 2);
-→ TypeError: undefined is not an object (evaluation 'console.log("hi")[1, 2, 3]')
+→ TypeError: undefined is not an object (evaluating 'console.log("hi")[1, 2, 3]')
 ```
 JavaScript sieht hier das `console.log` sowie das `[1, 2, 3]` als Ausdrücke. Somit wird beim vergessenen `;` ein Ausdruck generiert, welcher auf das `console.log` ausgeführt wird, welches nach dem Ausführen undefined ist.
 
