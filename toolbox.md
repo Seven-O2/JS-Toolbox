@@ -66,6 +66,7 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
     - [Anwendung](#anwendung-1)
   - [Gemischt und klassifiziert](#gemischt-und-klassifiziert)
   - [Konstruktoren](#konstruktoren)
+  - [Reihenfolge von Objekte](#reihenfolge-von-objekte)
 - [Klassen](#klassen)
   - [Keyword `class`](#keyword-class)
   - [Keyword `extends`](#keyword-extends)
@@ -114,6 +115,14 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [Splice](#splice)
 - [Semicolons](#semicolons)
 - [JavaScript Iterator Protokol](#javascript-iterator-protokol)
+- [Moves](#moves)
+  - [0: Erforschen](#0-erforschen)
+  - [1: Beginne beim Ende](#1-beginne-beim-ende)
+  - [2: Extrahieren](#2-extrahieren)
+  - [3: Abstrahieren](#3-abstrahieren)
+  - [4: Reorganisierung](#4-reorganisierung)
+  - [5: Herausgeben (Release)](#5-herausgeben-release)
+  - [6: Retrospektive](#6-retrospektive)
 
 <!-- /code_chunk_output -->
 
@@ -889,6 +898,18 @@ $ obj.foo(42)
 $ obj = { foo(x) {console.log(x)} }; // JavaScript evalutes this into a function automatically
 $ obj.foo(42)
 -> 42
+```
+
+## Reihenfolge von Objekte
+Properties von Objekten sind immer in einer definierten Reihenfolge. Die Reihenfolge ist wiefolgt definiert:
+1) Strings welche eine Zahl Repräsentieren (aufsteigend)
+2) Eingabereihenfolge
+
+```javascript {.line-numbers}
+$ Object.entries({a:1, b:2});  // iterate over the entries
+→ [["a", 1], ["b", 2]]
+$ Object.entries({a:1, b:2, 11:"x", 3:"y"});
+→ [["3", "y"], ["11", "x"], ["a", 1], ["b", 2]]
 ```
 
 # Klassen
@@ -1883,22 +1904,22 @@ main = render =<< withConsole do logShow (twice id "Hi webPr")
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
 ```javascript {.line-numbers}
-$   "askf\tëä3aa"           
+$ "askf\tëä3aa"           
 → "askf    ëä3aa"
-$   "askf\\asd"             
+$ "askf\\asd"             
 → "askf\asd"
-$   'askfasd'               
+$ 'askfasd'               
 → "askfasd"
-$   'Er sagte "Hallo!"'     
+$ 'Er sagte "Hallo!"'     
 → "Er sagte \"Hallo!\""
-$   "Er sagte 'Hallo!'"     
+$ "Er sagte 'Hallo!'"     
 → "Er sagte 'Hallo!'"
-$   const a = 1;
-$   `x ist : ${a}`          
+$ const a = 1;
+$ `x ist : ${a}`          
 → "x ist 1"
-$   /hallo\\s/              
+$ /hallo\\s/              
 → "/hallo\\s/"
-$   String(/hallo\s/)       
+$ String(/hallo\s/)       
 → "/hallo\\s/"
 ```
 Strings können mit `"`, `'` und `` ` `` definiert werden. Die `"` und `'` werden als normale Strings verwendet, der Backtick wird für sogenannte Template-Strings verwendet. Es handelt sich dabei um Literale Strings.  
@@ -2108,3 +2129,167 @@ $ for(const n of "abc") {console.log(n); }
 Jedes Objekt kann Iterierbar werden, indem es die Symbol.iterator Funktion implementiert.
 
 !!!Warning Bei for-Schleifen kann auch `in` verwendet werden. Dies führt aber nicht zum Ziel und zeigt die einzelnen Properties des Elements an - also zum Beispiel auch Funktionen.
+
+# Moves
+Programmieren ist eine Aktivität. Programmieren ist nicht natürlich und muss Schritt für Schritt gelernt werden. Beim Lernen eignet man sich sogenannte Moves an. Diese Moves werden hier mit Hilfe eines einfaches "Römisch zu Arabisch" Konverters gezeigt. Das Ziel ist, dass zum Beispiel `MDCIII` in `1603` konvertiert wird.
+## 0: Erforschen
+Bevor man mit einem Programm beginnt, muss man sich zuerst einmal Gedanken machen wie man das Problem angeht.
+- Gibt es schon Lösungen?
+- Was sind die Randbedingungen?
+- Wie kann man das Problem angehen?
+Dieser Schritt sollte immer vor Beginn des Projektes ausgeführt werden, denn er bestimmt die grundlegende Richtung, in welches sich das Projekt bewegt.
+## 1: Beginne beim Ende
+Am besten überlegt man sich im nächsten Schritt wie die Applikation genau aussehen soll. Das macht man am besten mit einem statischen Sketch, mit dem Prinzip FITYMI (**F**ake **I**t **T**ill **Y**ou **M**ake **I**t). Dynamische Teile lässt man noch komplett weg.
+
+```javascript {.line-numbers}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title> Roman Numerals Sketch </title>
+</head>
+<body>
+
+<script>
+  const arab = roman => {
+    if(roman.length === 0) return 0;
+    if(roman === "I") return 1;
+    if(roman === "II") return 2;
+    if(roman === "II") return 3;
+    throw new Error("Invalid Roman numeral: " + roman);
+  }
+
+  document.writeln((arab("") === 0).toString());
+  document.writeln((arab("I") === 1).toString());
+  document.writeln((arab("II") === 2).toString());
+  document.writeln((arab("III") === 3).toString());
+</script>
+</body>
+</html>
+```
+
+> $ true true true true
+
+!!! Info Es können auch zuerst Test-Cases geschrieben werden.
+
+## 2: Extrahieren
+Im nächsten Schritt werden Repetitionen in Funktionen und Loops extrahiert und statische Werte durch Variablen ersetzt. Die dynamik entsteht.
+
+```javascript {.line-numbers}
+//...
+<script>
+  const arab = roman => {
+    if(roman.length === 0) return 0;
+    // shortened and nicer, but more complex / harder to understand
+    
+    // Special cases
+    if(roman.slice(0, 2) === "IV") return   4 + arab(roman.slice(2));
+    if(roman.slice(0, 2) === "IX") return   9 + arab(roman.slice(2));
+    if(roman.slice(0, 2) === "XL") return  40 + arab(roman.slice(2));
+    if(roman.slice(0, 2) === "XC") return  90 + arab(roman.slice(2));
+    if(roman.slice(0, 2) === "CD") return 400 + arab(roman.slice(2));
+    if(roman.slice(0, 2) === "CM") return 900 + arab(roman.slice(2));
+
+    // normal cases
+    if(roman.slice(0, 1) === "I") return    1 + arab(roman.slice(1));
+    if(roman.slice(0, 1) === "V") return    5 + arab(roman.slice(1));
+    if(roman.slice(0, 1) === "X") return   10 + arab(roman.slice(1));
+    if(roman.slice(0, 1) === "L") return   50 + arab(roman.slice(1));
+    if(roman.slice(0, 1) === "C") return  100 + arab(roman.slice(1));
+    if(roman.slice(0, 1) === "D") return  500 + arab(roman.slice(1));
+    if(roman.slice(0, 1) === "M") return 1000 + arab(roman.slice(1));
+    throw new Error("Invalid Roman numeral: " + roman);
+  }
+
+  // removes the duplication of document.writeln() and toString()
+  const assertEqual = (a, b) => {
+    document.writeln( String(a===b) );
+  }
+
+  // Common cases
+  assertEqual(arab(""),            0);
+  assertEqual(arab("I"),           1);
+  assertEqual(arab("II"),          2);
+  assertEqual(arab("III"),         3);
+  assertEqual(arab("V"),           5);
+  assertEqual(arab("VI"),          6);
+  assertEqual(arab("X"),          10);
+  assertEqual(arab("L"),          50);
+
+  // Special cases
+  assertEqual(arab("IV"),          4);
+  assertEqual(arab("IX"),          9);
+  assertEqual(arab("XL"),         40);
+  assertEqual(arab("XC"),         90);
+  assertEqual(arab("CD"),        400);
+  assertEqual(arab("CM"),        900);
+
+  // Realistic values
+  assertEqual(arab("MDCXXXII"), 1632);
+</script>
+//...
+```
+
+> $ true true true ... true
+
+## 3: Abstrahieren
+Beim generieren kann man auch nur mal ganz einfach Duplikationen generieren. Man sieht dann unter anderem die Abhängigkeiten und kann daraus besseren und schöneren Code mit hoher Sicherheit generieren. Das nennt sich das Abstrahieren des Codes.
+
+```javascript {.line-numbers}
+//...
+<script>
+  const mapping = {
+    // Edge cases
+    "IV": 4, "IX": 9, "XL": 40, "XC": 90, "CD": 400, "CM": 900,
+    // Normal cases
+    "I" : 1, "V" : 5, "X" : 10, "L" : 50, "C" : 100, "D" : 500, "M" : 1000
+  }
+
+  const arab = roman => {
+    if(roman.length === 0) return 0;
+    // makes code less duplicated but keeps the same functionality
+    for(const[key, value] of Object.entries(mapping)) {
+      if(roman.startsWith(key)) return value + arab(roman.slice(key.length))
+    }
+    throw new Error("Invalid Roman numeral: " + roman);
+  }
+
+  const assertEqual = (a, b) => {
+    document.writeln( String(a===b) );
+  }
+
+  // After implementing above optimization, we can also optimize the way test cases are handled.
+  const testArabConverter = () => {
+    const testCases = {
+      // Normal cases
+      "": 0, "I": 1, "II": 2, "III": 3, "V": 5, "VI": 6, "X": 10, "L": 50,
+      // Edge cases
+      "IV": 4, "IX": 9, "XL": 40, "XC": 90, "CD": 400, "CM": 900,
+      // Realistic Cases
+      "MDCXXXII": 1632
+    }
+    for([fnValue, should] of Object.entries(testCases)){
+      document.writeln(String(arab(fnValue) === should));    
+    }
+  }
+
+  testArabConverter();
+</script>
+//...
+```
+
+> $ true true true ... true
+
+## 4: Reorganisierung
+Beim Reorganisieren geht es darum, sich die Arbeit in der Zukunft einfacher zu machen. Dazu gehört vor allem Refactoring und Dokumentieren. Das Ziel nach diesem Schritt ist es, Code zu haben, welcher in der Zukunft weiter entwickelt werden kann.
+1) Auslagern der einzelnen Codeteilen in Module
+2) Dokumentieren mit JsDoc
+
+## 5: Herausgeben (Release)
+All diese Schritte sind erfolgreich ausgeführt, wenn der Code ohne schlechtem Gewissen herausgegeben werden kann. Um etwas herauszugeben, sollte das Programm für sich alleine stehend verwendet werden können. Es muss also vorhanden sein:
+- Dokumentation
+- Tests
+- Beispiele
+
+## 6: Retrospektive
+In der Retrospektive wird noch einmal über den Prozess gegangen und überlegt, was man behalten möchte und was man das nächste mal anders machen möchte.
+  
