@@ -123,6 +123,13 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
   - [4: Reorganisierung](#-4-reorganisierung)
   - [5: Herausgeben (Release)](#-5-herausgeben-release)
   - [6: Retrospektive](#-6-retrospektive)
+- [Crazy JavaScript](#-crazy-javascript)
+  - [True and false](#-true-and-false)
+  - [Type coercion](#-type-coercion)
+  - [Times one would say "What the ..."](#-times-one-would-say-what-the-)
+  - [Coole Dinge](#-coole-dinge)
+    - [Generatoren](#-generatoren)
+    - [Deconstructor](#-deconstructor)
 
 <!-- /code_chunk_output -->
 
@@ -2292,3 +2299,121 @@ All diese Schritte sind erfolgreich ausgeführt, wenn der Code ohne schlechtem G
 
 ## 6: Retrospektive
 In der Retrospektive wird noch einmal über den Prozess gegangen und überlegt, was man behalten möchte und was man das nächste mal anders machen möchte.
+
+# Crazy JavaScript
+JavaScript hat ein paar spezielle Konventionen.
+
+## True and false
+Was gilt als `false`:
+- `undefined`
+- `false`
+- `NaN`
+- `null`
+- `0`
+- `""`
+
+Was gilt als `true`:
+- `"0"`
+- `{}`
+- `[]`
+- `everything else`
+
+Es gibt aber in JavaScript nicht nur `true` und `false`, sondern auch `truthy` und `falsely`, wobei die zwei letzteren die coercion eines Wertes sind.
+
+## Type coercion
+Type coercion (Typerzwingung) wird die Umwandlung von Typen in andere Typen genannt. JavaScript macht gewisse coercions automatisch.
+|Ausdruck   |Coercion|
+|-----------|-|
+|`!!a`      |Zwingt den Wert `a` zu einen Boolean|
+|`a == b`   |Ist ein Wert eine Nummer, wird das Resultat eine `Nummer`. Das `==` sollte nur in einem Fall verwendet werden: `a == null` anstelle von `a === null || a === undefined`|
+|`a + b`    |Ist ein Wert ein String, wird das Resultat ein `String`|
+|`a - b`    |Ist ein Wert eine Nummer, wird das Resultat eine `Nummer`|
+|`Number(a)`|`a` wird in eine Nummer gezwungen|
+
+!!!Warning `new Number(a)` konvertiert `a` in ein Objekt!
+
+Diese type coercion kann einem aber auch ins Bein schiessen. Es gibt eine Faustregel, welche aber nicht wirklich zuverlässig ist: `object → string → number → boolean`
+
+## Times one would say "What the ..."
+```javascript {.line-numbers}
+                          "2" + 1   →   "21"
+                          "2" - 1   →   1
+                        "2" - - 1   →   3
+                      1 + 2 + "3"   →   "33"
+                               -0   →   0
+                            +true   →   1
+                           +false   →   0
+                      true + true   →   2
+                       NaN == NaN   →   false
+                      NaN == !NaN   →   true
+                         [] == []   →   false
+                        [] == ![]   →   true
+                              +[]   →   0
+                         2 == [2]   →   true              // "2" == "2"
+                          {} + []   →   0                 // or "[object Object]"
+                          [] + {}   →   "[object Object]"
+                 JSON.parse("-0")   →   0
+               JSON.stringify(-0)   →   "0"
+                      typeof null   →   "object"
+           null instanceof Object   →   false
+                       typeof NaN   →   "number"
+                     typeof (1/0)   →   "number"
+                0.1 + 0.2 === 0.3   →   false             // 0.30000000000000004
+                 9999999999999999   →   10000000000000000 // We went out of the safe integer zone
+             Number.MAX_VALUE > 0   →   true
+             Number.MIN_VALUE < 0   →   false             // MIN_VALUE is the closest number to zero
+Math.min(1,2,3) < Math.max(1,2,3)   →   true
+          Math.min() < Math.max()   →   false
+                            1 < 2   →   true
+                       "a" < "ab"   →   true
+                      "ac" < "ab"   →   false
+                       "03" < "1"   →   true
+"03" < "1" && "1" < 2 && 2 < "03"   →   true              // Equivalent to a < b < c < a (what?)
+                        1 < 2 < 3   →   true
+                        1 > 2 > 3   →   false
+                         {} == {}   →   false
+                          {} > {}   →   false
+                         {} >= {}   →   true              // (a >= b) is replaced with !(a < b)
+                         "0" == 0   →   true
+                          0 == []   →   true
+                        "a" == []   →   false             // transitivity is not guaranteed
+```
+!!!Info Wenn JavaScript nicht weis wie etwas zu vergleichen ist, macht es einfach einen String daraus und vergleicht diesen.
+
+## Coole Dinge
+JavaScript macht aber nicht alles schlecht. Unter anderem bietet es einige sehr angenehme Dinge.
+### Generatoren
+Generatoren sind auch bekannt als Lazy-Streams. Das bedeutet, dass die Werte erst dann generiert werden, wenn sie effektiv gebraucht werden.
+```javascript {.line-numbers}
+function *foo() {
+  console.log("a:", yield 1);
+  console.log("b:", yield 2);
+}
+
+const it = foo();
+it.next();    // {value:1, done:false}
+it.next(5);   // a:5
+              // {value:2, done:false}
+it.next(10);  // b:10
+              // {value:undefined, done:true}
+```
+### Deconstructor
+Der Deconstructor ist ein sehr angenehmer syntaktischer Zucker von JavaScript.
+```javascript {.line-numbers}
+function foo() {
+  const x = 2, y = 3;
+  return (x: x, y: y);
+}
+const o = foo();
+const x = o.x, y = o.y;
+console.log(x, y) // 2 3
+
+const {x, y} = foo();
+console.log(x, y) // 2 3
+
+function bar({x, y} {
+  console.log(x, y);;
+})
+bar({y: 10, x: 25}); // 25, 10
+bar({y: 10}); // undefined 5
+```
