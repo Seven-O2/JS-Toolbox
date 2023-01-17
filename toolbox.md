@@ -1,7 +1,7 @@
 # JS-Toolbox
 Author und ©: [Joël Allemann](https://github.com/Seven-O2), auf Basis des Unterrichts von Dierk König
 
-Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mit JavaScript, welche im Unterricht Web Programming (webpr) gelernt wurden. 
+Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mit JavaScript, welche im Unterricht Web Programming (webpr) gelernt wurden.
 
 ![js_logo](resources/images/logo_js.png)
 
@@ -12,117 +12,117 @@ Diese Toolbox ist eine Zusammenfassung von wichtigsten Dingen im Zusammenhang mi
 
 <!-- code_chunk_output -->
 
-- [JS-Toolbox](#js-toolbox)
-- [Inhaltsverzeichnis](#inhaltsverzeichnis)
-- [Generell](#generell)
-- [Variablen](#variablen)
-  - [`Const`](#const)
-  - [`Let`](#let)
-- [Scopes](#scopes)
-  - [`global`](#global)
-    - [Instanziierung](#instanziierung)
-  - [`function`](#function)
-    - [Instanziierung](#instanziierung-1)
-    - [Variablen-Scoping](#variablen-scoping)
-- [Testen](#testen)
-  - [Dinge verstehen und lernen](#dinge-verstehen-und-lernen)
-- [Funktionen](#funktionen)
-  - [Deklaration](#deklaration)
-    - [`function` Keyword](#function-keyword)
-    - [`=>` Keyword (Lambda)](#keyword-lambda)
-  - [Überladen](#überladen)
-  - [Rückgabewerte](#rückgabewerte)
-  - [Sammlungen von Funktionen](#sammlungen-von-funktionen)
-  - [Funktionenx](#funktionensupxsup)
-  - [Curried vs. multiple Arguments](#curried-vs-multiple-arguments)
-  - [Anwendung](#anwendung)
-- [Lambda Calculus](#lambda-calculus)
-  - [Grundbausteine](#grundbausteine)
-    - [$\alpha$ - Alpha Equivalence](#alpha-alpha-equivalence)
-    - [$\beta$ - Beta reduction](#beta-beta-reduction)
-    - [$\eta$ - Eta reduction](#eta-eta-reduction)
-    - [Grundfunktionen](#grundfunktionen)
-  - [Pairs](#pairs)
-  - [Either](#either)
-  - [Boolean Logik](#boolean-logik)
-    - [True / False](#true-false)
-    - [AND](#and)
-    - [OR](#or)
-  - [Map](#map)
-  - [Filter](#filter)
-  - [Reduce](#reduce)
-  - [Indexing](#indexing)
-- [Scripting](#scripting)
-  - [Progressive Web-Applikation](#progressive-web-applikation)
-  - [Expression Evaluation](#expression-evaluation)
-    - [`eval()`](#eval)
-    - [Optimierung mit `Function`](#optimierung-mit-function)
-  - [Referencing](#referencing)
-- [Objekte / Objects](#objekte-objects)
-  - [Offen und dynamisch](#offen-und-dynamisch)
-    - [`this` Keyword](#this-keyword)
-    - [Funktionen aufrufen](#funktionen-aufrufen)
-  - [Geschlossen und explizit](#geschlossen-und-explizit)
-    - [Anwendung](#anwendung-1)
-  - [Gemischt und klassifiziert](#gemischt-und-klassifiziert)
-  - [Konstruktoren](#konstruktoren)
-  - [Reihenfolge von Objekte](#reihenfolge-von-objekte)
-- [Klassen](#klassen)
-  - [Keyword `class`](#keyword-class)
-  - [Keyword `extends`](#keyword-extends)
-  - [Prototypen](#prototypen)
-    - [Setzen von Prototypen](#setzen-von-prototypen)
-    - [Ändern von Prototypen](#ändern-von-prototypen)
-- [Typen](#typen)
-  - [Eingebaute Typen](#eingebaute-typen)
-  - [JsDoc](#jsdoc)
-  - [Funktionen](#funktionen-1)
-    - [Optionalität](#optionalität)
-    - [Template](#template)
-  - [Datenstrukturen / Klassen](#datenstrukturen-klassen)
-  - [Typecast](#typecast)
-  - [Sonstige Annotationen](#sonstige-annotationen)
-- [Patterns](#patterns)
-  - [Observer](#observer)
-  - [MVC](#mvc)
-    - [Model](#model)
-    - [View](#view)
-    - [Controller](#controller)
-- [Asynchrone Programmierung](#asynchrone-programmierung)
-  - [Promise](#promise)
-    - [Async / Await](#async-await)
-- [Koordination](#koordination)
-  - [Keine Koordination](#keine-koordination)
-  - [Sequenz](#sequenz)
-  - [Resultatabhängigkeit](#resultatabhängigkeit)
-- [Modulsystem](#modulsystem)
-  - [Module importieren](#module-importieren)
-  - [Module exportieren](#module-exportieren)
-  - [Auswirkungen](#auswirkungen)
-  - [SOP](#sop)
-- [Transpilers](#transpilers)
-  - [TypeScript](#typescript)
-  - [Elm](#elm)
-  - [PureScript](#purescript)
-    - [PureScript ausprobiert](#purescript-ausprobiert)
-- [Strings](#strings)
-- [Loggen](#loggen)
-  - [Loglevel programmatisch setzen](#loglevel-programmatisch-setzen)
-- [Arrays](#arrays)
-  - [Spread-Operator `...` an Parameterposition](#spread-operator-an-parameterposition)
-  - [Spread-Operator `...` an Konstruktorposition](#spread-operator-an-konstruktorposition)
-  - [Slice](#slice)
-  - [Splice](#splice)
-- [Semicolons](#semicolons)
-- [JavaScript Iterator Protokol](#javascript-iterator-protokol)
-- [Moves](#moves)
-  - [0: Erforschen](#0-erforschen)
-  - [1: Beginne beim Ende](#1-beginne-beim-ende)
-  - [2: Extrahieren](#2-extrahieren)
-  - [3: Abstrahieren](#3-abstrahieren)
-  - [4: Reorganisierung](#4-reorganisierung)
-  - [5: Herausgeben (Release)](#5-herausgeben-release)
-  - [6: Retrospektive](#6-retrospektive)
+- [JS-Toolbox](#-js-toolbox)
+- [Inhaltsverzeichnis](#-inhaltsverzeichnis)
+- [Generell](#-generell)
+- [Variablen](#-variablen)
+  - [`Const`](#-const)
+  - [`Let`](#-let)
+- [Scopes](#-scopes)
+  - [`global`](#-global)
+    - [Instanziierung](#-instanziierung)
+  - [`function`](#-function)
+    - [Instanziierung](#-instanziierung-1)
+    - [Variablen-Scoping](#-variablen-scoping)
+- [Testen](#-testen)
+  - [Dinge verstehen und lernen](#-dinge-verstehen-und-lernen)
+- [Funktionen](#-funktionen)
+  - [Deklaration](#-deklaration)
+    - [`function` Keyword](#-function-keyword)
+    - [`=>` Keyword (Lambda)](#--keyword-lambda)
+  - [Überladen](#-überladen)
+  - [Rückgabewerte](#-rückgabewerte)
+  - [Sammlungen von Funktionen](#-sammlungen-von-funktionen)
+  - [Funktionenx](#-funktionensupxsup)
+  - [Curried vs. multiple Arguments](#-curried-vs-multiple-arguments)
+  - [Anwendung](#-anwendung)
+- [Lambda Calculus](#-lambda-calculus)
+  - [Grundbausteine](#-grundbausteine)
+    - [$\alpha$ - Alpha Equivalence](#-alpha---alpha-equivalence)
+    - [$\beta$ - Beta reduction](#-beta---beta-reduction)
+    - [$\eta$ - Eta reduction](#-eta---eta-reduction)
+    - [Grundfunktionen](#-grundfunktionen)
+  - [Pairs](#-pairs)
+  - [Either](#-either)
+  - [Boolean Logik](#-boolean-logik)
+    - [True / False](#-true--false)
+    - [AND](#-and)
+    - [OR](#-or)
+  - [Map](#-map)
+  - [Filter](#-filter)
+  - [Reduce](#-reduce)
+  - [Indexing](#-indexing)
+- [Scripting](#-scripting)
+  - [Progressive Web-Applikation](#-progressive-web-applikation)
+  - [Expression Evaluation](#-expression-evaluation)
+    - [`eval()`](#-eval)
+    - [Optimierung mit `Function`](#-optimierung-mit-function)
+  - [Referencing](#-referencing)
+- [Objekte / Objects](#-objekte--objects)
+  - [Offen und dynamisch](#-offen-und-dynamisch)
+    - [`this` Keyword](#-this-keyword)
+    - [Funktionen aufrufen](#-funktionen-aufrufen)
+  - [Geschlossen und explizit](#-geschlossen-und-explizit)
+    - [Anwendung](#-anwendung-1)
+  - [Gemischt und klassifiziert](#-gemischt-und-klassifiziert)
+  - [Konstruktoren](#-konstruktoren)
+  - [Reihenfolge von Objekte](#-reihenfolge-von-objekte)
+- [Klassen](#-klassen)
+  - [Keyword `class`](#-keyword-class)
+  - [Keyword `extends`](#-keyword-extends)
+  - [Prototypen](#-prototypen)
+    - [Setzen von Prototypen](#-setzen-von-prototypen)
+    - [Ändern von Prototypen](#-ändern-von-prototypen)
+- [Typen](#-typen)
+  - [Eingebaute Typen](#-eingebaute-typen)
+  - [JsDoc](#-jsdoc)
+  - [Funktionen](#-funktionen-1)
+    - [Optionalität](#-optionalität)
+    - [Template](#-template)
+  - [Datenstrukturen / Klassen](#-datenstrukturen--klassen)
+  - [Typecast](#-typecast)
+  - [Sonstige Annotationen](#-sonstige-annotationen)
+- [Patterns](#-patterns)
+  - [Observer](#-observer)
+  - [MVC](#-mvc)
+    - [Model](#-model)
+    - [View](#-view)
+    - [Controller](#-controller)
+- [Asynchrone Programmierung](#-asynchrone-programmierung)
+  - [Promise](#-promise)
+    - [Async / Await](#-async--await)
+- [Koordination](#-koordination)
+  - [Keine Koordination](#-keine-koordination)
+  - [Sequenz](#-sequenz)
+  - [Resultatabhängigkeit](#-resultatabhängigkeit)
+- [Modulsystem](#-modulsystem)
+  - [Module importieren](#-module-importieren)
+  - [Module exportieren](#-module-exportieren)
+  - [Auswirkungen](#-auswirkungen)
+  - [SOP](#-sop)
+- [Transpilers](#-transpilers)
+  - [TypeScript](#-typescript)
+  - [Elm](#-elm)
+  - [PureScript](#-purescript)
+    - [PureScript ausprobiert](#-purescript-ausprobiert)
+- [Strings](#-strings)
+- [Loggen](#-loggen)
+  - [Loglevel programmatisch setzen](#-loglevel-programmatisch-setzen)
+- [Arrays](#-arrays)
+  - [Spread-Operator `...` an Parameterposition](#-spread-operator--an-parameterposition)
+  - [Spread-Operator `...` an Konstruktorposition](#-spread-operator--an-konstruktorposition)
+  - [Slice](#-slice)
+  - [Splice](#-splice)
+- [Semicolons](#-semicolons)
+- [JavaScript Iterator Protokol](#-javascript-iterator-protokol)
+- [Moves](#-moves)
+  - [0: Erforschen](#-0-erforschen)
+  - [1: Beginne beim Ende](#-1-beginne-beim-ende)
+  - [2: Extrahieren](#-2-extrahieren)
+  - [3: Abstrahieren](#-3-abstrahieren)
+  - [4: Reorganisierung](#-4-reorganisierung)
+  - [5: Herausgeben (Release)](#-5-herausgeben-release)
+  - [6: Retrospektive](#-6-retrospektive)
 
 <!-- /code_chunk_output -->
 
@@ -153,9 +153,9 @@ obj.x = 9;                  // allowed
 ```
 
 # Scopes
-JavaScript bietet zwei Scopes an. Man mag meinen es gäbe mehrere, jedoch bildet JavaScript alles auf einen der zwei Scopes ab. (wobei es sich meistens um einen `function` Scope handelt)  
+JavaScript bietet zwei Scopes an. Man mag meinen es gäbe mehrere, jedoch bildet JavaScript alles auf einen der zwei Scopes ab. (wobei es sich meistens um einen `function` Scope handelt)
 ## `global`
-Der `global` Scope ist das Fenster (im Browser), also quasi alles was sich auf dem Browserfenster befindet. 
+Der `global` Scope ist das Fenster (im Browser), also quasi alles was sich auf dem Browserfenster befindet.
 ### Instanziierung
 Variablen im globalen Scope können wie folgt angelegt werden.
 ```javascript {.line-numbers}
@@ -168,12 +168,12 @@ Der `function` Scope ist der Scope einer Funktion oder eines Lambdas. Diese sind
 Variablen im Funktionsscope können wie folgt angelegt werden.
 ```javascript {.line-numbers}
 var x = ... // "hoisted"
-let x = ... 
+let x = ...
 const x = ...
 ```
-[let](#let) und [const](#const) werden wie nach Beschreibung im lokalen Scope angelegt.  
+[let](#let) und [const](#const) werden wie nach Beschreibung im lokalen Scope angelegt.
 
-!!!Warning `Hoisted` bedeutet, dass die Variable irgendwo im Code definiert werden kann. Beim Ausführen wird sie dann quasi an den Anfang des Codes gezogen. Das sollte **nie** gemacht werden 
+!!!Warning `Hoisted` bedeutet, dass die Variable irgendwo im Code definiert werden kann. Beim Ausführen wird sie dann quasi an den Anfang des Codes gezogen. Das sollte **nie** gemacht werden
 
 ### Variablen-Scoping
 In verschiedenen Scopes können auch Variablen mit demselben Namen verwendet werden.
@@ -183,7 +183,7 @@ const x = 0;
 (() => {
     const x = 1;
     document.writeln(String(x));
-})(); 
+})();
 // ↑ executes the iife
 document.writeln(String(x));
 ```
@@ -205,7 +205,7 @@ Funktionen oder auch Subroutinen sind in der Programmierung Codestücke, welche 
 ## Deklaration
 Funktionen können (sinnvoll) auf zwei verschiedene Arten deklariert werden. Einmal mit dem Keyword [function](#function-keyword) und einmal mit einem [Lambda](#keyword-lambda).
 ### `function` Keyword
-Funktionen die mit dem Keyword `function` deklariert werden, sehen syntaktisch am schönsten aus. Der Rückgabewert wird nicht explizit vor dem Namen, sondern mit dem `return` Wert implizit definiert.  
+Funktionen die mit dem Keyword `function` deklariert werden, sehen syntaktisch am schönsten aus. Der Rückgabewert wird nicht explizit vor dem Namen, sondern mit dem `return` Wert implizit definiert.
 
 !!!Warning Achtung, eine Funktion welche mit dem `function` Keyword deklariert wird, kann von einer gleichnamigen Funktion überschrieben werden!
 
@@ -225,7 +225,7 @@ const tok = arg => { return arg; }
 //     |
 //     Funktionsreferenz
 ```
-!!!success Der Vorteil davon ist, ist dass `tok` nicht mehr überschrieben werden kann, da es mit `const` initialisiert ist.  
+!!!success Der Vorteil davon ist, ist dass `tok` nicht mehr überschrieben werden kann, da es mit `const` initialisiert ist.
 
 Wichtig zu bedenken ist, dass `=>` auch für Ausdrücke verwendet werden kann. Fehlen die `{}`, wird die Funktion in einen Ausdruck evaluiert. Es wird kein `return` benötigt, jedoch kann der Ausdruck auch nicht (fehlerfrei) aufgerufen werden.
 ```javascript {.line-numbers}
@@ -235,7 +235,7 @@ document.writeln((tok === 1).toString());
 > `$ true`
 
 ## Überladen
-Funktionen können nicht Überladen werden, denn der Funktionsdispatcher funktioniert anders wie bei anderen Programmiersprachen. Bei JavaScript merkt er sich vereinfacht gesehen nur den Namen der Funktion, und nicht wie bei zum Beispiel Java die komplette Funktionssignatur.  
+Funktionen können nicht Überladen werden, denn der Funktionsdispatcher funktioniert anders wie bei anderen Programmiersprachen. Bei JavaScript merkt er sich vereinfacht gesehen nur den Namen der Funktion, und nicht wie bei zum Beispiel Java die komplette Funktionssignatur.
 
 ```javascript {.line-numbers}
 function fun1() { return 1; }
@@ -278,7 +278,7 @@ Beim Aufrufen der Funktion doit, bzw. doit2 wird eine weitere Funktion zurückge
 !!!Info Diese Funktionen werden auch curried Functions genannt.
 
 ## Curried vs. multiple Arguments
-In JavaScript können Funktionen curried (zusammengehängt) oder mit mehreren Argumenten definiert werden. 
+In JavaScript können Funktionen curried (zusammengehängt) oder mit mehreren Argumenten definiert werden.
 ```javascript {.line-numbers}
 const foo = (a, b) => a + b;
 const bar = a => b => a + b;
@@ -417,7 +417,7 @@ const Either = e => handleLeft => handleRight => e(handleLeft)(handleRight); // 
 
 const safeDiv = num => divisor =>
     divisor === 0 ? Left("schlecht!") : Right(num / divisor);
-    
+
 Either( safeDiv(1)(1)  )
       ( x => document.writeln(x))
       ( x => document.writeln(x));
@@ -428,15 +428,15 @@ Either( safeDiv(1)(0)  )
 ```
 > `$ 1 schlecht!`
 
-!!!Warning Zu bedenken ist, dass die Either-Methode nicht ausgeführt wird, wenn entweder der Linke und der Rechte Wert nicht bearbeitet wird. 
+!!!Warning Zu bedenken ist, dass die Either-Methode nicht ausgeführt wird, wenn entweder der Linke und der Rechte Wert nicht bearbeitet wird.
 !!!Success Der Vorteil ist, dass man im "guten" Teil nie ein undefined oder falscher Wert stehen wird.
 
 ## Boolean Logik
 Mit Lambdas kann auch boolean Logik gebaut werden.
 
-### True / False 
-Um True / False darzustellen, wird ganz einfach ein T und ein F definiert. 
-- `T` gibt "1" zurück, wenn das erste Argument 1 ist. 
+### True / False
+Um True / False darzustellen, wird ganz einfach ein T und ein F definiert.
+- `T` gibt "1" zurück, wenn das erste Argument 1 ist.
 - `F` gibt "1" zurück, wenn das zweite Argument 1 ist.
 ```javascript {.line-numbers}
 const konst = x => y => x;
@@ -491,9 +491,9 @@ document.writeln(or(T)(T) === T);
 > `$ true true true true`
 
 ## Map
-Das mappen von Daten bedeutet, dass auf jedes Element in einer Menge eine Funktion angewendet wird. Beim Anwenden einer `map` wird immer dieselbe Menge und der selbe Datentyp der Menge zurück gegeben. 
+Das mappen von Daten bedeutet, dass auf jedes Element in einer Menge eine Funktion angewendet wird. Beim Anwenden einer `map` wird immer dieselbe Menge und der selbe Datentyp der Menge zurück gegeben.
 
-!!!Info Es ändern sich nur die einzelnen Elemente. (Und unter Umständen ihre Datentypen) 
+!!!Info Es ändern sich nur die einzelnen Elemente. (Und unter Umständen ihre Datentypen)
 > `[1, 2, 3] → x => x * 2 → [2, 4, 6]`
 
 ```javascript {.line-numbers}
@@ -501,11 +501,11 @@ const times = a => b => a * b;
 [1, 2, 3].map(x => times(2)(x))
 [1, 2, 3].map(times(2))     // lambda calculus allows for eta-reduction
 const twoTimes = times(2);  // name a specific function → alpha-reduction
-[1, 2, 3].map(twoTimes)     
+[1, 2, 3].map(twoTimes)
 ```
 
 ## Filter
-Das Filtern von Daten bedeutet, dass auf jedes Element in einer Menge auf eine Condition geprüft wird. Beim Anwenden eines `filters` werden alle Elemente aus der Liste entfernt (oder behalten), auf welchem eine Condition `true` (oder `false`) gibt. Dabei wird der Datentyp der Liste, sowie die einzelnen Elemente welche noch behalten werden, nicht geändert. 
+Das Filtern von Daten bedeutet, dass auf jedes Element in einer Menge auf eine Condition geprüft wird. Beim Anwenden eines `filters` werden alle Elemente aus der Liste entfernt (oder behalten), auf welchem eine Condition `true` (oder `false`) gibt. Dabei wird der Datentyp der Liste, sowie die einzelnen Elemente welche noch behalten werden, nicht geändert.
 
 !!!Info Es ändert sich nur die Menge an Elementen.
 
@@ -519,7 +519,7 @@ const odd = x => x % 2 === 1;
 ```
 
 ## Reduce
-Das Reduzieren von Daten bedeutet, dass auf jedes Element zusammen in der Menge eine kombinierende Funktion angewendet wird. Dabei wird auf das 1. und 2. Element die Funktion angewendet, dann auf das Resultat davon mit dem 3. Element etc. Dabei spricht man vom ersten Element (im Beispiel unten `x`) vom Akkumulator, und vom zweiten Element (im Beispiel unten `y`) vom Current. 
+Das Reduzieren von Daten bedeutet, dass auf jedes Element zusammen in der Menge eine kombinierende Funktion angewendet wird. Dabei wird auf das 1. und 2. Element die Funktion angewendet, dann auf das Resultat davon mit dem 3. Element etc. Dabei spricht man vom ersten Element (im Beispiel unten `x`) vom Akkumulator, und vom zweiten Element (im Beispiel unten `y`) vom Current.
 
 !!!Info Es ändern sich alles bis auf den Datentyp, dieser bleibt auf dem Typ des Akkumulators.
 
@@ -567,15 +567,15 @@ Eine Web-Applikation bei welcher der (komplette) Code noch nicht bekannt ist. Di
 const testSuite = [
     "function",
     "lambda",
-    "snake",  
+    "snake",
 ];
 
 // execute for each element in testSuite
 testSuite.forEach(name => {
-    // obfuscation, because else JavaScript would see this        (↓) as end of script 
+    // obfuscation, because else JavaScript would see this        (↓) as end of script
     document.writeln("<script src=\"" + name + "/" + name + ".js\"></" + "script>");
     document.writeln("<script src=\"" + name + "/" + name + "Test.js\"></" + "script>");
-})  
+})
 ```
 > `true true true t..`
 
@@ -591,9 +591,9 @@ JavaScript bietet die Möglichkeit, externe Expressions zur Laufzeit zu evaluier
 function start() {
   const userFunction = document.getElementById('user_function');
   const canvas       = document.getElementById('canvas');
-    
+
   // run display with canvas and user evaluated function
-  const displayIt = () => display(canvas, x => eval(userFunction.value));    
+  const displayIt = () => display(canvas, x => eval(userFunction.value));
   displayIt();
   userFunction.onchange = () => displayIt();
 }
@@ -636,7 +636,7 @@ The plotter script should be here :(
 
 [Source](resources/javascript/Plotter/Plotter.js)
 
-Der Plotter verwendet die Funktion `eval()` um vom Benutzer eingegebene Funktionen zu evaluieren. Wird zum Beispiel die Funktion `Math.sin(x)` verwendet, evaluiert sie zum gleichgeschriebenen Code, und mithilfe von `x => ...` wird sie zu einer richtig ausführbaren Funktion. 
+Der Plotter verwendet die Funktion `eval()` um vom Benutzer eingegebene Funktionen zu evaluieren. Wird zum Beispiel die Funktion `Math.sin(x)` verwendet, evaluiert sie zum gleichgeschriebenen Code, und mithilfe von `x => ...` wird sie zu einer richtig ausführbaren Funktion.
 ### `eval()`
 Die Funktion `eval()` führt einen beliebigen String Code aus, welcher als Parameter mitgegeben wird. Eval kann auf den gesamten Scope, aus dem die Funktion aufgerufen wird, ausgeführt werden.
 ```javascript {.line-numbers}
@@ -798,7 +798,7 @@ function Person(first, last) {
   }
 }
 ```
-In diesem Beispiel wird `firstname` und `lastname` immuteable, und sie können nur Mithilfe des Setters geändert werden.  
+In diesem Beispiel wird `firstname` und `lastname` immuteable, und sie können nur Mithilfe des Setters geändert werden.
 Alles was im `return` gegeben mitgegeben wird, ist dann von aussen zugänglich.
 
 → Müssen geschlossene und explizite Objekte identifiziert werden, kann die Methode [setzen von Prototypen](#setzen-von-prototypen) verwendet werden.
@@ -808,7 +808,7 @@ Der geschlossene und explizite Ansatz eignet sich sehr gut für einfachen aber a
 
 !!!Info OOPSIE ist ein Spiel bei welchem gewürfelt wird. Man darf würfeln bis man genug hat, oder bis man eine 3 Würfelt. Im Falle der 3 wird man auf das Feld zurückgesetzt, bei welchem man seine Runde gestartet hat.
 
-Das Objekt verwendet die versteckten Attribute `fallbackIndex` und `progressIndex` um die Position im Spiel zu speichern (und darzustellen). Im Fall dass keine 3 gewürfelt wurde, wird der `progress` erweitert, und bei einem `turn` dieser Wert als `fallback` gespeichert. Sollte man eine 3 Würfeln, wird man ganz einfach auf das Feld zurück geworfen, welches im `fallbackIndex` gespeichert ist. 
+Das Objekt verwendet die versteckten Attribute `fallbackIndex` und `progressIndex` um die Position im Spiel zu speichern (und darzustellen). Im Fall dass keine 3 gewürfelt wurde, wird der `progress` erweitert, und bei einem `turn` dieser Wert als `fallback` gespeichert. Sollte man eine 3 Würfeln, wird man ganz einfach auf das Feld zurück geworfen, welches im `fallbackIndex` gespeichert ist.
 Speziell ist noch die Reset Funktion, welche den Spieler ganz an den Anfang zurück schmeisst. Diese wird aufgerufen, wenn der andere Spieler auf demselben Feld landet wie dieser Spieler.
 ```javascript {.line-number}
 // ... unrelated code
@@ -1126,7 +1126,7 @@ JsDoc erlaubt es beliebige Annotationen zu schreiben. Diese werden zwar von der 
 ```javascript {.line-numbers}
 /**
  * @LambdaCalculus $\lambda x . x$
- * ... 
+ * ...
  */
   const id = x => x;
 ```
@@ -1135,7 +1135,7 @@ JsDoc erlaubt es beliebige Annotationen zu schreiben. Diese werden zwar von der 
 Wie in Java gibt es diverse Patterns, welche mit JavaScript implementiert werden können.
 
 ## Observer
-Das Observer Pattern erlaubt es aufgrund von Wertänderungen Funktionen auszuführen. Das erlaubt, dass zum Beispiel im UI ein Text geändert wird, weil sich in der Business Logik ein Wert geändert hat. 
+Das Observer Pattern erlaubt es aufgrund von Wertänderungen Funktionen auszuführen. Das erlaubt, dass zum Beispiel im UI ein Text geändert wird, weil sich in der Business Logik ein Wert geändert hat.
 
 ```javascript {.line-numbers}
 /**
@@ -1158,7 +1158,7 @@ Das Observer Pattern erlaubt es aufgrund von Wertänderungen Funktionen auszufü
  * A simple Observable that updates listeners with the old and new value
  * @param { _T_ } value - the initial value of the variable
  * @return { ObservableType<_T_> }
- * @constructor 
+ * @constructor
  */
 const Observable = value => {
   const listeners = [];
@@ -1267,7 +1267,7 @@ const TodoItemsView = (todoController, rootElement) => {
       template.innerHTML = `
         <button class="delete">&times;</button>
         <input type="text" size="36">
-        <input type="checkbox">            
+        <input type="checkbox">
       `;
       return template.children;
     }
@@ -1397,7 +1397,7 @@ processEven(4)                            // ↓ auto promotion to promise
 ```
 > `4 Error: 5`
 
-Zusätzlich werden Werte, welche nicht als Promise zurückgegeben werden, automatisch befördert (auto promotion). Das Promise wird einfach sofort nach dem Ausführen `resolved`. 
+Zusätzlich werden Werte, welche nicht als Promise zurückgegeben werden, automatisch befördert (auto promotion). Das Promise wird einfach sofort nach dem Ausführen `resolved`.
 
 ### Async / Await
 Async und Await sind alternative Syntax für Promises. Funktionen lesen sich so mehr wie imperativen Code.
@@ -1506,7 +1506,7 @@ const Scheduler = () => {
     if (tasks.length === 0) { return; } // guard clause -> when no tasks in queue, skip
     inProcess = true;
     const task = tasks.pop();           // Load the new task
-    new Promise( (resolve, _) => { 
+    new Promise( (resolve, _) => {
       task(resolve);                    // Run the task
     }).then ( () => {                   // When finished
       inProcess = false;                // show that the scheduler is finished
@@ -1561,7 +1561,7 @@ The excel script should be here :(
 </iframe>
 
 # Modulsystem
-Module helfen Code zu organisieren und klar die Abhängigkeiten zu definieren. Zusätzlich helfen sie Fehler bei [Globals](#global), [Scopes](#scopes) und Namespaces zu verhindern. Man möchte den Code gut und feingranular bearbeiten können.  
+Module helfen Code zu organisieren und klar die Abhängigkeiten zu definieren. Zusätzlich helfen sie Fehler bei [Globals](#global), [Scopes](#scopes) und Namespaces zu verhindern. Man möchte den Code gut und feingranular bearbeiten können.
 Module sind keine:
 
 - Pakete (diese sind versioniert)
@@ -1746,7 +1746,7 @@ type Action = SlicePlus | SliceMinus | TablePlus | TableMinus
 
 update : Action -> State -> State -- type declaration
 update msg state = -- implementation
-  case msg of 
+  case msg of
     SlicePlus  ->  { state | slices = state.slices + 1 }
     SliceMinus ->  { state | slices = state.slices - 1 }
     TablePlus  ->  { state | table  = state.table  + 1 }
@@ -1882,7 +1882,7 @@ sliceLine state n =
 ```purescript {.line-numbers}
 -- id :: String -> String → ID only supports Strings
 
-id :: forall a. a -> a -- we define that ID returns a for all a 
+id :: forall a. a -> a -- we define that ID returns a for all a
 id x = x -- the ID function from the lambda calculus
 
 --                  ↓ f must be a function
@@ -1904,25 +1904,25 @@ main = render =<< withConsole do logShow (twice id "Hi webPr")
 # Strings
 In JavaScript können Strings über verschiedene Varianten angelegt werden. Spezielle Characters müssen mit "\" escaped werden. Das gilt auch für "\" selbst.
 ```javascript {.line-numbers}
-$ "askf\tëä3aa"           
+$ "askf\tëä3aa"
 → "askf    ëä3aa"
-$ "askf\\asd"             
+$ "askf\\asd"
 → "askf\asd"
-$ 'askfasd'               
+$ 'askfasd'
 → "askfasd"
-$ 'Er sagte "Hallo!"'     
+$ 'Er sagte "Hallo!"'
 → "Er sagte \"Hallo!\""
-$ "Er sagte 'Hallo!'"     
+$ "Er sagte 'Hallo!'"
 → "Er sagte 'Hallo!'"
 $ const a = 1;
-$ `x ist : ${a}`          
+$ `x ist : ${a}`
 → "x ist 1"
-$ /hallo\\s/              
+$ /hallo\\s/
 → "/hallo\\s/"
-$ String(/hallo\s/)       
+$ String(/hallo\s/)
 → "/hallo\\s/"
 ```
-Strings können mit `"`, `'` und `` ` `` definiert werden. Die `"` und `'` werden als normale Strings verwendet, der Backtick wird für sogenannte Template-Strings verwendet. Es handelt sich dabei um Literale Strings.  
+Strings können mit `"`, `'` und `` ` `` definiert werden. Die `"` und `'` werden als normale Strings verwendet, der Backtick wird für sogenannte Template-Strings verwendet. Es handelt sich dabei um Literale Strings.
 Mithilfe des String-Konstruktors `String()` können Escape-Characters umgangen werden, wie zum Beispiel beim generieren einer Regex.
 
 # Loggen
@@ -1944,7 +1944,7 @@ $ console.error(obj)
 $ console.debug(obj)
 → {x: 1, y: 2}
 ```
-JavaScript bietet diverse Möglichkeiten auf die Konsole zu schreiben. Dabei gibt es wie bei den meisten Logging-Frameworks verschiedene Stufen, nach welchen auch gefiltert werden kann. 
+JavaScript bietet diverse Möglichkeiten auf die Konsole zu schreiben. Dabei gibt es wie bei den meisten Logging-Frameworks verschiedene Stufen, nach welchen auch gefiltert werden kann.
 
 !!!Warning Wenn das ganze Logging über die Konsole gemacht wird benötigt das Speicher und Rechenpower, auch wenn gefiltert wird!
 
@@ -1973,13 +1973,13 @@ error( _=> longRunning("error"));
 
 ```
 Der Wert `logLevel` kann dann von jedem über die JavaScript Konsole im Browser des Vertrauens gesetzt werden, und das Loglevel wird on-the-fly angepasst.
-Dieser Code funktioniert ganz einfach, man gibt den Loggingfunktionen eine Funktion mit, welche ausgeführt wird nachdem `logLevel` überprüft wurde. 
+Dieser Code funktioniert ganz einfach, man gibt den Loggingfunktionen eine Funktion mit, welche ausgeführt wird nachdem `logLevel` überprüft wurde.
 
 !!!Warning Würde man das ganze mit einer Expression machen, würde diese (bei der Übergabe) zuerst evaluiert werden, auch wenn es sich dabei um eine lang laufende Funktion handelt!
 
 # Arrays
 !!!Info Ein Array ist ein Objekt
-Arrays in JavaScript können in mehreren wegen generiert werden. Ein weg ist der Literale Konstruktor, der andere ist der Funktionale Konstruktor.  
+Arrays in JavaScript können in mehreren wegen generiert werden. Ein weg ist der Literale Konstruktor, der andere ist der Funktionale Konstruktor.
 ```javascript {.line-numbers}
 $ const foo = [0, 1, 2, 3, 4];       // Literaler Konstruktor mit '[]'
 $ const bar = Array(0, 1, 2, 3, 4);  // Literaler Konstruktor mit '[]'
@@ -2018,7 +2018,7 @@ $ const foobar = (a, b) => console.log(a, b)
 $ foobar(...[1,2,3])
 → 1, 2
 ```
-Im Hintergrund wird ein Objekt erstellt, welches die einzelnen Werte abspeichert. Er verwandelt eine Liste von Elementen in ein Array von Elementen. 
+Im Hintergrund wird ein Objekt erstellt, welches die einzelnen Werte abspeichert. Er verwandelt eine Liste von Elementen in ein Array von Elementen.
 
 ## Spread-Operator `...` an Konstruktorposition
 Der Spread-Operator kann auch an Konstruktorposition verwendet werden, wo bei einer Rückgabe eines Arrays alle restlichen Werte in `rest` gespeichert werden.
@@ -2067,7 +2067,7 @@ $ chars.splice(1, 2)                  // get all in between this index
 $ chars                               // Attention, original array was changed!
 → ["a", "d", "e", "f", "g"]
 $ chars.splice(1, 1, "x", "y", "z");  // get all in between this index and replace
-→ ["d"]                               
+→ ["d"]
 $ chars
 → ["a", "x", "y", "z", "e", "f", "g"] // Attention, original array was changed!
 ```
@@ -2180,7 +2180,7 @@ Im nächsten Schritt werden Repetitionen in Funktionen und Loops extrahiert und 
   const arab = roman => {
     if(roman.length === 0) return 0;
     // shortened and nicer, but more complex / harder to understand
-    
+
     // Special cases
     if(roman.slice(0, 2) === "IV") return   4 + arab(roman.slice(2));
     if(roman.slice(0, 2) === "IX") return   9 + arab(roman.slice(2));
@@ -2268,7 +2268,7 @@ Beim generieren kann man auch nur mal ganz einfach Duplikationen generieren. Man
       "MDCXXXII": 1632
     }
     for([fnValue, should] of Object.entries(testCases)){
-      document.writeln(String(arab(fnValue) === should));    
+      document.writeln(String(arab(fnValue) === should));
     }
   }
 
@@ -2292,4 +2292,3 @@ All diese Schritte sind erfolgreich ausgeführt, wenn der Code ohne schlechtem G
 
 ## 6: Retrospektive
 In der Retrospektive wird noch einmal über den Prozess gegangen und überlegt, was man behalten möchte und was man das nächste mal anders machen möchte.
-  
